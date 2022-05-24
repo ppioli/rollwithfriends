@@ -1,30 +1,33 @@
 import {useEffect, useRef, useState} from "react";
+import {layer} from "./mapStyles";
+import BaseLayerProps from "./BaseLayerProps";
 
 
-export default function Grid(){
-    const [width, setWidth] = useState(30);
-    const [height, setHeight] = useState(30);
-    const [cellSize, setCellSize] = useState(30);
+export default function Grid({cellSize, offsetX, offsetY, width, height}: BaseLayerProps) {
 
     const canvasRef = useRef<HTMLCanvasElement>();
 
-    useEffect(()=>{
-        if(canvasRef.current){
-            drawGrid(canvasRef.current, width, height, cellSize)
+    // const { ref, width, height } = useResizeDetector();
+
+    useEffect(() => {
+        if (canvasRef.current) {
+            console.log("Drawing grid")
+            const startX = -(cellSize - (offsetX % cellSize));
+            const startY = -(cellSize - (offsetY % cellSize));
+
+            const ctx = canvasRef.current.getContext("2d");
+            ctx.clearRect(0, 0, width, height)
+            for (let i = startX; i < width; i += cellSize) {
+                for (let j = startY; j < height; j += cellSize) {
+                    ctx.strokeRect(i, j, cellSize, cellSize)
+                }
+            }
         }
-    }, [canvasRef, width, height, cellSize])
+    }, [canvasRef, offsetX, offsetY, cellSize])
 
-    return <canvas ref={canvasRef} width={width*cellSize} height={height*cellSize}>
+    return <div style={{...layer, border: "2px solid red"}}>
 
-    </canvas>
+        <canvas ref={canvasRef} width={width} height={height}/>
+    </div>
 }
 
-
-function drawGrid( canvas: HTMLCanvasElement, width: number, height: number, size: number ) {
-    const ctx = canvas.getContext("2d");
-    for(let i = 0; i < width; i++ ){
-        for(let j = 0; j < height; j++ ){
-            ctx.strokeRect( i * size, j * size, size, size)
-        }
-    }
-}

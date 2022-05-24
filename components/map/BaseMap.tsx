@@ -1,48 +1,56 @@
 import Grid from "components/map/Grid";
-import {useGesture} from "@use-gesture/react";
-import {useState} from "react";
-import {Point} from "utils/Point";
+import useMapControl from "./useMapControl";
+import {useCallback, useEffect, useRef} from "react";
+import TokenLayer from "./TokenLayer";
+import {layer, layerContainer} from "./mapStyles";
 
-export default function BaseMap() {
+interface BaseMapProps {
+    width: number,
+    height: number,
+}
 
-    const bind = useMapControl();
+export default function BaseMap({width, height}: BaseMapProps) {
+    const containerRef = useRef<HTMLDivElement>();
 
 
-    return <div {...bind()}>
-        <Grid/>
+    const {bind, x: offsetX, y: offsetY} = useMapControl({
+
+        onDrag: ({x: dx, y: dy}) => {
+            if (containerRef) {
+                containerRef.current.style.setProperty("transform", `translate(${dx}px, ${dy}px)`)
+            }
+        }
+
+    });
+
+    const cellSize = 60;
+
+    const layerProps = {
+        height,
+        width,
+        offsetX,
+        offsetY,
+        cellSize
+    }
+
+    return <div {...bind()} style={{...layerContainer}}>
+        <div style={{...layer, top: 10, left: 10}}>
+            {`Position (${offsetX},${offsetY})`} <br/>
+            {`Canvas size (${width},${height})`} <br/>
+            {`Scale (${1})`} <br/>
+        </div>
+        <div ref={containerRef} style={layer}>
+            <div style={layerContainer}>
+                <Grid {...layerProps} />
+                <TokenLayer {...layerProps}/>
+            </div>
+
+        </div>
     </div>
 
 }
 
-function useMapControl() {
-    const [dragStart, setDragStart] = useState<Point>(null);
 
-    const bind = useGesture({
-        onDragStart: (evt) => {
-            if (evt.ctrlKey) {
-                const [x, y] = evt.xy;
-                setDragStart({x, y})
-            }
-
-        },
-        onDrag: (evt) => {
-            if (dragStart !== null) {
-                const {x, y} = dragStart;
-                const [nx, ny] = evt.xy;
-                console.log(x - nx, y - ny)
-            }
-        },
-        onDragEnd: () => setDragStart(null),
-        onWheel: (evt) => console.log(evt),
-        onScroll: (evt) => console.log(evt),
-    }, {
-        enabled: true, drag: {}
-    })
-
-    return {
-        bind,
-    }
-}
 
 
 
