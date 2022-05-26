@@ -10,8 +10,8 @@ const style: CSSProperties = {
 };
 
 const testToken = {
-  x: 10,
-  y: 10,
+  x: 500,
+  y: 500,
   width: 30,
   height: 30,
 };

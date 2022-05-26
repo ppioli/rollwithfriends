@@ -100,7 +100,6 @@ function ResizeMoveBox({
 }: ResizeMoveBoxProps) {
   const bind = useDrag(
     ({ down, movement: [mx, my] }) => {
-      console.log(mx, my);
       onMove({ x: mx, y: my });
       if (!down) {
         onUpdate({
@@ -208,7 +207,6 @@ const getCornerDeltaHandler = ({ vector: [vx, vy] }: CornerData) => {
     const dw = cx * vx;
     const dh = cy * vy;
 
-    console.log(vx, vy);
     return {
       deltaSize: {
         x: dw,

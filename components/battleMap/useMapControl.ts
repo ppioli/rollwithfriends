@@ -16,7 +16,6 @@ export default function useMapControl({onDrag, onScale}: MapControlProps) {
 
     const bind = useGesture({
         onDragStart: (evt) => {
-            console.log("Drag start")
             if (evt.ctrlKey) {
                 const [x, y] = evt.xy;
                 setDragStart({x, y})
@@ -24,7 +23,6 @@ export default function useMapControl({onDrag, onScale}: MapControlProps) {
 
         },
         onDrag: (evt) => {
-            // console.log(dragStart)
             if (dragStart !== null && onDrag) {
                 const {x, y} = dragStart;
                 const [nx, ny] = evt.xy;

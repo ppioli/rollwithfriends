@@ -18,7 +18,7 @@ export default function TokenEntity({ id }: TokenEntityProps) {
 
   const onUpdate = useCallback(
     (changes: BattleMapEntityProps) => {
-      dispatch(updateToken({ id, changes }));
+      dispatch(updateToken({ id, entity: { id, ...changes} }));
     },
     [dispatch, id]
   );

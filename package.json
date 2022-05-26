@@ -13,6 +13,7 @@
     "@types/lodash": "^4.14.182",
     "@use-gesture/react": "^10.2.15",
     "autoprefixer": "^10.4.7",
+    "immer": "^9.0.14",
     "lodash": "^4.17.21",
     "next": "12.1.6",
     "postcss": "^8.4.14",
