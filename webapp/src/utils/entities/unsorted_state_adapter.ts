@@ -4,15 +4,15 @@ import type {
   IdSelector,
   Update,
   EntityId, Create,
-} from './models'
+} from 'utils/entities/models'
 import {
   createStateOperator,
   createSingleArgumentStateOperator,
-} from './state_adapter'
+} from 'utils/entities/state_adapter'
 import {
   ensureEntitiesArray,
   selectIdValue,
-} from './utils'
+} from 'utils/entities/utils'
 
 export function createUnsortedStateAdapter<E>(
   selectId: IdSelector<E>

@@ -1,13 +1,14 @@
-using server.Mutations;
-using server.Query;
-using server.Services;
-using server.Subscriptions;
+using Server.Mutations;
+using Server.Query;
+using Server.Services;
+using Server.Subscriptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddGraphQLServer()
     .AddMutationConventions()
+    .AddGlobalObjectIdentification()
     .AddFiltering()
     .AddSubscriptionType<Subscription>()
     .AddQueryType<RootQuery>()

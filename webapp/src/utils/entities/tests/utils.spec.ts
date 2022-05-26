@@ -1,5 +1,5 @@
-import { selectIdValue } from '../utils'
-import { AClockworkOrange } from './fixtures/book'
+import { selectIdValue } from 'utils/entities/utils'
+import { AClockworkOrange } from 'utils/entities/tests/fixtures/book'
 
 describe('Entity utils', () => {
   describe(`selectIdValue()`, () => {

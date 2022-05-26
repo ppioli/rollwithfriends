@@ -1,8 +1,7 @@
-using AutoMapper;
-using server.Models.Map;
-using server.Services;
+using Server.Models;
+using Server.Services;
 
-namespace server.Query;
+namespace Server.Query;
 
 public class RootQuery
 {

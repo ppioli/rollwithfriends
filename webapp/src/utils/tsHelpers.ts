@@ -1,5 +1,5 @@
 import type { Middleware } from 'redux'
-import type { MiddlewareArray } from './utils'
+import type { MiddlewareArray } from 'utils/utils'
 
 /**
  * return True if T is `any`, otherwise return False

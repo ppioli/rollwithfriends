@@ -1,10 +1,12 @@
 using AutoMapper;
+using Server.Services;
 
-namespace server.Models.Map;
+namespace Server.Models;
 
 /// <summary>
 /// Represents something on the table
 /// </summary>
+[Node]
 public class Token
 {
     public int Id { get; set; }
@@ -12,6 +14,13 @@ public class Token
     public int Y { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
+    
+    public static Token Get(int id,
+        [Service] ITokenService service)
+    {
+        // TODO
+        return service.GetById(id)!;
+    }
 }
 
 public class TokenBase

@@ -1,8 +1,8 @@
 import Grid from "components/battleMap/Grid";
-import useMapControl from "./useMapControl";
+import useMapControl from "components/battleMap/useMapControl";
 import { useRef } from "react";
-import TokenLayer from "./TokenLayer";
-import { layer, layerContainer } from "./mapStyles";
+import TokenLayer from "components/battleMap/TokenLayer";
+import { layer, layerContainer } from "components/battleMap/mapStyles";
 import Toolbar from "components/battleMap/toolbar/Toolbar";
 
 interface BaseMapProps {

@@ -1,10 +1,10 @@
 using AutoMapper;
 using HotChocolate.Subscriptions;
-using server.Models.Map;
-using server.Services;
-using server.Subscriptions;
+using Server.Models;
+using Server.Services;
+using Server.Subscriptions;
 
-namespace server.Mutations;
+namespace Server.Mutations;
 
 public class TokenMutation
 {

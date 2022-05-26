@@ -1,7 +1,7 @@
 using AutoMapper;
-using server.Models.Map;
+using Server.Models;
 
-namespace server.Services;
+namespace Server.Services;
 
 
 public interface ITokenService

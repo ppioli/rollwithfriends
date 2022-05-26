@@ -1,6 +1,6 @@
-using server.Models.Map;
+using Server.Models;
 
-namespace server.Subscriptions;
+namespace Server.Subscriptions;
 
 public class TokenChangeEvent
 {

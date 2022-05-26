@@ -1,6 +1,4 @@
-using server.Models.Map;
-
-namespace server.Subscriptions;
+namespace Server.Subscriptions;
 
 public class Subscription
 {

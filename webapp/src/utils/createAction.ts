@@ -4,8 +4,8 @@ import type {
   IfMaybeUndefined,
   IfVoid,
   IsAny,
-} from './tsHelpers'
-import isPlainObject from './isPlainObject'
+} from 'utils/tsHelpers'
+import isPlainObject from 'utils/isPlainObject'
 
 /**
  * An action with a string type and an associated payload. This is the

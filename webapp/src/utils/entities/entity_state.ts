@@ -1,4 +1,4 @@
-import type { EntityState } from './models'
+import type { EntityState } from 'utils/entities/models'
 
 export function getInitialEntityState<V>(): EntityState<V> {
   return {

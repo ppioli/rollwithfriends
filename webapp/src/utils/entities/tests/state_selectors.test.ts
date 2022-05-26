@@ -1,8 +1,8 @@
-import type { EntityAdapter, EntityState } from '../index'
-import { createEntityAdapter } from '../index'
-import type { EntitySelectors } from '../models'
-import type { BookModel } from './fixtures/book'
-import { AClockworkOrange, AnimalFarm, TheGreatGatsby } from './fixtures/book'
+import type { EntityAdapter, EntityState } from 'utils/entities/index'
+import { createEntityAdapter } from 'utils/entities/index'
+import type { EntitySelectors } from 'utils/entities/models'
+import type { BookModel } from 'utils/entities/tests/fixtures/book'
+import { AClockworkOrange, AnimalFarm, TheGreatGatsby } from 'utils/entities/tests/fixtures/book'
 import type { Selector } from 'reselect'
 import { createSelector } from 'reselect'
 

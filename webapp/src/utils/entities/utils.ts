@@ -1,4 +1,4 @@
-import type { EntityState, IdSelector, Update, EntityId } from './models'
+import type { EntityState, IdSelector, Update, EntityId } from 'utils/entities/models'
 
 export function selectIdValue<T>(entity: T, selectId: IdSelector<T>) {
   const key = selectId(entity)

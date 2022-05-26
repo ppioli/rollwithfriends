@@ -4,7 +4,7 @@ import type {
   EntitySelectors,
   Dictionary,
   EntityId,
-} from './models'
+} from 'utils/entities/models'
 import {createDraftSafeSelector} from "@reduxjs/toolkit";
 
 export function createSelectorsFactory<T>() {

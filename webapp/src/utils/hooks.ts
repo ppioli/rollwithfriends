@@ -1,5 +1,5 @@
 import {Dispatch, SetStateAction, useCallback, useState} from "react";
-import {Point} from "./Point";
+import {Point} from "utils/Point";
 
 
 export function usePosition( initialPosition?: Point): [number, number, (value: Point) => void ] {

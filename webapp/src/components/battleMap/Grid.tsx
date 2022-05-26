@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { layer } from "./mapStyles";
-import BaseLayerProps from "./BaseLayerProps";
+import { layer } from "components/battleMap/mapStyles";
+import BaseLayerProps from "components/battleMap/BaseLayerProps";
 
 export default function Grid({
   cellSize,

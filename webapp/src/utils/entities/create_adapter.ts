@@ -3,11 +3,11 @@ import type {
   Comparer,
   IdSelector,
   EntityAdapter,
-} from './models'
-import { createInitialStateFactory } from './entity_state'
-import { createSelectorsFactory } from './state_selectors'
+} from 'utils/entities/models'
+import { createInitialStateFactory } from 'utils/entities/entity_state'
+import { createSelectorsFactory } from 'utils/entities/state_selectors'
 // import { createSortedStateAdapter } from './sorted_state_adapter'
-import { createUnsortedStateAdapter } from './unsorted_state_adapter'
+import { createUnsortedStateAdapter } from 'utils/entities/unsorted_state_adapter'
 
 /**
  *

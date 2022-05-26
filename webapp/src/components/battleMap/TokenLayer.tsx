@@ -1,7 +1,7 @@
 import { useCallback } from "react";
-import { layerContainer } from "./mapStyles";
-import BaseLayerProps from "./BaseLayerProps";
-import {selectAllTokens, updateToken} from "features/token/tokenSlice";
+import { layerContainer } from "components/battleMap/mapStyles";
+import BaseLayerProps from "components/battleMap/BaseLayerProps";
+import { selectAllTokens, updateToken } from "features/token/tokenSlice";
 import { useAppDispatch, useAppSelector } from "store";
 import Token from "features/token/Token.model";
 import TokenEntity from "components/battleMap/entities/TokenEntity";
