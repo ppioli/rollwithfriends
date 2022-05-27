@@ -2,30 +2,10 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import BaseMap from "../components/battleMap/BaseMap";
 import { useResizeDetector } from "react-resize-detector";
-import { usePreloadedQuery } from "react-relay";
-
-const RepositoryNameQuery = graphql`
-  query AppRepositoryNameQuery {
-    tokens {
-      id
-      x
-      y
-      width
-      height
-    }
-  }
-`;
-
-// Immediately load the query as our app starts. For a real app, we'd move this
-// into our routing configuration, preloading data as we transition to new routes.
-const preloadedQuery = loadQuery(RelayEnvironment, RepositoryNameQuery, {
-  /* query variables */
-});
 
 export default function Home() {
   const { ref, width, height } = useResizeDetector();
 
-  const data = usePreloadedQuery(RepositoryNameQuery, preloadedQuery);
 
   return (
     <div className={styles.container}>
@@ -47,7 +27,9 @@ export default function Home() {
           }}
         >
           <div ref={ref} className={"w-full"}>
-            <BaseMap width={width} height={height} />
+
+            <BaseMap  width={width} height={height} />
+
           </div>
           <div className={"w-96"}>Asdf</div>
         </div>
