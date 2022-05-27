@@ -1,14 +1,16 @@
 import "../styles/globals.css";
 import { Provider } from "react-redux";
 import store from "store";
+import { RelayEnvironmentProvider } from "react-relay/hooks";
 
-import {enablePatches} from "immer"
-enablePatches()
+import RelayEnvironment from "../RelayEnvironment";
 
 function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
+      <RelayEnvironmentProvider environment={RelayEnvironment}>
+        <Component {...pageProps} />
+      </RelayEnvironmentProvider>
     </Provider>
   );
 }

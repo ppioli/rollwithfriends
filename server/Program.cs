@@ -5,6 +5,8 @@ using Server.Subscriptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+
 builder.Services
     .AddGraphQLServer()
     .AddMutationConventions()
@@ -17,6 +19,20 @@ builder.Services
 builder.Services.AddInMemorySubscriptions();
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy =>
+        {
+            policy
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowAnyOrigin();
+        });
+});
+
+
+
 builder.Services
     .AddAutoMapper(typeof(Program));
 
@@ -26,6 +42,13 @@ builder.Services.AddSingleton<ITokenService, TokenService>();
 var app = builder.Build();
 
 app.MapGet("/", () => "Hello World!");
+
+if( app.Environment.IsDevelopment()) {
+{
+    app.UseCors();    
+}}
+
+
 
 app.UseWebSockets();
 

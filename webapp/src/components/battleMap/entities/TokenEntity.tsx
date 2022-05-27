@@ -1,34 +1,39 @@
-import { useAppDispatch, useAppSelector } from "store";
-import { selectTokenById, updateToken } from "features/token/tokenSlice";
 import {
   BattleMapEntityProps,
   SelectedBattleMapEntity,
 } from "components/battleMap/entities/BattleMapEntity";
 import { useCallback } from "react";
+import { useFragment } from "react-relay";
+import {
+  BaseMapQueryToken$data,
+  BaseMapQueryToken$key,
+} from "components/battleMap/__generated__/BaseMapQueryToken.graphql";
+import {
+  BaseMapQuery,
+  BaseMapQueryTokenFragment,
+} from "components/battleMap/BaseMapQuery";
 
 export interface TokenEntityProps {
-  id: number;
+  id: string;
+  token: BaseMapQueryToken$key;
 }
 
-export default function TokenEntity({ id }: TokenEntityProps) {
-  const { x, y, width, height } = useAppSelector((state) =>
-    selectTokenById(state, id)
-  );
-  const dispatch = useAppDispatch();
+export default function TokenEntity({ id, token }: TokenEntityProps) {
+  const onUpdate = useCallback((changes: BattleMapEntityProps) => {}, [id]);
 
-  const onUpdate = useCallback(
-    (changes: BattleMapEntityProps) => {
-      dispatch(updateToken({ id, entity: { id, ...changes} }));
-    },
-    [dispatch, id]
+  const data: BaseMapQueryToken$data = useFragment(
+    BaseMapQueryTokenFragment,
+    token
   );
+
+  console.log("TokenEntity", data);
 
   return (
     <SelectedBattleMapEntity
-      x={x}
-      y={y}
-      width={width}
-      height={height}
+      x={data.x}
+      y={data.y}
+      width={data.width}
+      height={data.height}
       onUpdate={onUpdate}
     />
   );
