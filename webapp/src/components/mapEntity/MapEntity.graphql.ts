@@ -1,14 +1,12 @@
-import { MapEntityAddMutation$data } from "components/mapEntity/__generated__/MapEntityAddMutation.graphql";
-import { MapEntityUpdateMutation$data } from "components/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
 import { MapEntityUpdate } from "components/mapEntity/MapEntity";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { RecordSourceSelectorProxy } from "relay-runtime";
-import { graphql, useMutation } from "react-relay";
+import { graphql, useMutation, useSubscription } from "react-relay";
 
 export function useMapEntityUpdateMutation(id: string) {
   const [commit, isInFlight] = useMutation(graphql`
-    mutation MapEntityUpdateMutation($input: UpdateMapEntityInput!) {
-      updateMapEntity(input: $input) {
+    mutation MapEntityUpdateMutation($input: MapEntityUpdateInput!) {
+      mapEntityUpdate(input: $input) {
         mapEntity {
           id
           x
@@ -45,8 +43,8 @@ export function useMapEntityUpdateMutation(id: string) {
 
 export function useMapEntityAddMutation(selectedScene: string) {
   const [commit, _] = useMutation(graphql`
-    mutation MapEntityAddMutation($input: AddMapEntityInput!) {
-      addMapEntity(input: $input) {
+    mutation MapEntityAddMutation($input: MapEntityAddInput!) {
+      mapEntityAdd(input: $input) {
         mapEntity {
           id
           x
@@ -78,4 +76,34 @@ export function useMapEntityAddMutation(selectedScene: string) {
     },
     [commit, selectedScene]
   );
+}
+
+export function useMapEntitySubscription() {
+  const config = useMemo(
+    () => ({
+      subscription: graphql`
+        subscription MapEntitySubscription {
+          mapEntitySubscription {
+            payload {
+              mapEntity {
+                id
+                width
+                height
+                x
+                y
+              }
+            }
+          }
+        }
+      `,
+      variables: {},
+      onCompleted: () => console.log("Subscription established"),
+      onError: (error) => {} /* Subscription errored */,
+      onNext: (response) =>
+        console.log("Received", response) /* Subscription payload received */,
+    }),
+    []
+  );
+
+  useSubscription(config);
 }

@@ -20,11 +20,10 @@ public class TokenMutation
     }
 
     [UseMutationConvention]
-    public async Task<MapEntity> UpdateMapEntity([ID] int id, MapEntityInput mapEntity)
+    public async Task<MapEntity> MapEntityUpdate([ID] int id, MapEntityInput mapEntity)
     {
         var updated = await _mapEntityService.Update(id, mapEntity);
 
-        await Task.Delay(5000);
         await _sender.SendAsync(nameof(MapEntityChangeEvent), MapEntityChangeEvent.Updated(updated));
         
         return updated;
@@ -32,7 +31,7 @@ public class TokenMutation
     
     
     [UseMutationConvention]
-    public async Task<MapEntity> AddMapEntity(MapEntityInput mapEntity)
+    public async Task<MapEntity> MapEntityAdd(MapEntityInput mapEntity)
     {
         var added = await _mapEntityService.Add(mapEntity);
 
@@ -42,7 +41,7 @@ public class TokenMutation
     }
 
     [UseMutationConvention]
-    public async Task<MapEntity> DeleteMapEntity([ID] int id)
+    public async Task<MapEntity> MapEntityDelete([ID] int id)
     {
         await _sender.SendAsync(nameof(MapEntityChangeEvent), MapEntityChangeEvent.Deleted(id));
 

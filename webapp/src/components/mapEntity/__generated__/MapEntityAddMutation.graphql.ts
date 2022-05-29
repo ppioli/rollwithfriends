@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5ac263ae1f0941226ea3dc902d91f980>>
+ * @generated SignedSource<<b9fb20d02cbc44a7bb5ae5c38163c382>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type AddMapEntityInput = {
+export type MapEntityAddInput = {
   mapEntity: MapEntityInput;
 };
 export type MapEntityInput = {
@@ -19,10 +19,10 @@ export type MapEntityInput = {
   height: number;
 };
 export type MapEntityAddMutation$variables = {
-  input: AddMapEntityInput;
+  input: MapEntityAddInput;
 };
 export type MapEntityAddMutation$data = {
-  readonly addMapEntity: {
+  readonly mapEntityAdd: {
     readonly mapEntity: {
       readonly id: string;
       readonly x: number;
@@ -55,9 +55,9 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "AddMapEntityPayload",
+    "concreteType": "MapEntityAddPayload",
     "kind": "LinkedField",
-    "name": "addMapEntity",
+    "name": "mapEntityAdd",
     "plural": false,
     "selections": [
       {
@@ -128,16 +128,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "7fe783356170089de3d98363c850006b",
+    "cacheID": "8573b16cd3bc35be439044aea43482f1",
     "id": null,
     "metadata": {},
     "name": "MapEntityAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityAddMutation(\n  $input: AddMapEntityInput!\n) {\n  addMapEntity(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
+    "text": "mutation MapEntityAddMutation(\n  $input: MapEntityAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "0a9e67e775b0a49ad71d20071d397355";
+(node as any).hash = "2eba50c753d03bc10632fcec59d5df2c";
 
 export default node;

@@ -2,9 +2,10 @@ import { MapEntityLayer_scene$key } from "components/battleMap/mapEntityLayer/__
 import { layerContainer } from "components/battleMap/mapStyles";
 import BaseLayerProps from "components/battleMap/BaseLayerProps";
 import { MapEntity } from "components/mapEntity/MapEntity";
+import { useMapEntitySubscription } from "components/mapEntity/MapEntity.graphql";
 import { useFragment, graphql } from "react-relay";
 
-interface TokenLayerProps extends BaseLayerProps {
+interface MapEntityLayerProps extends BaseLayerProps {
   entities: MapEntityLayer_scene$key;
 }
 export const EntityLayerConnection = "MapEntityLayer_scene_entities";
@@ -13,7 +14,7 @@ export default function MapEntityLayer({
   offsetX,
   offsetY,
   entities,
-}: TokenLayerProps) {
+}: MapEntityLayerProps) {
   const data = useFragment(
     graphql`
       fragment MapEntityLayer_scene on Scene {
@@ -26,7 +27,7 @@ export default function MapEntityLayer({
     entities
   );
 
-  console.log(data);
+  useMapEntitySubscription();
 
   return (
     <div style={{ ...layerContainer, top: offsetY, left: offsetX }}>

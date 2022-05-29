@@ -6,7 +6,6 @@ import { useResizeDetector } from "react-resize-detector";
 export default function Home() {
   const { ref, width, height } = useResizeDetector();
 
-
   return (
     <div className={"container"}>
       <Head>
@@ -15,9 +14,7 @@ export default function Home() {
         <link rel="icon" href="/src/public/favicon.ico" />
       </Head>
 
-      <main>
-        Welcome!
-      </main>
+      <main>Hellow!</main>
     </div>
   );
 }

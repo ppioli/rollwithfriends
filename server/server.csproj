@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="12.9.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="13.0.0-preview.19" />
     <PackageReference Include="HotChocolate.Data" Version="12.9.0" />
   </ItemGroup>
 

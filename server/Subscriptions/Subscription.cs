@@ -4,5 +4,5 @@ public class Subscription
 {
     [Subscribe]
     [Topic(nameof(MapEntityChangeEvent))]
-    public MapEntityChangeEvent TokenChange([EventMessage] MapEntityChangeEvent payload) => payload;
+    public MapEntityChangeEvent MapEntitySubscription([EventMessage] MapEntityChangeEvent payload) => payload;
 }

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0fa28dd4b0b74de50eb94744995ef075>>
+ * @generated SignedSource<<01b2a1d8dc06ddb2d149c0615a90a153>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type UpdateMapEntityInput = {
+export type MapEntityUpdateInput = {
   id: string;
   mapEntity: MapEntityInput;
 };
@@ -20,10 +20,10 @@ export type MapEntityInput = {
   height: number;
 };
 export type MapEntityUpdateMutation$variables = {
-  input: UpdateMapEntityInput;
+  input: MapEntityUpdateInput;
 };
 export type MapEntityUpdateMutation$data = {
-  readonly updateMapEntity: {
+  readonly mapEntityUpdate: {
     readonly mapEntity: {
       readonly id: string;
       readonly x: number;
@@ -56,9 +56,9 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "UpdateMapEntityPayload",
+    "concreteType": "MapEntityUpdatePayload",
     "kind": "LinkedField",
-    "name": "updateMapEntity",
+    "name": "mapEntityUpdate",
     "plural": false,
     "selections": [
       {
@@ -129,16 +129,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "c9b5490b2c8aafe22373b79a851f89d5",
+    "cacheID": "97c1fb2717ff3b5bb2c60e55e4aa0b47",
     "id": null,
     "metadata": {},
     "name": "MapEntityUpdateMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityUpdateMutation(\n  $input: UpdateMapEntityInput!\n) {\n  updateMapEntity(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
+    "text": "mutation MapEntityUpdateMutation(\n  $input: MapEntityUpdateInput!\n) {\n  mapEntityUpdate(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b8657988db19e32ff9dba4f54a4bdbfa";
+(node as any).hash = "34f2d33a847ed1c6e3847c31efcd5cd8";
 
 export default node;

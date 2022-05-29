@@ -1,13 +1,14 @@
 import { Campaign } from "features/campaign/Campaign";
+import getRelayClientEnvironment from "lib/getRelayClientEnvironment";
 import Head from "next/head";
 import { useRouter } from "next/router";
-
+import { RelayEnvironmentProvider } from "react-relay/hooks";
 
 export default function CampaignPage() {
   // TODO parse this id
-  const { query: { id } } = useRouter();
-
-
+  const {
+    query: { id },
+  } = useRouter();
 
   return (
     <div className={"container"}>
@@ -17,9 +18,7 @@ export default function CampaignPage() {
         <link rel="icon" href="/src/public/favicon.ico" />
       </Head>
 
-      <main>
-        { id && <Campaign campaignId={String(id)} />}
-      </main>
+      <main>{id && <Campaign campaignId={String(id)} />}</main>
     </div>
   );
 }

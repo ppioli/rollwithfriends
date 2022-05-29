@@ -1,5 +1,6 @@
 import { CampaignSelectQuery } from "features/campaign/__generated__/CampaignSelectQuery.graphql";
 import { SelectedScene } from "features/scene/SelectedScene";
+import getRelayClientEnvironment from "lib/getRelayClientEnvironment";
 import { useLazyLoadQuery, graphql } from "react-relay";
 import { Suspense, useEffect } from "react";
 
@@ -30,7 +31,7 @@ export const Campaign = ({ campaignId }: CampaignProps) => {
 
   return (
     <div>
-      <h1>Campaña {campaignId}</h1>
+      <h1>Campaign {campaignId}</h1>
 
       <div
         className={"flex flex-row items-stretch"}
