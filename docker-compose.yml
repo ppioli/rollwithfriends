@@ -1,0 +1,48 @@
+version: "3.9"
+services:
+  api:
+    container_name: aspnet-core-app_api
+    build: Backend/
+    ports:
+      - "5000:5000"
+      - "5001:5001"
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Testing"
+      ASPNETCORE_URLS: "http://0.0.0.0:5000"
+    profiles:
+      - backend
+  db:
+    build: Database/
+    container_name: aspnet-core-app_db
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./data/mssql:/var/opt/mssql
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./data/elastisearch:/usr/share/elasticsearch/data
+    environment:
+      - xpack.monitoring.enabled=true
+      - xpack.watcher.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.9.2
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://localhost:9200
+

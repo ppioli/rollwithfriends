@@ -6,13 +6,13 @@ using Server.Subscriptions;
 
 namespace Server.Mutations;
 
-public class TokenMutation
+public class MapEntityMutation
 {
     private readonly IMapEntityService _mapEntityService;
     private readonly ITopicEventSender _sender;
     private readonly IMapper _mapper;
     
-    public TokenMutation(IMapEntityService mapEntityService, IMapper mapper, ITopicEventSender sender)
+    public MapEntityMutation(IMapEntityService mapEntityService, IMapper mapper, ITopicEventSender sender)
     {
         _mapEntityService = mapEntityService;
         _mapper = mapper;

@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+  api:
+    container_name: rwf-api
+    build: .
+    ports:
+      - "5289:5289"
+    depends_on:
+      - db
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://0.0.0.0:5289"
+    profiles:
+      - backend
+  db:
+    container_name: rwf-db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 'rollwithfriends'
+      POSTGRES_USER: 'rollwithfriends'
+      POSTGRES_DB: 'rollwithfriends'
+    ports:
+      - "5444:5432"
+    volumes:
+      - ./data/mssql:/var/opt/mssql
+  elasticsearch:
+    container_name: rwf-elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
+    ports:
+      - "9200:9200"
+    volumes:
+      - ../data/elasticsearch:/usr/share/elasticsearch/data
+    environment:
+      - xpack.monitoring.enabled=true
+      - xpack.watcher.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+
+  kibana:
+    container_name: rwf-kibana
+    image: docker.elastic.co/kibana/kibana:7.9.2
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://localhost:9200
+
