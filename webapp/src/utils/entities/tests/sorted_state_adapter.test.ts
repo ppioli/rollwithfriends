@@ -69,7 +69,7 @@ describe('Sorted State Adapter', () => {
     expect(readded).toBe(withOneEntity)
   })
 
-  it('should let you add many entities to the state', () => {
+  it('should let you add many mapEntity to the state', () => {
     const withOneEntity = adapter.addOne(state, TheGreatGatsby)
 
     const withManyMore = adapter.addMany(withOneEntity, [
@@ -87,7 +87,7 @@ describe('Sorted State Adapter', () => {
     })
   })
 
-  it('should let you add many entities to the state from a dictionary', () => {
+  it('should let you add many mapEntity to the state from a dictionary', () => {
     const withOneEntity = adapter.addOne(state, TheGreatGatsby)
 
     const withManyMore = adapter.addMany(withOneEntity, {
@@ -167,7 +167,7 @@ describe('Sorted State Adapter', () => {
     })
   })
 
-  it('should let you remove many entities by id from the state', () => {
+  it('should let you remove many mapEntity by id from the state', () => {
     const withAll = adapter.setAll(state, [
       TheGreatGatsby,
       AClockworkOrange,
@@ -187,7 +187,7 @@ describe('Sorted State Adapter', () => {
     })
   })
 
-  it('should let you remove all entities from the state', () => {
+  it('should let you remove all mapEntity from the state', () => {
     const withAll = adapter.setAll(state, [
       TheGreatGatsby,
       AClockworkOrange,
@@ -343,7 +343,7 @@ describe('Sorted State Adapter', () => {
     })
   })
 
-  it('should let you update many entities by id in the state', () => {
+  it('should let you update many mapEntity by id in the state', () => {
     const firstChange = { title: 'Zack' }
     const secondChange = { title: 'Aaron' }
     const withMany = adapter.setAll(state, [TheGreatGatsby, AClockworkOrange])
@@ -397,7 +397,7 @@ describe('Sorted State Adapter', () => {
     })
   })
 
-  it('should let you upsert many entities in the state', () => {
+  it('should let you upsert many mapEntity in the state', () => {
     const firstChange = { title: 'Zack' }
     const withMany = adapter.setAll(state, [TheGreatGatsby])
 
@@ -444,7 +444,7 @@ describe('Sorted State Adapter', () => {
     expect(() => adapter.upsertMany(withMany, nullBooks)).toThrow()
   })
 
-  it('should let you upsert many entities in the state when passing in a dictionary', () => {
+  it('should let you upsert many mapEntity in the state when passing in a dictionary', () => {
     const firstChange = { title: 'Zack' }
     const withMany = adapter.setAll(state, [TheGreatGatsby])
 
@@ -504,7 +504,7 @@ describe('Sorted State Adapter', () => {
     })
   })
 
-  it('should let you set many entities in the state', () => {
+  it('should let you set many mapEntity in the state', () => {
     const firstChange = { id: TheHobbit.id, title: 'Silmarillion' }
     const withMany = adapter.setAll(state, [TheHobbit])
 
@@ -522,7 +522,7 @@ describe('Sorted State Adapter', () => {
     })
   })
 
-  it('should let you set many entities in the state when passing in a dictionary', () => {
+  it('should let you set many mapEntity in the state when passing in a dictionary', () => {
     const changeWithoutAuthor = { id: TheHobbit.id, title: 'Silmarillion' }
     const withMany = adapter.setAll(state, [TheHobbit])
 

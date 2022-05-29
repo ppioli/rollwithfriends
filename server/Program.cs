@@ -36,7 +36,7 @@ builder.Services.AddCors(options =>
 builder.Services
     .AddAutoMapper(typeof(Program));
 
-builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddSingleton<IMapEntityService, MapEntityService>();
 
 
 var app = builder.Build();

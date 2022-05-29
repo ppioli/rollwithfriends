@@ -1,9 +1,9 @@
+import { MapEntityUpdate } from "components/mapEntity/MapEntity";
 import React, { CSSProperties, useCallback } from "react";
 import { usePosition } from "utils/hooks";
 import { CornerData, CornersValues } from "utils/Corners";
 import { useDrag } from "@use-gesture/react";
 import { Point } from "utils/Point";
-import { BattleMapEntityProps } from "components/battleMap/entities/BattleMapEntity";
 
 const resizeHandlerStyle: CSSProperties = {
   position: "absolute",
@@ -14,23 +14,23 @@ const resizeHandlerStyle: CSSProperties = {
 const resizeHandlerSize = 10;
 
 interface MoveResizeHandlerProps {
-  onUpdate: (props: BattleMapEntityProps) => void;
+  onUpdate: (props: MapEntityUpdate) => void;
 }
 
 const withMoveResizeHandler = (
   component: {
-    (props: BattleMapEntityProps): Exclude<React.ReactNode, undefined>;
+    (props: MapEntityUpdate): Exclude<React.ReactNode, undefined>;
     displayName?: string;
   },
   componentName = component.displayName ?? component.name
 ): {
-  (props: BattleMapEntityProps & MoveResizeHandlerProps): JSX.Element;
+  (props: MapEntityUpdate & MoveResizeHandlerProps): JSX.Element;
   displayName: string;
 } => {
   function WithSampleHoc({
     onUpdate: updateToken,
     ...tokenProps
-  }: BattleMapEntityProps & MoveResizeHandlerProps) {
+  }: MapEntityUpdate & MoveResizeHandlerProps) {
     const { x, y, width, height } = tokenProps;
     //Do something special to justify the HoC.
     const [dx, dy, setDeltaPosition] = usePosition({ x: 0, y: 0 });
@@ -48,13 +48,13 @@ const withMoveResizeHandler = (
       [setDeltaPosition, setDeltaSize]
     );
 
-    const onUpdate = (token: BattleMapEntityProps) => {
+    const onUpdate = (token: MapEntityUpdate) => {
       setDeltaPosition({ x: 0, y: 0 });
       setDeltaSize({ x: 0, y: 0 });
       updateToken(token);
     };
 
-    const computedProps: BattleMapEntityProps = {
+    const computedProps: MapEntityUpdate = {
       x: x + dx,
       y: y + dy,
       width: width + dw,
@@ -83,10 +83,10 @@ const withMoveResizeHandler = (
   return wrappedComponent as typeof WithSampleHoc;
 };
 
-interface ResizeMoveBoxProps extends BattleMapEntityProps {
+interface ResizeMoveBoxProps extends MapEntityUpdate {
   onMove: (delta: Point) => void;
   onResize: (deltaSize: Point, deltaPosition: Point) => void;
-  onUpdate: (props: BattleMapEntityProps) => void;
+  onUpdate: (props: MapEntityUpdate) => void;
 }
 
 function ResizeMoveBox({
@@ -147,10 +147,10 @@ function ResizeMoveBox({
   );
 }
 
-interface CornerDragProps extends BattleMapEntityProps {
+interface CornerDragProps extends MapEntityUpdate {
   corner: CornerData;
   onResize: (deltaSize: Point, deltaPosition: Point) => void;
-  onUpdate: (props: BattleMapEntityProps) => void;
+  onUpdate: (props: MapEntityUpdate) => void;
 }
 
 export const CornerDrag = ({

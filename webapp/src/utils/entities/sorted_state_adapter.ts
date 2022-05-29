@@ -35,7 +35,7 @@
 //     newEntities = ensureEntitiesArray(newEntities)
 //
 //     // const models = newEntities.filter(
-//     //   (model) => !(selectIdValue(model, selectId) in state.entities)
+//     //   (model) => !(selectIdValue(model, selectId) in state.mapEntity)
 //     // )
 //     //
 //     // if (models.length !== 0) {
@@ -62,7 +62,7 @@
 //     state: R
 //   ): void {
 //     newEntities = ensureEntitiesArray(newEntities)
-//     state.entities = {}
+//     state.mapEntity = {}
 //     state.ids = []
 //
 //     addManyMutably(newEntities, state)
@@ -74,15 +74,15 @@
 //
 //   // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 //   function takeUpdatedModel(models: T[], update: Update<T>, state: R): boolean {
-//     if (!(update.id in state.entities)) {
+//     if (!(update.id in state.mapEntity)) {
 //       return false
 //     }
 //
-//     const original = state.entities[update.id]
+//     const original = state.mapEntity[update.id]
 //     const updated = Object.assign({}, original, update.changes)
 //     const newKey = selectIdValue(updated, selectId)
 //
-//     delete state.entities[update.id]
+//     delete state.mapEntity[update.id]
 //
 //     models.push(updated)
 //
@@ -137,10 +137,10 @@
 //   function merge(models: readonly T[], state: R): void {
 //     // Insert/overwrite all new/updated
 //     models.forEach((model) => {
-//       state.entities[selectId(model)] = model
+//       state.mapEntity[selectId(model)] = model
 //     })
 //
-//     const allEntities = Object.values(state.entities) as T[]
+//     const allEntities = Object.values(state.mapEntity) as T[]
 //     allEntities.sort(sort)
 //
 //     const newSortedIds = allEntities.map(selectId)

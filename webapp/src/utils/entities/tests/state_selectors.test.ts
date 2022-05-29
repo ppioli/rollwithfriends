@@ -38,7 +38,7 @@ describe('Entity State Selectors', () => {
       expect(ids).toEqual(state.books.ids)
     })
 
-    it('should create a selector for selecting the entities', () => {
+    it('should create a selector for selecting the mapEntity', () => {
       const entities = selectors.selectEntities(state)
 
       expect(entities).toEqual(state.books.entities)
@@ -91,7 +91,7 @@ describe('Entity State Selectors', () => {
       expect(ids).toEqual(state.ids)
     })
 
-    it('should create a selector for selecting the entities', () => {
+    it('should create a selector for selecting the mapEntity', () => {
       const entities = selectors.selectEntities(state)
 
       expect(entities).toEqual(state.entities)

@@ -41,7 +41,7 @@ export function ensureEntitiesArray<T>(
 //
 //   for (const {entity, timestamp} of newEntities) {
 //     const id = selectIdValue(entity, selectId)
-//     if (id in state.entities) {
+//     if (id in state.mapEntity) {
 //       updated.push({ id, changes: entity })
 //     } else {
 //       added.push(entity)

@@ -1,4 +1,3 @@
-
 schema {
   query: RootQuery
   mutation: TokenMutation
@@ -46,12 +45,30 @@ directive @stream(
   if: Boolean
 ) on FIELD
 
-input AddTokenInput {
-  token: TokenInput!
+input AddMapEntityInput {
+  mapEntity: MapEntityInput!
 }
 
-type AddTokenPayload {
-  tokenPayload: TokenPayload
+type AddMapEntityPayload {
+  mapEntity: MapEntity
+}
+
+type Campaign implements Node {
+  id: ID!
+  name: String!
+  description: String!
+  selectedScene: Scene
+  scenes: [Scene!]!
+}
+
+input CampaignFilterInput {
+  and: [CampaignFilterInput!]
+  or: [CampaignFilterInput!]
+  id: IdOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  selectedScene: SceneFilterInput
+  scenes: ListFilterInputTypeOfSceneFilterInput
 }
 
 input ComparableInt32OperationFilterInput {
@@ -67,6 +84,75 @@ input ComparableInt32OperationFilterInput {
   nlt: Int
   lte: Int
   nlte: Int
+}
+
+input DeleteMapEntityInput {
+  id: ID!
+}
+
+type DeleteMapEntityPayload {
+  mapEntity: MapEntity
+}
+
+input IdOperationFilterInput {
+  eq: ID
+  neq: ID
+  in: [ID]
+  nin: [ID]
+}
+
+input ListFilterInputTypeOfMapEntityFilterInput {
+  all: MapEntityFilterInput
+  none: MapEntityFilterInput
+  some: MapEntityFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfSceneFilterInput {
+  all: SceneFilterInput
+  none: SceneFilterInput
+  some: SceneFilterInput
+  any: Boolean
+}
+
+type MapEntity implements Node {
+  id: ID!
+  x: Int!
+  y: Int!
+  width: Int!
+  height: Int!
+}
+
+type MapEntityChangeEvent {
+  type: MapEntityChangeEventType!
+  payload: MapEntityPayload
+}
+
+enum MapEntityChangeEventType {
+  ADDED
+  UPDATED
+  DELETED
+}
+
+input MapEntityFilterInput {
+  and: [MapEntityFilterInput!]
+  or: [MapEntityFilterInput!]
+  id: IdOperationFilterInput
+  x: ComparableInt32OperationFilterInput
+  y: ComparableInt32OperationFilterInput
+  width: ComparableInt32OperationFilterInput
+  height: ComparableInt32OperationFilterInput
+}
+
+input MapEntityInput {
+  x: Int!
+  y: Int!
+  width: Int!
+  height: Int!
+}
+
+type MapEntityPayload {
+  mapEntity: MapEntity!
 }
 
 """
@@ -88,69 +174,54 @@ type RootQuery {
     """The list of node IDs."""
     ids: [ID!]!
   ): [Node]!
-  tokens(where: TokenFilterInput): [Token!]!
+  campaigns(where: CampaignFilterInput): [Campaign!]!
+}
+
+type Scene implements Node {
+  id: ID!
+  name: String!
+  entities: [MapEntity!]!
+}
+
+input SceneFilterInput {
+  and: [SceneFilterInput!]
+  or: [SceneFilterInput!]
+  id: IdOperationFilterInput
+  name: StringOperationFilterInput
+  entities: ListFilterInputTypeOfMapEntityFilterInput
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
 }
 
 type Subscription {
-  tokenChange: TokenChangeEvent!
-}
-
-type Token implements Node {
-  id: ID!
-  x: Int!
-  y: Int!
-  width: Int!
-  height: Int!
-}
-
-type TokenChangeEvent {
-  id: Int!
-  type: TokenChangeEventType!
-  payload: TokenPayload
-}
-
-enum TokenChangeEventType {
-  ADDED
-  UPDATED
-  DELETED
-}
-
-input TokenFilterInput {
-  and: [TokenFilterInput!]
-  or: [TokenFilterInput!]
-  id: ComparableInt32OperationFilterInput
-  x: ComparableInt32OperationFilterInput
-  y: ComparableInt32OperationFilterInput
-  width: ComparableInt32OperationFilterInput
-  height: ComparableInt32OperationFilterInput
-}
-
-input TokenInput {
-  x: Int!
-  y: Int!
-  width: Int!
-  height: Int!
+  tokenChange: MapEntityChangeEvent!
 }
 
 type TokenMutation {
-  updateToken(input: UpdateTokenInput!): UpdateTokenPayload!
-  addToken(input: AddTokenInput!): AddTokenPayload!
+  updateMapEntity(input: UpdateMapEntityInput!): UpdateMapEntityPayload!
+  addMapEntity(input: AddMapEntityInput!): AddMapEntityPayload!
+  deleteMapEntity(input: DeleteMapEntityInput!): DeleteMapEntityPayload!
 }
 
-type TokenPayload {
-  id: Int!
-  x: Int!
-  y: Int!
-  width: Int!
-  height: Int!
-}
-
-input UpdateTokenInput {
+input UpdateMapEntityInput {
   id: ID!
-  token: TokenInput!
+  mapEntity: MapEntityInput!
 }
 
-type UpdateTokenPayload {
-  tokenPayload: TokenPayload
+type UpdateMapEntityPayload {
+  mapEntity: MapEntity
 }
 

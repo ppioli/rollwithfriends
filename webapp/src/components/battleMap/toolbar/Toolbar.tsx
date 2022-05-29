@@ -1,6 +1,5 @@
-import { CSSProperties } from "react";
-import { useAppDispatch } from "store";
-import { addToken } from "features/token/tokenSlice";
+import { useMapEntityAddMutation } from "components/mapEntity/MapEntity.graphql";
+import { CSSProperties, useCallback } from "react";
 
 const style: CSSProperties = {
   position: "absolute",
@@ -9,6 +8,8 @@ const style: CSSProperties = {
   zIndex: 1000000,
 };
 
+import { useMutation } from "react-relay";
+
 const testToken = {
   x: 500,
   y: 500,
@@ -16,8 +17,12 @@ const testToken = {
   height: 30,
 };
 
-export default function Toolbar() {
-  const dispatch = useAppDispatch();
+interface ToolbarProps {
+  sceneId: string;
+}
+
+export default function Toolbar({ sceneId }: ToolbarProps) {
+  const addEntity = useMapEntityAddMutation(sceneId);
 
   return (
     <div style={style}>
@@ -25,7 +30,7 @@ export default function Toolbar() {
         <button
           type={"button"}
           className={"btn-primary"}
-          onClick={() => dispatch(addToken(testToken))}
+          onClick={() => addEntity({ x: 100, y: 100, width: 100, height: 100 })}
         >
           Agregar token
         </button>

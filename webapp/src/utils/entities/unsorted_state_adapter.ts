@@ -116,7 +116,7 @@ export function createUnsortedStateAdapter<E>(
     update: U,
     state: R
   ): boolean {
-    // const original = state.entities[update.id]
+    // const original = state.mapEntity[update.id]
     // const updated =  Object.assign({}, original, update.entity )
     const newKey = selectIdValue(update.entity, selectId)
     const hasNewKey = newKey !== update.id
@@ -125,7 +125,7 @@ export function createUnsortedStateAdapter<E>(
       //TODO implement key mutation
       throw new Error("Unimplemented")
       // keys[update.id] = newKey
-      // delete state.entities[update.id]
+      // delete state.mapEntity[update.id]
       // // move
       // state.committedState[newKey] = {
       //   ...state.committedState[update.id],
@@ -151,7 +151,7 @@ export function createUnsortedStateAdapter<E>(
       //TODO implement key mutation
       throw new Error("Unimplemented")
       // keys[update.id] = newKey
-      // delete state.entities[update.id]
+      // delete state.mapEntity[update.id]
       // // move
       // state.committedState[newKey] = {
       //   ...state.committedState[update.id],
@@ -175,7 +175,7 @@ export function createUnsortedStateAdapter<E>(
       //TODO implement key mutation
       throw new Error("Unimplemented")
       // keys[update.id] = newKey
-      // delete state.entities[update.id]
+      // delete state.mapEntity[update.id]
       // // move
       // state.committedState[newKey] = {
       //   ...state.committedState[update.id],
@@ -205,7 +205,7 @@ export function createUnsortedStateAdapter<E>(
     const updatesPerEntity: { [id: string]: U } = {}
 
     updates.forEach((update) => {
-      // Only apply updates to entities that currently exist
+      // Only apply updates to mapEntity that currently exist
       if (update.id in state.entities) {
         // If there are multiple updates to one entity, merge them together
         if( updatesPerEntity[update.id]) {

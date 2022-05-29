@@ -1,10 +1,12 @@
+import { Campaign } from "features/campaign/Campaign";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
-import BattleMap from "../components/battleMap/BattleMap";
-import { useResizeDetector } from "react-resize-detector";
+import { useRouter } from "next/router";
 
-export default function Home() {
-  const { ref, width, height } = useResizeDetector();
+
+export default function CampaignPage() {
+  // TODO parse this id
+  const { query: { id } } = useRouter();
+
 
 
   return (
@@ -16,7 +18,7 @@ export default function Home() {
       </Head>
 
       <main>
-        Welcome!
+        { id && <Campaign campaignId={String(id)} />}
       </main>
     </div>
   );
