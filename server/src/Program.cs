@@ -1,5 +1,5 @@
-
 using Api.EFModels;
+using Api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
@@ -12,10 +12,9 @@ using Server.Services;
 using Server.Subscriptions;
 
 
-
 var builder = WebApplication
     .CreateBuilder(args);
-    
+
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
@@ -30,9 +29,9 @@ builder.Services
         {
             options
                 .UseLazyLoadingProxies()
-                .UseNpgsql( builder.Configuration.GetConnectionString("DefaultDatabase"));
+                .UseNpgsql(builder.Configuration.GetConnectionString("DefaultDatabase"));
 
-            if ( builder.Environment.IsDevelopment())
+            if (builder.Environment.IsDevelopment())
             {
                 options.EnableSensitiveDataLogging();
             }
@@ -57,7 +56,7 @@ builder.Services.Configure<IdentityOptions>(
         options.ClaimsIdentity.RoleClaimType = OpenIddictConstants.Claims.Role;
         options.ClaimsIdentity.EmailClaimType = OpenIddictConstants.Claims.Email;
 
-        if ( builder.Configuration["Identity:RequireStrongPassword"] != "true")
+        if (builder.Configuration["Identity:RequireStrongPassword"] != "true")
         {
             // Default Password settings.
             options.Password.RequireDigit = false;
@@ -165,14 +164,19 @@ builder.Services.AddCors(
 
 builder.Services
     .AddAutoMapper(typeof(Program));
-    
-builder.Services.AddSingleton<IMapEntityService, MapEntityService>();
 
+builder.Services.AddServices();
 
 var app = builder.Build();
+
+await app.InitializeDatabase();
 // app.UseSerilogRequestLogging();
 app.UseRouting();
-app.MapGet("/", () => "Hello World!");
+
+app.UseWebSockets();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 
 if (app.Environment.IsDevelopment())
@@ -183,8 +187,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.MapGet("/", () => "Hello World!");
 
-app.UseWebSockets();
 
 app.MapGraphQL();
 

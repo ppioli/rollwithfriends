@@ -1,5 +1,6 @@
 import {
   Environment,
+  FetchFunction,
   Network,
   Observable,
   RecordSource,
@@ -9,9 +10,13 @@ import {
 
 import { createClient } from "graphql-ws";
 
+export const ServerAddress = "192.168.137.252:5289";
+export const ServerUrl = `http://${ServerAddress}`;
+export const ServerWsUrl = `ws://${ServerAddress}`;
+
 function createSubscription(): SubscribeFunction {
   const wsClient = createClient({
-    url: "ws://localhost:5289/graphql",
+    url: `${ServerWsUrl}/graphql`,
   });
 
   return (operation, variables) => {
@@ -29,33 +34,37 @@ function createSubscription(): SubscribeFunction {
 }
 
 // your-app-name/src/fetchGraphQL.js
-async function fetchGraphQL(text: any, variables: any) {
-  // Fetch data from GitHub's GraphQL API:
-  const response = await fetch("http://localhost:5289/graphql", {
-    method: "POST",
-    headers: {
+
+const createFetchGraphQL =
+  (accessToken: string | null): FetchFunction =>
+  async (params, variables) => {
+    // Fetch data from GitHub's GraphQL API:
+    const headers: Record<string, string> = {
       "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: text,
-      variables,
-    }),
-  });
+    };
+    if (accessToken !== null) {
+      headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    const response = await fetch(`${ServerUrl}/graphql`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        query: params.text,
+        variables,
+      }),
+    });
 
-  // Get the response as JSON
-  return await response.json();
-}
-
-// Relay passes a "params" object with the query name and text. So we define a helper function
-// to call our fetchGraphQL utility with params.text.
-async function fetchRelay(params: any, variables: any) {
-  return fetchGraphQL(params.text, variables);
-}
+    // Get the response as JSON
+    return await response.json();
+  };
 
 // Export a singleton instance of Relay Environment configured with our network function:
-export function createRelayEnvironment() {
+export function createRelayEnvironment(accessToken: string | null) {
   return new Environment({
-    network: Network.create(fetchRelay, createSubscription()),
+    network: Network.create(
+      createFetchGraphQL(accessToken),
+      createSubscription()
+    ),
     store: new Store(new RecordSource()),
     isServer: false,
   });

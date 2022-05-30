@@ -4,19 +4,15 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
-import { RelayEnvironmentProvider } from "react-relay";
-import { createRelayEnvironment } from "lib/getRelayClientEnvironment";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <RelayEnvironmentProvider environment={createRelayEnvironment()}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </RelayEnvironmentProvider>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );
 

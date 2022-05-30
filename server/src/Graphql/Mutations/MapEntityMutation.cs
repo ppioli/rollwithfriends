@@ -24,6 +24,8 @@ public class MapEntityMutation
     {
         var updated = await _mapEntityService.Update(id, mapEntity);
 
+        await Task.Delay(2000);
+
         await _sender.SendAsync(nameof(MapEntityChangeEvent), MapEntityChangeEvent.Updated(updated));
         
         return updated;
