@@ -14,7 +14,7 @@ public static class WebHostExtensions
         if (env.IsDevelopment() || env.IsStaging())
         {
             await context.Database.MigrateAsync();
-            await DatabaseSeeder.Seed(services);
+            // await DatabaseSeeder.Seed(services);
         }
     }
 }

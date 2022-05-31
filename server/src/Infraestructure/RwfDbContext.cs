@@ -1,7 +1,8 @@
-using Api.EFModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Server.EFModels;
+using Server.Models;
 
 namespace server.Infraestructure;
 
@@ -10,6 +11,11 @@ public class RwfDbContext : IdentityDbContext<
     IdentityUserClaim<string>, ApplicationUserRole, IdentityUserLogin<string>,
     IdentityRoleClaim<string>, IdentityUserToken<string>>
 {
+    public DbSet<Campaign> Campaigns { get; set; } = null!;
+    public DbSet<Scene> Scenes { get; set; } = null!;
+    public DbSet<MapEntity> MapEntities { get; set; } = null!;
+    public DbSet<CampaignEnrollment> CampaignEnrollments { get; set; } = null!;
+
     public RwfDbContext(DbContextOptions<RwfDbContext> options) : base(options)
     {
     }
@@ -43,8 +49,24 @@ public class RwfDbContext : IdentityDbContext<
                     .WithOne(e => e.User)
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
+
+                b.HasMany(u => u.CampaignEnrollments)
+                    .WithOne(u => u.User);
             });
 
+        modelBuilder.Entity<Campaign>(
+            b =>
+            {
+                b.HasMany(c => c.Scenes)
+                    .WithOne(s => s.Campaign)
+                    .HasForeignKey( c => c.CampaignId);
+                
+                b.HasOne(c => c.SelectedScene)
+                    .WithOne(s => s.MainScene)
+                    .HasForeignKey<Campaign>( c => c.SelectedSceneId);
+            });
+        
+        
         modelBuilder.Entity<ApplicationRole>(
             b =>
             {

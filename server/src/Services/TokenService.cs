@@ -1,5 +1,6 @@
 using AutoMapper;
-using Server.Models;
+using Server.EFModels;
+using Server.Graphql.Dtos;
 
 namespace Server.Services;
 

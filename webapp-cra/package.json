@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-oauth/google": "^0.2.5",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
@@ -16,6 +17,7 @@
     "postcss": "^8.4.14",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "react-helmet": "^6.1.0",
     "react-relay": "^13.2.0",
     "react-resize-detector": "^7.1.1",
     "react-router-dom": "^6.3.0",
@@ -26,11 +28,12 @@
     "web-vitals": "^2.1.0"
   },
   "devDependencies": {
+    "@types/react-helmet": "^6.1.5",
     "@types/react-relay": "^13.0.2",
     "@types/relay-runtime": "^13.0.3",
-    "eslint-config-prettier": "^8.5.0",
     "babel-plugin-macros": "^3.1.0",
     "babel-plugin-relay": "^13.2.0",
+    "eslint-config-prettier": "^8.5.0",
     "graphql": "^16.5.0",
     "husky": "^8.0.1",
     "lint-staged": "^12.4.2",

@@ -1,23 +1,26 @@
-import { useState } from "react";
+import {
+  CredentialResponse,
+  GoogleLogin,
+  GoogleOAuthProvider,
+} from "@react-oauth/google";
+import { GoogleClientId } from "lib/getRelayClientEnvironment";
 
-export function Login({ onLogin }: any) {
-  const [username, setUserName] = useState("admin");
-  const [password, setPassword] = useState("1234");
+interface LoginProps {
+  onLogin: (response: CredentialResponse) => void;
+}
 
-  const login = async (e: any) => {
-    e.preventDefault();
-    onLogin({ username, password });
-  };
-
+export function Login({ onLogin }: LoginProps) {
   return (
     <div>
-      <form onSubmit={login}>
-        Login: Username:{" "}
-        <input value={username} onChange={(e) => setUserName(e.target.value)} />
-        Password:{" "}
-        <input value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button type={"submit"}>Log in</button>
-      </form>
+      <GoogleOAuthProvider clientId={GoogleClientId}>
+        <GoogleLogin
+          onSuccess={onLogin}
+          onError={() => {
+            console.log("Login Failed");
+          }}
+          useOneTap
+        />
+      </GoogleOAuthProvider>
     </div>
   );
 }

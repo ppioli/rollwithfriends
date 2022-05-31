@@ -1,5 +1,5 @@
 import { Point } from "utils/Point";
-import { useCallback, useState, Dispatch, SetStateAction } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export function usePosition(
   initialPosition?: Point
@@ -15,22 +15,27 @@ export function usePosition(
   return [x, y, setPosition];
 }
 
-export function useLocalStorage(
-  key: string
-): [string | null, (val: string | null) => void] {
-  const [value, innerSet] = useState<string | null>(localStorage.getItem(key));
+const recoverStoredValue = (key: string) => {
+  const stored = localStorage.getItem(key);
+  return stored !== null ? JSON.parse(stored) : null;
+};
 
-  const setValue = useCallback(
-    (value: string | null) => {
-      if (value == null) {
-        localStorage.removeItem("key");
+export function useLocalStorage<T = string>(
+  key: string
+): [T | null, (val: T | null) => void] {
+  const [value, setValue] = useState<T | null>(recoverStoredValue(key));
+
+  const setValueWrapper = useCallback(
+    (value: T | null) => {
+      setValue(value);
+      if (value === null) {
+        localStorage.removeItem(key);
       } else {
-        localStorage.setItem(key, value);
+        localStorage.setItem(key, JSON.stringify(value));
       }
-      innerSet(value);
     },
     [key]
   );
 
-  return [value, setValue];
+  return [value, setValueWrapper];
 }

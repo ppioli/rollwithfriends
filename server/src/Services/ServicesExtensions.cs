@@ -10,7 +10,6 @@ namespace Api.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<IUsuarioService, UsuarioService>();
             services.AddTransient<IMapEntityService, MapEntityService>();
             
             return services;

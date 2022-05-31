@@ -9,8 +9,11 @@ import {
 } from "relay-runtime";
 
 import { createClient } from "graphql-ws";
+import { MutableRefObject } from "react";
 
-export const ServerAddress = "192.168.137.252:5289";
+export const GoogleClientId =
+  "1070519198348-icmnc5qde274jv2nv7kav7non3va1oog.apps.googleusercontent.com";
+export const ServerAddress = "localhost:5289";
 export const ServerUrl = `http://${ServerAddress}`;
 export const ServerWsUrl = `ws://${ServerAddress}`;
 
@@ -36,14 +39,14 @@ function createSubscription(): SubscribeFunction {
 // your-app-name/src/fetchGraphQL.js
 
 const createFetchGraphQL =
-  (accessToken: string | null): FetchFunction =>
+  (tokenRef: MutableRefObject<string | null>): FetchFunction =>
   async (params, variables) => {
     // Fetch data from GitHub's GraphQL API:
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
-    if (accessToken !== null) {
-      headers["Authorization"] = `Bearer ${accessToken}`;
+    if (tokenRef.current !== null) {
+      headers["Authorization"] = `Bearer ${tokenRef.current}`;
     }
     const response = await fetch(`${ServerUrl}/graphql`, {
       method: "POST",
@@ -59,12 +62,11 @@ const createFetchGraphQL =
   };
 
 // Export a singleton instance of Relay Environment configured with our network function:
-export function createRelayEnvironment(accessToken: string | null) {
+export function createRelayEnvironment(
+  tokenRef: MutableRefObject<string | null>
+) {
   return new Environment({
-    network: Network.create(
-      createFetchGraphQL(accessToken),
-      createSubscription()
-    ),
+    network: Network.create(createFetchGraphQL(tokenRef), createSubscription()),
     store: new Store(new RecordSource()),
     isServer: false,
   });

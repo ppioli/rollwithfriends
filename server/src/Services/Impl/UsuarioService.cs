@@ -1,3 +1,4 @@
+using Server.EFModels;
 using server.Infraestructure;
 using Server.Models;
 
@@ -9,7 +10,6 @@ namespace Api.Services.Impl
     
     using System.Threading.Tasks;
     using AutoMapper;
-    using EFModels;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Configuration;
 

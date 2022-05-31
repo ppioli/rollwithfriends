@@ -1,3 +1,5 @@
+using Server.EFModels;
+using Server.Graphql.Dtos;
 using Server.Models;
 
 namespace Server.Subscriptions;

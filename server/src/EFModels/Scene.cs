@@ -1,25 +1,16 @@
-namespace Server.Models;
+namespace Server.EFModels;
 
-[Node]
 public class Scene
 {
-    [ID]
     public int Id { get; set; }
     public string Name { get; set; }
     
+    public virtual Campaign Campaign { get; set; } = null!;
+    public int CampaignId { get; set; }
     
-    public virtual ICollection<MapEntity> Entities { get; set; } = default!;
-
-    private Scene()
-    {
-        Name = "";
-    }
+    public virtual ICollection<MapEntity> Entities { get; set; } = null!;
     
-    public static Scene Get(int id)
-    {
-        throw new NotImplementedException();
-
-    }
+    public virtual Campaign MainScene { get; set; }
 
     public static Scene Create(int id, string name, ICollection<MapEntity> tokens)
     {

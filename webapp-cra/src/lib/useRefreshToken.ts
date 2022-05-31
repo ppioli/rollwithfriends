@@ -1,9 +1,9 @@
 import { ServerUrl } from "lib/getRelayClientEnvironment";
 import { useLocalStorage } from "utils/hooks";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const EXPIRES_IN = "EXPIRES_IN";
-const ACCESS_TOKEN = "ACCESS_TOKEN";
+export const ACCESS_TOKEN = "ACCESS_TOKEN";
 const REFRESH_TOKEN = "REFRESH_TOKEN";
 
 export interface LoginParams {
@@ -17,45 +17,95 @@ export interface LoginResponse {
   refresh_token: string;
 }
 
-export function useRefreshToken() {
-  const [token, setToken] = useLocalStorage(ACCESS_TOKEN);
-  const [refreshToken, setRefreshToken] = useLocalStorage(REFRESH_TOKEN);
-  const [expiresIn, setExpiresIn] = useLocalStorage(EXPIRES_IN);
+interface UseSessionOpts {
+  onRefresh: (refreshToken: string) => Promise<LoginResponse>;
+}
 
-  const login = useCallback(
-    async (params: LoginParams) => {
-      const response = await fetchAccessToken(params);
-      // TODO handle errors
-      setToken(response.access_token);
+function useSession({ onRefresh }: UseSessionOpts) {
+  const tokenRef = useRef<string | null>(null);
+  const [refreshToken, setRefreshToken] = useLocalStorage(REFRESH_TOKEN);
+  const [loginIn, setLoginIn] = useState(refreshToken !== null);
+  const [expiresIn, setExpiresIn] = useState<number | null>(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const setSession = useCallback(
+    (response: LoginResponse) => {
+      tokenRef.current = response.access_token;
+      console.log(tokenRef.current);
       setRefreshToken(response.refresh_token);
-      setExpiresIn(String(response.expires_in));
+      setExpiresIn(response.expires_in);
+      setLoggedIn(true);
     },
-    [setExpiresIn, setRefreshToken, setToken]
+    [setRefreshToken]
   );
 
-  const logout = useCallback(() => {
-    setToken(null);
+  const clearSession = useCallback(() => {
+    tokenRef.current = null;
     setRefreshToken(null);
-    setExpiresIn(String(null));
-  }, [setExpiresIn, setRefreshToken, setToken]);
+    setExpiresIn(null);
+    setLoggedIn(false);
+  }, [setRefreshToken]);
+
+  const refresh = useCallback(
+    (refreshToken: string) => {
+      return onRefresh(refreshToken)
+        .then((r) => {
+          setSession(r);
+        })
+        .catch((e) => {
+          console.error("An error occurred while updating the access token", e);
+          clearSession();
+        });
+    },
+    [clearSession, onRefresh, setSession]
+  );
 
   useEffect(() => {
-    if (expiresIn == null || refreshToken == null) {
+    if (refreshToken == null) {
       return;
     }
     // const nextRefresh = expiresIn && expiresIn - new Date().getTime() > 0
+    if (expiresIn == null) {
+      console.log("Initial token fetch");
+      refresh(refreshToken).then(() => setLoginIn(false));
+      return;
+    }
+
     const pid = setTimeout(async () => {
-      const response = await refreshAccessToken(refreshToken);
-      setToken(response.access_token);
-      setRefreshToken(response.refresh_token);
-      setExpiresIn(String(response.expires_in));
-    }, parseInt(expiresIn));
+      console.log(`Next refresh in ${expiresIn} seconds`);
+      await refresh(refreshToken);
+    }, expiresIn * 1000);
 
     return () => clearTimeout(pid);
-  }, [refreshToken, expiresIn, setToken, setRefreshToken, setExpiresIn]);
+  }, [expiresIn, onRefresh, refresh, refreshToken]);
 
   return {
-    token,
+    loggedIn,
+    loginIn,
+    tokenRef,
+    setSession,
+    clearSession,
+  };
+}
+
+export function useRefreshToken() {
+  const { setSession, clearSession, ...rest } = useSession({
+    onRefresh: refreshAccessToken,
+  });
+
+  const login = useCallback(
+    (params: LoginParams) => {
+      fetchAccessToken(params).then(setSession);
+    },
+    [setSession]
+  );
+
+  const logout = useCallback(() => {
+    clearSession();
+  }, [clearSession]);
+
+  return {
+    ...rest,
     login,
     logout,
   };
@@ -68,23 +118,19 @@ async function refreshAccessToken(
     grant_type: "refresh_token",
     refresh_token: refreshToken,
   };
-  const response = await fetch(`${ServerUrl}/connect/token`, {
+  return await fetch(`${ServerUrl}/connect/token`, {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
     },
     body: new URLSearchParams(params).toString(),
-  })
-    .then((res) => res.json())
-    .then((res) => {
-      if (res.status >= 200 && res.status < 300) {
-        return res.json();
-      } else {
-        throw res;
-      }
-    });
-
-  return response;
+  }).then((res) => {
+    if (res.status >= 200 && res.status < 300) {
+      return res.json();
+    } else {
+      throw res.text();
+    }
+  });
 }
 
 async function fetchAccessToken({
@@ -109,7 +155,7 @@ async function fetchAccessToken({
     if (res.status >= 200 && res.status < 300) {
       return res.json();
     } else {
-      throw res;
+      throw res.text();
     }
   });
 

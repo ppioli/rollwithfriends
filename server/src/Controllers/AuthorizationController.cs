@@ -1,11 +1,11 @@
 using System.Security.Claims;
-using Api.EFModels;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
+using Server.EFModels;
 
 namespace server.Controllers;
 /*
@@ -129,6 +129,9 @@ public class AuthorizationController : Controller
             }
 
             return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+        } else if (request.IsAuthorizationCodeFlow())
+        {
+            
         }
 
         throw new NotImplementedException("The specified grant type is not implemented.");

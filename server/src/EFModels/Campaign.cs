@@ -1,22 +1,21 @@
-namespace Server.Models;
+namespace Server.EFModels;
 
-[Node]
 public class Campaign
 {
-    [ID]
+    
     public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public virtual Scene? SelectedScene { get; set; }
+
+    public virtual Scene SelectedScene { get; set; } = null!;
+    public int? SelectedSceneId { get; set; } = null!;
     
     public virtual ICollection<Scene> Scenes { get; set; } = default!;
+    
+    public virtual ICollection<CampaignEnrollment> CampaignEnrollments { get; set; } = null!;
 
-    public static Campaign Get(int id)
-    {
-        throw new NotImplementedException();
-    }
 
-    private Campaign()
+    public Campaign()
     {
         Name = "";
         Description = "";
