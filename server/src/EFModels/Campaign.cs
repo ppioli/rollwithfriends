@@ -2,19 +2,19 @@ namespace Server.EFModels;
 
 public class Campaign
 {
-    
     public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-
-    public virtual Scene SelectedScene { get; set; } = null!;
-    public int? SelectedSceneId { get; set; } = null!;
     
-    public virtual ICollection<Scene> Scenes { get; set; } = default!;
+    public string Owner { get; set; }
+
+    public virtual ICollection<Scene> Scenes { get; set; }
     
-    public virtual ICollection<CampaignEnrollment> CampaignEnrollments { get; set; } = null!;
-
-
+    public virtual Scene SelectedScene { get; set; }
+    public int? SelectedSceneId { get; set; }
+    
+    public virtual ICollection<CampaignEnrollment> CampaignEnrollments { get; set; }
+    
     public Campaign()
     {
         Name = "";
@@ -29,7 +29,7 @@ public class Campaign
             Name = name,
             Description = description,
             Scenes = scenes,
-            SelectedScene = scenes.FirstOrDefault(), 
+            // SelectedScene = scenes.FirstOrDefault(), 
         };
     }
 

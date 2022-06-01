@@ -1,23 +1,21 @@
-using System.Text;
-using Api.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using Server.EFModels;
 using server.Infraestructure;
 using Server.Mutations;
 using Server.Query;
+using Server.Services;
 using Server.Subscriptions;
 
 
 var builder = WebApplication
     .CreateBuilder(args);
 
+var configuration = builder.Configuration;
+var environment = builder.Environment;
+
 var logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
+    .ReadFrom.Configuration(configuration)
     .CreateLogger();
 
 builder.Logging.ClearProviders();
@@ -30,9 +28,9 @@ builder.Services
         {
             options
                 .UseLazyLoadingProxies()
-                .UseNpgsql(builder.Configuration.GetConnectionString("DefaultDatabase"));
+                .UseNpgsql(configuration.GetConnectionString("DefaultDatabase"));
 
-            if (builder.Environment.IsDevelopment())
+            if (environment.IsDevelopment())
             {
                 options.EnableSensitiveDataLogging();
             }
@@ -41,51 +39,12 @@ builder.Services
         });
 
 
-builder.Services
-    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options => { options.LoginPath = "/account/login"; })
-    .AddGoogle(
-        googleOptions =>
-        {
-            googleOptions.ClientId = builder.Configuration["Google:ClientId"];
-            googleOptions.ClientSecret = builder.Configuration["Google:ClientSecret"];
-        });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearerConfiguration(
+        configuration["Jwt:Issuer"],
+        configuration["Jwt:Audience"]
+    );
 
-builder.Services.AddOpenIddict()
-
-    // Register the OpenIddict core components.
-    .AddCore(options =>
-    {
-        // Configure OpenIddict to use the EF Core stores/models.
-        options.UseEntityFrameworkCore()
-            .UseDbContext<RwfDbContext>();
-    })
-
-    // Register the OpenIddict server components.
-    .AddServer(options =>
-    {
-        options
-            .AllowClientCredentialsFlow();
-        
-        options
-            .SetAuthorizationEndpointUris("/connect/authorize")
-            .SetTokenEndpointUris("/connect/token");
-
-
-        // Encryption and signing of tokens
-        options
-            .AddEphemeralEncryptionKey()
-            .AddEphemeralSigningKey();
-
-        // Register scopes (permissions)
-        options.RegisterScopes("api");
-
-        // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
-        options
-            .UseAspNetCore()
-            .EnableTokenEndpointPassthrough()
-            .EnableAuthorizationEndpointPassthrough();          
-    });
 
 builder.Services
     .AddGraphQLServer()
@@ -134,12 +93,11 @@ var app = builder.Build();
 await app.InitializeDatabase();
 // app.UseSerilogRequestLogging();
 app.UseWebSockets();
+app.UseCors();
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors();
 
 app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 app.MapGraphQL();

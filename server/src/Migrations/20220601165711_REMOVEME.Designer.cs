@@ -12,8 +12,8 @@ using server.Infraestructure;
 namespace server.Migrations
 {
     [DbContext(typeof(RwfDbContext))]
-    [Migration("20220530222213_Initial")]
-    partial class Initial
+    [Migration("20220601165711_REMOVEME")]
+    partial class REMOVEME
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -370,7 +370,11 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("SelectedSceneId")
+                    b.Property<string>("Owner")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SelectedSceneId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -603,8 +607,10 @@ namespace server.Migrations
             modelBuilder.Entity("Server.EFModels.Campaign", b =>
                 {
                     b.HasOne("Server.EFModels.Scene", "SelectedScene")
-                        .WithOne("MainScene")
-                        .HasForeignKey("Server.EFModels.Campaign", "SelectedSceneId");
+                        .WithOne()
+                        .HasForeignKey("Server.EFModels.Campaign", "SelectedSceneId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("SelectedScene");
                 });
@@ -677,9 +683,6 @@ namespace server.Migrations
             modelBuilder.Entity("Server.EFModels.Scene", b =>
                 {
                     b.Navigation("Entities");
-
-                    b.Navigation("MainScene")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Server.EFModels.User", b =>

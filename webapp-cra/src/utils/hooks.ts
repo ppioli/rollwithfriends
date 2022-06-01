@@ -16,8 +16,17 @@ export function usePosition(
 }
 
 const recoverStoredValue = (key: string) => {
-  const stored = localStorage.getItem(key);
-  return stored !== null ? JSON.parse(stored) : null;
+  try {
+    const stored = localStorage.getItem(key);
+    return stored !== null ? JSON.parse(stored) : null;
+  } catch (e) {
+    console.warn(
+      `An error occurred while accessing the stored value at ${key}`
+    );
+    localStorage.removeItem(key);
+  }
+
+  return null;
 };
 
 export function useLocalStorage<T = string>(

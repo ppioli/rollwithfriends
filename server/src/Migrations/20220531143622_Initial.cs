@@ -37,7 +37,7 @@ namespace server.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    SelectedSceneId = table.Column<int>(type: "integer", nullable: true)
+                    SelectedSceneId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -126,7 +126,8 @@ namespace server.Migrations
                 table: "Campaigns",
                 column: "SelectedSceneId",
                 principalTable: "Scenes",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

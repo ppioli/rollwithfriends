@@ -60,10 +60,11 @@ public class RwfDbContext : IdentityDbContext<
                 b.HasMany(c => c.Scenes)
                     .WithOne(s => s.Campaign)
                     .HasForeignKey( c => c.CampaignId);
-                
+
                 b.HasOne(c => c.SelectedScene)
-                    .WithOne(s => s.MainScene)
-                    .HasForeignKey<Campaign>( c => c.SelectedSceneId);
+                    .WithOne()
+                    .HasForeignKey<Campaign>(c => c.SelectedSceneId)
+                    .IsRequired(false);
             });
         
         

@@ -18,7 +18,7 @@ public class SceneDto: SceneBase
 {
     [ID]
     public int Id { get; set; }
-    public ICollection<MapEntityDto> Entities { get; set; } = null!;
+    // public ICollection<MapEntityDto> Entities { get; set; } = null!;
 
     public static SceneDto Get(int id)
     {
@@ -31,7 +31,7 @@ public class SceneDto: SceneBase
         return new SceneDto()
         {
             Id = id,
-            Entities = new List<MapEntityDto>(tokens),
+            // Entities = new List<MapEntityDto>(tokens),
             Name = name,
         };
     }

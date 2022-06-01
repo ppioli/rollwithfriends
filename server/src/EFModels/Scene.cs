@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Server.EFModels;
 
 public class Scene
 {
+    [Key]
     public int Id { get; set; }
     public string Name { get; set; }
     
@@ -9,8 +12,6 @@ public class Scene
     public int CampaignId { get; set; }
     
     public virtual ICollection<MapEntity> Entities { get; set; } = null!;
-    
-    public virtual Campaign MainScene { get; set; }
 
     public static Scene Create(int id, string name, ICollection<MapEntity> tokens)
     {
