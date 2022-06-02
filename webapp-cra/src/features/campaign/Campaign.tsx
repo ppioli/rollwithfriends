@@ -1,14 +1,12 @@
 import { SelectedScene } from "features/scene/SelectedScene";
 import { useLazyLoadQuery } from "react-relay";
-import { Suspense } from "react";
 import { CampaignQuery } from "features/campaign/__generated__/CampaignQuery.graphql";
-import { useParams } from "react-router-dom";
-import { useMapEntitySubscription } from "components/mapEntity/MapEntity.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
 export const Campaign = () => {
-  const { campaignId } = useParams();
+  // const { campaignId } = useParams();
+  const campaignId = "1";
   const data = useLazyLoadQuery<CampaignQuery>(
     graphql`
       query CampaignQuery($id: ID!) {

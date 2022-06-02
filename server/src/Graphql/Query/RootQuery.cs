@@ -34,7 +34,7 @@ public class RootQuery
     
     [Authorize]
     [UseProjection()]
-    public IQueryable<CampaignDto> Campagins(
+    public IQueryable<CampaignDto> Campaigns(
         ClaimsPrincipal user,
         RwfDbContext context
         )
@@ -44,5 +44,4 @@ public class RootQuery
             .ProjectTo<CampaignDto>(_configuration);
     }
     
-        
 }

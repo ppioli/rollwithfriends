@@ -64,10 +64,9 @@ const createFetchGraphQL =
 // Export a singleton instance of Relay Environment configured with our network function:
 export function createRelayEnvironment(
   tokenRef: MutableRefObject<string | null>
-) {
+): Environment {
   return new Environment({
     network: Network.create(createFetchGraphQL(tokenRef), createSubscription()),
     store: new Store(new RecordSource()),
-    isServer: false,
   });
 }

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { NavLink } from "react-router-dom";
+import { Link } from "components/Link";
 
 export interface NavbarItemProps {
   label: string;
@@ -8,32 +8,33 @@ export interface NavbarItemProps {
 
 export function NavbarItem({ label, href }: NavbarItemProps) {
   return (
-    <NavLink
+    // eslint-disable-next-line react/jsx-no-undef
+    <Link
       to={href}
-      className={({ isActive }) =>
+      className={(active: boolean) =>
         classNames("px-3 py-2 rounded-md text-sm font-medium", {
-          "text-gray-300 hover:bg-gray-700 hover:text-white": !isActive,
-          "bg-gray-900 text-white": isActive,
+          "text-gray-300 hover:bg-gray-700 hover:text-white": !active,
+          "bg-gray-900 text-white": active,
         })
       }
     >
       {label}
-    </NavLink>
+    </Link>
   );
 }
 
 export function NavbarItemMini({ href, label }: NavbarItemProps) {
   return (
-    <NavLink
+    <Link
       to={href}
-      className={({ isActive }) =>
+      className={(active: boolean) =>
         classNames("block px-3 py-2 rounded-md text-base font-medium", {
-          "hover:text-white hover:bg-gray-700 text-gray-300": !isActive,
-          "bg-gray-900 text-white ": isActive,
+          "hover:text-white hover:bg-gray-700 text-gray-300": !active,
+          "bg-gray-900 text-white ": active,
         })
       }
     >
       {label}
-    </NavLink>
+    </Link>
   );
 }

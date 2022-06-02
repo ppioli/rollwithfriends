@@ -5,15 +5,13 @@ import {
   NavbarItemMini,
   NavbarItemProps,
 } from "components/navbar/NavbarItem";
-import { useLocation } from "react-router-dom";
-import { useState } from "react";
 import classNames from "classnames";
 import { useToggle } from "utils/hooks/useToggle";
 import { Login } from "components/Login";
 import { useSessionContext } from "components/LoginContext";
 
-const navbarMenuItems: Omit<NavbarItemProps, "selected">[] = [
-  { label: "Home", href: "/home" },
+const navbarMenuItems: NavbarItemProps[] = [
+  { label: "Home", href: "/" },
   { label: "Dashboard", href: "/dashboard" },
   { label: "Campaigns", href: "/campaign" },
 ];

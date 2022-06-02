@@ -3,20 +3,23 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
-import { Helmet } from "react-helmet";
-import { SessionContextProvider } from "components/LoginContext";
+
+import { RouterProvider, createBrowserRouter } from "yarr";
+import { routes } from "routes";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+const router = createBrowserRouter({
+  routes,
+});
+
 root.render(
   <React.StrictMode>
-    <SessionContextProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </SessionContextProvider>
+    <RouterProvider router={router}>
+      <App />
+    </RouterProvider>
   </React.StrictMode>
 );
 
