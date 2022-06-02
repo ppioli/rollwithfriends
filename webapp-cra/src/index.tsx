@@ -5,15 +5,18 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { Helmet } from "react-helmet";
+import { SessionContextProvider } from "components/LoginContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <SessionContextProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </SessionContextProvider>
   </React.StrictMode>
 );
 

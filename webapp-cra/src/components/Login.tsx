@@ -4,12 +4,21 @@ import {
   GoogleOAuthProvider,
 } from "@react-oauth/google";
 import { GoogleClientId } from "lib/getRelayClientEnvironment";
+import { useSessionContext } from "components/LoginContext";
+import { useCallback } from "react";
 
-interface LoginProps {
-  onLogin: (response: CredentialResponse) => void;
-}
+export function Login() {
+  const { login } = useSessionContext();
 
-export function Login({ onLogin }: LoginProps) {
+  const onLogin = useCallback(
+    (response: CredentialResponse) => {
+      if (response.credential) {
+        login(response.credential);
+      }
+    },
+    [login]
+  );
+
   return (
     <div>
       <GoogleOAuthProvider clientId={GoogleClientId}>
