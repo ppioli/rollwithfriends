@@ -50,37 +50,53 @@ enum ApplyPolicy {
   AFTER_RESOLVER
 }
 
-type Campaign implements Node {
+type Campaign {
   id: ID!
-  owner: String!
-  selectedScene: Scene!
-  scenes: [Scene!]!
   name: String!
   description: String!
+  scenes: [Scene!]!
+  selectedScene: Scene
+  selectedSceneId: Int
+  participants: [CampaignEnrollment!]!
 }
 
 input CampaignAddInput {
-  input: CampaignInput!
+  name: String!
+  description: String!
 }
 
 type CampaignAddPayload {
   campaign: Campaign
 }
 
+type CampaignEnrollment implements Node {
+  id: ID!
+  userId: String!
+  rol: Rol!
+  campaign: Campaign!
+  campaignId: Int!
+}
+
+input CampaignEnrollmentFilterInput {
+  and: [CampaignEnrollmentFilterInput!]
+  or: [CampaignEnrollmentFilterInput!]
+  id: IdOperationFilterInput
+  userId: StringOperationFilterInput
+  rol: RolOperationFilterInput
+  campaign: CampaignFilterInput
+  campaignId: ComparableInt32OperationFilterInput
+}
+
 input CampaignFilterInput {
   and: [CampaignFilterInput!]
   or: [CampaignFilterInput!]
   id: IdOperationFilterInput
-  owner: StringOperationFilterInput
-  selectedScene: SceneFilterInput
-  scenes: ListFilterInputTypeOfSceneDtoFilterInput
   name: StringOperationFilterInput
   description: StringOperationFilterInput
-}
-
-input CampaignInput {
-  name: String!
-  description: String!
+  scenes: ListFilterInputTypeOfSceneFilterInput
+  selectedScene: SceneFilterInput
+  selectedSceneId: ComparableNullableOfInt32OperationFilterInput
+  participants: ListFilterInputTypeOfCampaignEnrollmentFilterInput
 }
 
 input ComparableInt32OperationFilterInput {
@@ -88,6 +104,21 @@ input ComparableInt32OperationFilterInput {
   neq: Int
   in: [Int!]
   nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input ComparableNullableOfInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
   gt: Int
   ngt: Int
   gte: Int
@@ -113,14 +144,21 @@ input IdOperationFilterInput {
   nin: [ID]
 }
 
-input ListFilterInputTypeOfMapEntityDtoFilterInput {
+input ListFilterInputTypeOfCampaignEnrollmentFilterInput {
+  all: CampaignEnrollmentFilterInput
+  none: CampaignEnrollmentFilterInput
+  some: CampaignEnrollmentFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfMapEntityFilterInput {
   all: MapEntityFilterInput
   none: MapEntityFilterInput
   some: MapEntityFilterInput
   any: Boolean
 }
 
-input ListFilterInputTypeOfSceneDtoFilterInput {
+input ListFilterInputTypeOfSceneFilterInput {
   all: SceneFilterInput
   none: SceneFilterInput
   some: SceneFilterInput
@@ -133,10 +171,15 @@ type MapEntity implements Node {
   y: Int!
   width: Int!
   height: Int!
+  scene: Scene!
+  sceneId: Int!
 }
 
 input MapEntityAddInput {
-  mapEntity: MapEntityInput!
+  x: Int!
+  y: Int!
+  width: Int!
+  height: Int!
 }
 
 type MapEntityAddPayload {
@@ -145,7 +188,6 @@ type MapEntityAddPayload {
 
 type MapEntityChangeEvent {
   type: MapEntityChangeEventType!
-  payload: MapEntityPayload
 }
 
 enum MapEntityChangeEventType {
@@ -170,22 +212,16 @@ input MapEntityFilterInput {
   y: ComparableInt32OperationFilterInput
   width: ComparableInt32OperationFilterInput
   height: ComparableInt32OperationFilterInput
-}
-
-input MapEntityInput {
-  x: Int!
-  y: Int!
-  width: Int!
-  height: Int!
-}
-
-type MapEntityPayload {
-  mapEntity: MapEntity!
+  scene: SceneFilterInput
+  sceneId: ComparableInt32OperationFilterInput
 }
 
 input MapEntityUpdateInput {
   id: ID!
-  mapEntity: MapEntityInput!
+  x: Int!
+  y: Int!
+  width: Int!
+  height: Int!
 }
 
 type MapEntityUpdatePayload {
@@ -207,6 +243,18 @@ interface Node {
   id: ID!
 }
 
+enum Rol {
+  DUNGEON_MASTER
+  PLAYER
+}
+
+input RolOperationFilterInput {
+  eq: Rol
+  neq: Rol
+  in: [Rol!]
+  nin: [Rol!]
+}
+
 type RootQuery {
   """Fetches an object given its ID."""
   node(
@@ -219,22 +267,25 @@ type RootQuery {
     """The list of node IDs."""
     ids: [ID!]!
   ): [Node]!
-  user: User
   campaigns(where: CampaignFilterInput): [Campaign!]!
 }
 
 type Scene implements Node {
   id: ID!
-  entities: [MapEntity!]!
   name: String!
+  campaign: Campaign!
+  campaignId: Int!
+  entities: [MapEntity!]!
 }
 
 input SceneFilterInput {
   and: [SceneFilterInput!]
   or: [SceneFilterInput!]
   id: IdOperationFilterInput
-  entities: ListFilterInputTypeOfMapEntityDtoFilterInput
   name: StringOperationFilterInput
+  campaign: CampaignFilterInput
+  campaignId: ComparableInt32OperationFilterInput
+  entities: ListFilterInputTypeOfMapEntityFilterInput
 }
 
 input StringOperationFilterInput {
@@ -254,11 +305,5 @@ input StringOperationFilterInput {
 
 type Subscription {
   mapEntitySubscription: MapEntityChangeEvent!
-}
-
-type User implements Node {
-  id: ID!
-  userName: String!
-  campaigns: [Campaign!]!
 }
 

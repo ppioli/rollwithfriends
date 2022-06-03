@@ -1,9 +1,15 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using OpenIddict.Abstractions;
+using Quartz;
 using Serilog;
+using Server.EFModels;
+using Server.Graphql.Mutations;
+using Server.Graphql.Query;
 using server.Infraestructure;
 using Server.Mutations;
-using Server.Query;
 using Server.Services;
 using Server.Subscriptions;
 
@@ -42,8 +48,85 @@ builder.Services
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearerConfiguration(
         configuration["Jwt:Issuer"],
-        configuration["Jwt:Audience"]
-    );
+        configuration["Jwt:Audience"]);
+
+builder.Services.AddIdentity<User, ApplicationRole>()
+    .AddEntityFrameworkStores<RwfDbContext>()
+    .AddDefaultTokenProviders();
+
+// Configure Identity to use the same JWT claims as OpenIddict instead
+// of the legacy WS-Federation claims it uses by default (ClaimTypes),
+// which saves you from doing the mapping in your authorization controller.
+builder.Services.Configure<IdentityOptions>(
+    options =>
+    {
+        options.ClaimsIdentity.UserNameClaimType = OpenIddictConstants.Claims.Name;
+        options.ClaimsIdentity.UserIdClaimType = OpenIddictConstants.Claims.Subject;
+        options.ClaimsIdentity.RoleClaimType = OpenIddictConstants.Claims.Role;
+        options.ClaimsIdentity.EmailClaimType = OpenIddictConstants.Claims.Email;
+    });
+
+// OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
+// (like pruning orphaned authorizations/tokens from the database) at regular intervals.
+builder.Services.AddQuartz(
+    options =>
+    {
+        options.UseMicrosoftDependencyInjectionJobFactory();
+        options.UseSimpleTypeLoader();
+        options.UseInMemoryStore();
+    });
+
+// Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
+builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+builder.Services.AddOpenIddict()
+
+    // Register the OpenIddict core components.
+    .AddCore(
+        options =>
+        {
+            // Configure OpenIddict to use the Entity Framework Core stores and models.
+            // Note: call ReplaceDefaultEntities() to replace the default OpenIddict entities.
+            options.UseEntityFrameworkCore()
+                .UseDbContext<RwfDbContext>();
+
+            // Enable Quartz.NET integration.
+            options.UseQuartz();
+        })
+
+    // Register the OpenIddict server components.
+    .AddServer(
+        options =>
+        {
+            // Enable the token endpoint.
+            options.SetTokenEndpointUris("/connect/token");
+
+            // Enable the password and the refresh token flows.
+            options.AllowPasswordFlow()
+                .AllowRefreshTokenFlow();
+
+            // Accept anonymous clients (i.e clients that don't send a client_id).
+            options.AcceptAnonymousClients();
+
+            // Register the signing and encryption credentials.
+            options.AddDevelopmentEncryptionCertificate()
+                .AddDevelopmentSigningCertificate();
+
+            // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
+            options.UseAspNetCore()
+                .EnableTokenEndpointPassthrough();
+        })
+
+    // Register the OpenIddict validation components.
+    .AddValidation(
+        options =>
+        {
+            // Import the configuration from the local OpenIddict server instance.
+            options.UseLocalServer();
+
+            // Register the ASP.NET Core host.
+            options.UseAspNetCore();
+        });
 
 
 builder.Services
@@ -57,14 +140,13 @@ builder.Services
     .AddTypeExtension<MapEntityMutation>()
     .AddProjections()
     .AddFiltering()
-    .AddMutationConventions()
     .AddGlobalObjectIdentification()
+    .AddMutationConventions()
     .AddAuthorization();
 
 builder.Services.AddInMemorySubscriptions();
 
 builder.Services.AddControllersWithViews();
-
 
 if (builder.Environment.IsDevelopment())
 {
@@ -82,6 +164,13 @@ if (builder.Environment.IsDevelopment())
         });
 }
 
+
+if (builder.Environment.IsDevelopment())
+{
+    var config = new MapperConfiguration(cfg => { cfg.AddMaps(typeof(Program)); });
+
+    config.AssertConfigurationIsValid();
+}
 
 
 builder.Services

@@ -1,15 +1,13 @@
 import { HTMLProps, ReactNode } from "react";
-import classNames from "classnames";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { SchemaOf } from "yup";
-import {
-  CampaignCreateMutation$variables,
-  CampaignInput,
-} from "components/campaing/__generated__/CampaignCreateMutation.graphql";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Input } from "components/campaing/Input";
+import { useCampaignCreateMutation } from "components/campaing/CampaignCreate.graphql";
+import { CampaignAddInput } from "components/campaing/__generated__/CampaignCreateMutation.graphql";
 
-const createCampaignSchema: SchemaOf<CampaignInput> = yup.object().shape({
+const createCampaignSchema: SchemaOf<CampaignAddInput> = yup.object().shape({
   name: yup.string().required(),
   description: yup.string().required(),
 });
@@ -19,11 +17,16 @@ export function CampaignCreate() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CampaignInput>({
+  } = useForm<CampaignAddInput>({
     resolver: yupResolver(createCampaignSchema),
   });
-  const onSubmit = (data: CampaignInput) => console.log(data);
 
+  const commit = useCampaignCreateMutation((result: any) => {
+    console.log(result);
+  });
+
+  const onSubmit = (data: CampaignAddInput) => commit({ input: data });
+  console.log(errors);
   return (
     <TitlePanel
       title={"Create a new campaign"}
@@ -42,33 +45,6 @@ export function CampaignCreate() {
         </Card>
       </form>
     </TitlePanel>
-  );
-}
-
-interface InputProps {
-  layout?: string;
-  name: string;
-  label: string;
-  input?: Omit<HTMLProps<HTMLInputElement>, "name">;
-}
-
-export function Input({ label, input, name, layout }: InputProps) {
-  const className =
-    "mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md";
-  const { className: inputClassName } = input || {};
-
-  return (
-    <div className={layout ?? "col-span-6 sm:col-span-3"}>
-      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
-        {label}
-      </label>
-      <input
-        type="text"
-        name={name}
-        autoComplete="given-name"
-        className={classNames(className, inputClassName ?? "")}
-      />
-    </div>
   );
 }
 

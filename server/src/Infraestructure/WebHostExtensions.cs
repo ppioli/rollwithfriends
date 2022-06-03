@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Server.EFModels;
 
 namespace server.Infraestructure;
 
@@ -14,6 +15,62 @@ public static class WebHostExtensions
         if (env.IsDevelopment() || env.IsStaging())
         {
             await context.Database.MigrateAsync();
+
+
+            // var test = new Campaign( description: "description")
+            // {
+            //     Description = "Description",
+            //     Name = "Test",
+            //     Scenes = new List<Scene>()
+            //     {
+            //         new()
+            //         {
+            //             Name = "Scene 1 ",
+            //             Entities = new List<MapEntity>()
+            //             {
+            //                 new()
+            //                 {
+            //                     X = 10,
+            //                     Y = 10,
+            //                     Width = 10,
+            //                     Height = 10
+            //                 },
+            //                 new()
+            //                 {
+            //                     X = 10,
+            //                     Y = 10,
+            //                     Width = 10,
+            //                     Height = 10
+            //                 }
+            //             }
+            //         },
+            //         new()
+            //         {
+            //             Name = "Scene 1 ",
+            //             Entities = new List<MapEntity>()
+            //             {
+            //                 new()
+            //                 {
+            //                     X = 10,
+            //                     Y = 10,
+            //                     Width = 10,
+            //                     Height = 10
+            //                 },
+            //                 new()
+            //                 {
+            //                     X = 10,
+            //                     Y = 10,
+            //                     Width = 10,
+            //                     Height = 10
+            //                 }
+            //             }
+            //         }
+            //     }
+            // };
+            // context.Add(test);
+            //
+            // await context.SaveChangesAsync();
+
             // await DatabaseSeeder.Seed(services);
         }
     }

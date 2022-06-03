@@ -1,13 +1,7 @@
-using AutoMapper;
-using HotChocolate.Subscriptions;
-using Server.EFModels;
-using Server.Graphql.Dtos;
-using server.Infraestructure;
-using Server.Models;
-using Server.Services;
-using Server.Subscriptions;
 
-namespace Server.Mutations;
+using Server.EFModels;
+
+namespace Server.Graphql.Mutations;
 
 
 [ExtendObjectType("Mutation")]
@@ -19,7 +13,12 @@ public class MapEntityMutation
     
 
     [UseMutationConvention]
-    public async Task<MapEntityDto> MapEntityUpdate([ID] int id, MapEntityInput mapEntity)
+    public async Task<MapEntity> MapEntityUpdate([ID] int id,
+        int x,
+        int y,
+        int width,
+        int height
+        )
     {
         // var updated = await _mapEntityService.Update(id, mapEntity);
     
@@ -33,7 +32,11 @@ public class MapEntityMutation
     
     
     [UseMutationConvention]
-    public async Task<MapEntityDto> MapEntityAdd(MapEntityInput mapEntity)
+    public async Task<MapEntity> MapEntityAdd(
+        int x,
+        int y,
+        int width,
+        int height)
     {
         // var added = await _mapEntityService.Add(mapEntity);
         //
@@ -44,7 +47,7 @@ public class MapEntityMutation
     }
     
     [UseMutationConvention]
-    public async Task<MapEntityDto> MapEntityDelete([ID] int id)
+    public async Task<MapEntity> MapEntityDelete([ID] int id)
     {
         // await _sender.SendAsync(nameof(MapEntityChangeEvent), MapEntityChangeEvent.Deleted(id));
         //

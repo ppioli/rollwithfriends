@@ -4,9 +4,9 @@ import { RouteProps } from "yarr";
 import {
   CampaignCreate,
   Card,
-  Input,
   TitlePanel,
 } from "components/campaing/CampaignCreate";
+import { Input } from "components/campaing/Input";
 const graphql = require("babel-plugin-relay/macro");
 
 export const CampaignSelect = graphql`

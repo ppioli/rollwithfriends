@@ -1,38 +1,36 @@
 using System.Security.Claims;
 using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Server.EFModels;
-using Server.Graphql.Dtos;
 using server.Infraestructure;
-using Server.Subscriptions;
 
-namespace Server.Mutations;
+namespace Server.Graphql.Mutations;
 
 [ExtendObjectType("Mutation")]
 public class CampaignMutation
 {
     
-    [Authorize]
-    [UseMutationConvention]
-    public async Task<CampaignDto> CampaignAdd(
+    public async Task<Campaign> CampaignAdd(
         ClaimsPrincipal user,
         RwfDbContext context,
         [Service] IMapper mapper,
-        CampaignInput input)
+        string name,
+        string description)
     {
-        
-        
-        var created = context.Campaigns.CreateProxy();
 
-        mapper.Map(input, created);
 
-        created.Owner = user.GetId();
+        var created = new Campaign(
+            name: name,
+            description: description);
+
+        var enrollment = new CampaignEnrollment(userId: user.GetId(), rol: Rol.DungeonMaster);
+
+        created.Participants.Add(enrollment);
 
         await context.AddAsync(created);
 
         await context.SaveChangesAsync();
 
-        return mapper.Map<CampaignDto>(created);
+        return created;
     }
 }

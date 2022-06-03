@@ -41,7 +41,7 @@ export function useMapEntityUpdateMutation(id: string) {
 }
 
 export function useMapEntityAddMutation(selectedScene: string) {
-  const [commit, _] = useMutation(graphql`
+  const [commit] = useMutation(graphql`
     mutation MapEntityAddMutation($input: MapEntityAddInput!) {
       mapEntityAdd(input: $input) {
         mapEntity {
@@ -74,43 +74,42 @@ export function useMapEntityAddMutation(selectedScene: string) {
 }
 
 export function useMapEntitySubscription(selectedScene: string | null) {
-  const config = useMemo(
-    () => ({
-      subscription: graphql`
-        subscription MapEntitySubscription {
-          mapEntitySubscription {
-            type
-            payload {
-              mapEntity {
-                id
-                ...MapEntity_Token
-              }
-            }
-          }
-        }
-      `,
-      variables: {},
-      onCompleted: () => console.log("Subscription established"),
-      onError: (error: any) => {} /* Subscription errored */,
-      onNext: (response: any) => {} /* Subscription payload received */,
-      updater: (store: any, ttt: any) => {
-        console.log(ttt);
-        const result = store.getRootField("mapEntitySubscription")!;
-        const type = result.getValue("type");
-
-        if (type === "ADDED") {
-          const payload: any = result.getLinkedRecord("payload");
-          const newEntity = payload.getLinkedRecord("mapEntity")!;
-
-          const scene = store.get(selectedScene)!;
-          const existing = scene.getLinkedRecords("entities") || [];
-
-          scene.setLinkedRecords([...existing, newEntity], "entities");
-        }
-      },
-    }),
-    [selectedScene]
-  );
-
-  useSubscription(config);
+  // const config = useMemo(
+  //   () => ({
+  //     subscription: graphql`
+  //       subscription MapEntitySubscription {
+  //         mapEntitySubscription {
+  //           type
+  //           payload {
+  //             mapEntity {
+  //               id
+  //               ...MapEntity_Token
+  //             }
+  //           }
+  //         }
+  //       }
+  //     `,
+  //     variables: {},
+  //     onCompleted: () => console.log("Subscription established"),
+  //     onError: (error: any) => {} /* Subscription errored */,
+  //     onNext: (response: any) => {} /* Subscription payload received */,
+  //     updater: (store: any, ttt: any) => {
+  //       console.log(ttt);
+  //       const result = store.getRootField("mapEntitySubscription")!;
+  //       const type = result.getValue("type");
+  //
+  //       if (type === "ADDED") {
+  //         const payload: any = result.getLinkedRecord("payload");
+  //         const newEntity = payload.getLinkedRecord("mapEntity")!;
+  //
+  //         const scene = store.get(selectedScene)!;
+  //         const existing = scene.getLinkedRecords("entities") || [];
+  //
+  //         scene.setLinkedRecords([...existing, newEntity], "entities");
+  //       }
+  //     },
+  //   }),
+  //   [selectedScene]
+  // );
+  // useSubscription(config);
 }

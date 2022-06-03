@@ -1,28 +1,24 @@
-using Server.EFModels;
-using Server.Graphql.Dtos;
-using Server.Models;
-
-namespace Server.Subscriptions;
+namespace Server.Graphql.Subscriptions;
 
 public class MapEntityChangeEvent
 {
     public MapEntityChangeEventType Type { get; set; } = default!;
-    public MapEntityPayload? Payload { get; set; } = default!;
+    // public MapEntityPayload? Payload { get; set; } = default!;
 
-    public static MapEntityChangeEvent Added( MapEntityDto mapEntity )
+    public static MapEntityChangeEvent Added(  )
     {
         return new MapEntityChangeEvent()
         {
-            Payload = MapEntityPayload.Create(mapEntity),
+            // Payload = MapEntityPayload.Create(mapEntity),
             Type = MapEntityChangeEventType.Added,
         };
     }
     
-    public static MapEntityChangeEvent Updated( MapEntityDto mapEntity )
+    public static MapEntityChangeEvent Updated( )
     {
         return new MapEntityChangeEvent()
         {
-            Payload = MapEntityPayload.Create(mapEntity),
+            // Payload = MapEntityPayload.Create(mapEntity),
             Type = MapEntityChangeEventType.Updated,
         };
     }

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f631f06a0d6f623daeb89b093b01b2a3>>
+ * @generated SignedSource<<1e87ebea314719355db07e56a1ba336f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,7 +24,7 @@ export type CampaignQuery$data = {
     }>;
     readonly selectedScene: {
       readonly id: string;
-    };
+    } | null;
   }>;
 };
 export type CampaignQuery = {

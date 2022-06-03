@@ -33,7 +33,7 @@ public class AuthorizationController : Controller
     public async Task<IActionResult> Exchange()
     {
         var request = HttpContext.GetOpenIddictServerRequest();
-        if (request!.IsPasswordGrantType())
+        if (request.IsPasswordGrantType())
         {
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user == null)
@@ -43,13 +43,13 @@ public class AuthorizationController : Controller
                     [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
                     [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
                         "The username/password couple is invalid."
-                }!);
+                });
 
                 return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
 
             // Validate the username/password parameters and ensure the account is not locked out.
-            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
             if (!result.Succeeded)
             {
                 var properties = new AuthenticationProperties(new Dictionary<string, string>
@@ -57,7 +57,7 @@ public class AuthorizationController : Controller
                     [OpenIddictServerAspNetCoreConstants.Properties.Error] = Errors.InvalidGrant,
                     [OpenIddictServerAspNetCoreConstants.Properties.ErrorDescription] =
                         "The username/password couple is invalid."
-                }!);
+                });
 
                 return Forbid(properties, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
@@ -129,9 +129,6 @@ public class AuthorizationController : Controller
             }
 
             return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
-        } else if (request.IsAuthorizationCodeFlow())
-        {
-            
         }
 
         throw new NotImplementedException("The specified grant type is not implemented.");

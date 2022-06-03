@@ -1,3 +1,5 @@
+using Server.Graphql.Subscriptions;
+
 namespace Server.Subscriptions;
 
 public class Subscription

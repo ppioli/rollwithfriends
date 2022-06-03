@@ -1,16 +1,12 @@
 using System.Security.Claims;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using HotChocolate.Resolvers;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Server.EFModels;
-using Server.Graphql.Dtos;
 using server.Infraestructure;
-using Server.Models;
-using Server.Services;
 using IConfigurationProvider = AutoMapper.IConfigurationProvider;
 
-namespace Server.Query;
+namespace Server.Graphql.Query;
 
 public class RootQuery
 {
@@ -22,29 +18,42 @@ public class RootQuery
         _mapper = mapper;
         _configuration = configuration;
     }
-
-
-    [Authorize]
-    [UseFirstOrDefault()]
-    [UseProjection()]
-    public IQueryable<UserDto> User(RwfDbContext context)
-    {
-        return context.Users.Where(ol => ol.UserName == "admin")
-            .ProjectTo<UserDto>(_configuration);
-    }
     
+    
+    // [UseProjection()]
+    // [UseFiltering()]
+    // public IQueryable<Campaign> Campaigns(
+    //     ClaimsPrincipal user,
+    //     RwfDbContext context
+    //     )
+    // {
+    //     //var id = user.GetId(); 
+    //     return context.Campaigns;
+    // }
+    
+    // [UseProjection()]
+    // [UseFiltering()]
+    // public IQueryable<Campaign> Campaigns(
+    //     ClaimsPrincipal user,
+    //     RwfDbContext context
+    // )
+    // {
+    //     //var id = user.GetId(); 
+    //     return context.Campaigns;
+    // }
+
     [UseProjection()]
     [UseFiltering()]
-    public IQueryable<CampaignDto> Campaigns(
+    [Authorize]
+    public IQueryable<Campaign> Campaigns(
+        RwfDbContext db,
         ClaimsPrincipal user,
-        RwfDbContext context
-        )
+        IResolverContext context
+
+    )
     {
-        //var id = user.GetId(); 
-        return context.Campaigns
-            .Include( s => s.SelectedScene)
-            .ThenInclude( s => s.Entities)
-            .ProjectTo<CampaignDto>(_configuration);
+        var id = user.GetId();
+
+        return db.Campaigns;
     }
-    
 }

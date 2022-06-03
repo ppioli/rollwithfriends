@@ -1,11 +1,10 @@
 using System.Security.Claims;
 using AutoMapper;
-using HotChocolate.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Server.Graphql.Dtos;
+using Server.EFModels;
 using server.Infraestructure;
 
-namespace Server.Mutations;
+namespace Server.Graphql.Mutations;
 
 
 [ExtendObjectType("Mutation")]
@@ -13,7 +12,7 @@ public class EnrollmentMutation
 {
     
     [UseMutationConvention]
-    public async Task<CampaignDto> EnrollmentAdd(
+    public async Task<Campaign> EnrollmentAdd(
         RwfDbContext context,
         ClaimsPrincipal claimsPrincipal,
         [Service] IMapper mapper,
@@ -26,6 +25,6 @@ public class EnrollmentMutation
 
         await context.SaveChangesAsync();
 
-        return mapper.Map<CampaignDto>(created);
+        return mapper.Map<Campaign>(created);
     }
 }

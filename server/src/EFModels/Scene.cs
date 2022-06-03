@@ -2,24 +2,28 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Server.EFModels;
 
+[Node]
 public class Scene
 {
-    [Key]
+    [ID]
     public int Id { get; set; }
-    public string Name { get; set; }
+
+    public string Name { get; set; } = null!;
     
     public virtual Campaign Campaign { get; set; } = null!;
     public int CampaignId { get; set; }
     
     public virtual ICollection<MapEntity> Entities { get; set; } = new List<MapEntity>();
+    
+    protected Scene() {}
 
-    public static Scene Create(int id, string name, ICollection<MapEntity> tokens)
+    public Scene(string name)
     {
-        return new Scene()
-        {
-            Id = id,
-            Entities = new List<MapEntity>(tokens),
-            Name = name,
-        };
+        Name = name;
+    }
+
+    public static Scene Get(int id)
+    {
+        throw new NotImplementedException();
     }
 }

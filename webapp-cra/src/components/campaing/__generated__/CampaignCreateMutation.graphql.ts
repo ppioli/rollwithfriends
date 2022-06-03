@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d21666a54859f3c2f1f98fefe1aea53f>>
+ * @generated SignedSource<<ccec4b5508f86ea08e99280909643d2f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,9 +10,6 @@
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type CampaignAddInput = {
-  input: CampaignInput;
-};
-export type CampaignInput = {
   name: string;
   description: string;
 };

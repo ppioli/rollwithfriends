@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2fa5ceef2f1e8ce469aabcb65e40961f>>
+ * @generated SignedSource<<6d870f3c4ccd9320978ccb88e3e5fd65>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,9 +11,6 @@
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type MapEntityAddInput = {
-  mapEntity: MapEntityInput;
-};
-export type MapEntityInput = {
   x: number;
   y: number;
   width: number;
