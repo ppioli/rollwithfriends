@@ -1,21 +1,21 @@
 import React, { Suspense } from "react";
-import { createRelayEnvironment } from "lib/getRelayClientEnvironment";
 import { useSessionContext } from "components/LoginContext";
 import { RouteRenderer } from "yarr";
 import { RelayEnvironmentProvider } from "react-relay";
 import { Navbar } from "components/navbar/Navbar";
+import { RelayEnvironment } from "lib/getRelayClientEnvironment";
 
 export default function App() {
-  const { tokenRef } = useSessionContext();
-
   return (
     <div>
-      <RelayEnvironmentProvider environment={createRelayEnvironment(tokenRef)}>
+      <RelayEnvironmentProvider environment={RelayEnvironment}>
         <Navbar />
         <Suspense>
           <RouteRenderer
             pendingIndicator={<p>...pending loading </p>}
-            routeWrapper={({ Route }) => Route}
+            routeWrapper={({ Route }) => (
+              <div className={"mx-auto container"}>{Route}</div>
+            )}
           />
         </Suspense>
       </RelayEnvironmentProvider>

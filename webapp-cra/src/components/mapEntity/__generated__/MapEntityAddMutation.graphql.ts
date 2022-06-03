@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<03d19de32aad1cf9628d0f64a2da0ad2>>
+ * @generated SignedSource<<2fa5ceef2f1e8ce469aabcb65e40961f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -93,7 +93,7 @@ return {
         "storageKey": null
       }
     ],
-    "type": "TokenMutation",
+    "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",

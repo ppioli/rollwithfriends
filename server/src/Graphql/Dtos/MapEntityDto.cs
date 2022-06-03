@@ -13,10 +13,12 @@ public class MapEntityBase
 }
 
 [Node]
+[GraphQLName("MapEntity")]
 public class MapEntityDto : MapEntityBase
 {
     [ID]
     public int Id { get; set; }
+    
     public static MapEntityDto Get(int id,
         [Service] IMapEntityService service)
     {
@@ -30,11 +32,11 @@ public class MapEntityInput : MapEntityBase
 
 public class MapEntityPayload
 {
-    public MapEntity MapEntity { get; set; } = default!;
+    public MapEntityDto MapEntity { get; set; } = default!;
 
     private MapEntityPayload() { }
 
-    public static MapEntityPayload Create(MapEntity mapEntity)
+    public static MapEntityPayload Create(MapEntityDto mapEntity)
     {
         return new MapEntityPayload()
         {

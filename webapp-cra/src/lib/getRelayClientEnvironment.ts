@@ -10,6 +10,7 @@ import {
 
 import { createClient } from "graphql-ws";
 import { MutableRefObject } from "react";
+import { ACCESS_TOKEN } from "lib/useRefreshToken";
 
 export const GoogleClientId =
   "1070519198348-icmnc5qde274jv2nv7kav7non3va1oog.apps.googleusercontent.com";
@@ -38,35 +39,30 @@ function createSubscription(): SubscribeFunction {
 
 // your-app-name/src/fetchGraphQL.js
 
-const createFetchGraphQL =
-  (tokenRef: MutableRefObject<string | null>): FetchFunction =>
-  async (params, variables) => {
-    // Fetch data from GitHub's GraphQL API:
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
-    if (tokenRef.current !== null) {
-      headers["Authorization"] = `Bearer ${tokenRef.current}`;
-    }
-    const response = await fetch(`${ServerUrl}/graphql`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        query: params.text,
-        variables,
-      }),
-    });
-
-    // Get the response as JSON
-    return await response.json();
+const createFetchGraphQL = (): FetchFunction => async (params, variables) => {
+  // Fetch data from GitHub's GraphQL API:
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
   };
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  if (token !== null) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  const response = await fetch(`${ServerUrl}/graphql`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      query: params.text,
+      variables,
+    }),
+  });
+
+  // Get the response as JSON
+  return await response.json();
+};
 
 // Export a singleton instance of Relay Environment configured with our network function:
-export function createRelayEnvironment(
-  tokenRef: MutableRefObject<string | null>
-): Environment {
-  return new Environment({
-    network: Network.create(createFetchGraphQL(tokenRef), createSubscription()),
-    store: new Store(new RecordSource()),
-  });
-}
+export const RelayEnvironment = new Environment({
+  network: Network.create(createFetchGraphQL(), createSubscription()),
+  store: new Store(new RecordSource()),
+});

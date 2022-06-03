@@ -8,12 +8,12 @@ public class Campaign
     
     public string Owner { get; set; }
 
-    public virtual ICollection<Scene> Scenes { get; set; }
+    public virtual ICollection<Scene> Scenes { get; set; } = new List<Scene>();
     
-    public virtual Scene SelectedScene { get; set; }
+    public virtual Scene? SelectedScene { get; set; }
     public int? SelectedSceneId { get; set; }
-    
-    public virtual ICollection<CampaignEnrollment> CampaignEnrollments { get; set; }
+
+    public virtual ICollection<CampaignEnrollment> CampaignEnrollments { get; set; } = new List<CampaignEnrollment>();
     
     public Campaign()
     {

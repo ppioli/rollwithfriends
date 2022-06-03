@@ -2,6 +2,7 @@ using System.Security.Claims;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Server.EFModels;
 using Server.Graphql.Dtos;
 using server.Infraestructure;
@@ -32,15 +33,17 @@ public class RootQuery
             .ProjectTo<UserDto>(_configuration);
     }
     
-    [Authorize]
     [UseProjection()]
+    [UseFiltering()]
     public IQueryable<CampaignDto> Campaigns(
         ClaimsPrincipal user,
         RwfDbContext context
         )
     {
-        var id = user.GetId(); 
-        return context.Campaigns.Where(c => c.Owner == id)
+        //var id = user.GetId(); 
+        return context.Campaigns
+            .Include( s => s.SelectedScene)
+            .ThenInclude( s => s.Entities)
             .ProjectTo<CampaignDto>(_configuration);
     }
     

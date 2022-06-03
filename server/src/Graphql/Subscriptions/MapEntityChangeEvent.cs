@@ -9,7 +9,7 @@ public class MapEntityChangeEvent
     public MapEntityChangeEventType Type { get; set; } = default!;
     public MapEntityPayload? Payload { get; set; } = default!;
 
-    public static MapEntityChangeEvent Added( MapEntity mapEntity )
+    public static MapEntityChangeEvent Added( MapEntityDto mapEntity )
     {
         return new MapEntityChangeEvent()
         {
@@ -18,7 +18,7 @@ public class MapEntityChangeEvent
         };
     }
     
-    public static MapEntityChangeEvent Updated( MapEntity mapEntity )
+    public static MapEntityChangeEvent Updated( MapEntityDto mapEntity )
     {
         return new MapEntityChangeEvent()
         {

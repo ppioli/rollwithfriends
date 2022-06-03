@@ -4,13 +4,14 @@ using Server.Graphql.Dtos;
 namespace Server.EFModels;
 
 [Node]
+[GraphQLName("User")]
 public class UserDto
 {
     [ID]
     public string Id { get; set; } = null!;
 
     public string UserName { get; set; } = null!;
-    public ICollection<CampaignDto> Campaigns { get; set; } = null!;
+    public IEnumerable<CampaignDto> Campaigns { get; set; } = null!;
 
     public static UserDto Get(int id)
     {

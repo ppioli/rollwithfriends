@@ -11,7 +11,7 @@ interface UserInfo {
 }
 
 export function UserMenu() {
-  const { tokenRef } = useSessionContext();
+  const { tokenRef, logout } = useSessionContext();
   const [show, toggle, setShow] = useToggle(false);
 
   const userProfile = useMemo(() => {
@@ -51,7 +51,6 @@ export function UserMenu() {
         <div>
           <button
             onClick={toggle}
-            onBlur={() => setShow(false)}
             type="button"
             className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
             id="user-menu-button"
@@ -100,6 +99,7 @@ export function UserMenu() {
             className="block px-4 py-2 text-sm text-gray-700"
             role="menuitem"
             tabIndex={-1}
+            onClick={logout}
             id="user-menu-item-2"
           >
             Sign out

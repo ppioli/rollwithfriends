@@ -54,6 +54,7 @@ builder.Services
     .AddMutationType(e => e.Name("Mutation"))
     .AddTypeExtension<CampaignMutation>()
     .AddTypeExtension<EnrollmentMutation>()
+    .AddTypeExtension<MapEntityMutation>()
     .AddProjections()
     .AddFiltering()
     .AddMutationConventions()

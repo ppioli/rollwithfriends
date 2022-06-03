@@ -1,6 +1,6 @@
 schema {
   query: RootQuery
-  mutation: TokenMutation
+  mutation: Mutation
   subscription: Subscription
 }
 
@@ -45,22 +45,42 @@ directive @stream(
   if: Boolean
 ) on FIELD
 
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+}
+
 type Campaign implements Node {
   id: ID!
+  owner: String!
+  selectedScene: Scene!
+  scenes: [Scene!]!
   name: String!
   description: String!
-  selectedScene: Scene
-  scenes: [Scene!]!
+}
+
+input CampaignAddInput {
+  input: CampaignInput!
+}
+
+type CampaignAddPayload {
+  campaign: Campaign
 }
 
 input CampaignFilterInput {
   and: [CampaignFilterInput!]
   or: [CampaignFilterInput!]
   id: IdOperationFilterInput
+  owner: StringOperationFilterInput
+  selectedScene: SceneFilterInput
+  scenes: ListFilterInputTypeOfSceneDtoFilterInput
   name: StringOperationFilterInput
   description: StringOperationFilterInput
-  selectedScene: SceneFilterInput
-  scenes: ListFilterInputTypeOfSceneFilterInput
+}
+
+input CampaignInput {
+  name: String!
+  description: String!
 }
 
 input ComparableInt32OperationFilterInput {
@@ -78,6 +98,14 @@ input ComparableInt32OperationFilterInput {
   nlte: Int
 }
 
+input EnrollmentAddInput {
+  campaignId: ID!
+}
+
+type EnrollmentAddPayload {
+  campaign: Campaign
+}
+
 input IdOperationFilterInput {
   eq: ID
   neq: ID
@@ -85,14 +113,14 @@ input IdOperationFilterInput {
   nin: [ID]
 }
 
-input ListFilterInputTypeOfMapEntityFilterInput {
+input ListFilterInputTypeOfMapEntityDtoFilterInput {
   all: MapEntityFilterInput
   none: MapEntityFilterInput
   some: MapEntityFilterInput
   any: Boolean
 }
 
-input ListFilterInputTypeOfSceneFilterInput {
+input ListFilterInputTypeOfSceneDtoFilterInput {
   all: SceneFilterInput
   none: SceneFilterInput
   some: SceneFilterInput
@@ -164,6 +192,14 @@ type MapEntityUpdatePayload {
   mapEntity: MapEntity
 }
 
+type Mutation {
+  campaignAdd(input: CampaignAddInput!): CampaignAddPayload!
+  enrollmentAdd(input: EnrollmentAddInput!): EnrollmentAddPayload!
+  mapEntityUpdate(input: MapEntityUpdateInput!): MapEntityUpdatePayload!
+  mapEntityAdd(input: MapEntityAddInput!): MapEntityAddPayload!
+  mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
+}
+
 """
 The node interface is implemented by entities that have a global unique identifier.
 """
@@ -183,21 +219,22 @@ type RootQuery {
     """The list of node IDs."""
     ids: [ID!]!
   ): [Node]!
+  user: User
   campaigns(where: CampaignFilterInput): [Campaign!]!
 }
 
 type Scene implements Node {
   id: ID!
-  name: String!
   entities: [MapEntity!]!
+  name: String!
 }
 
 input SceneFilterInput {
   and: [SceneFilterInput!]
   or: [SceneFilterInput!]
   id: IdOperationFilterInput
+  entities: ListFilterInputTypeOfMapEntityDtoFilterInput
   name: StringOperationFilterInput
-  entities: ListFilterInputTypeOfMapEntityFilterInput
 }
 
 input StringOperationFilterInput {
@@ -219,9 +256,9 @@ type Subscription {
   mapEntitySubscription: MapEntityChangeEvent!
 }
 
-type TokenMutation {
-  mapEntityUpdate(input: MapEntityUpdateInput!): MapEntityUpdatePayload!
-  mapEntityAdd(input: MapEntityAddInput!): MapEntityAddPayload!
-  mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
+type User implements Node {
+  id: ID!
+  userName: String!
+  campaigns: [Campaign!]!
 }
 

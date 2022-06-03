@@ -15,14 +15,15 @@ public class CampaignInput : CampaignBase
 }
 
 [Node]
+[GraphQLName("Campaign")]
 public class CampaignDto : CampaignBase
 {
     [ID]
     public int Id { get; set; }
 
     public string Owner { get; set; } = null!;
-    // public SceneDto SelectedScene { get; set; } = null!;
-    public ICollection<SceneDto> Scenes { get; set; } = null!;
+    public SceneDto? SelectedScene { get; set; }
+    // public IEnumerable<SceneDto> Scenes { get; set; } = null!;
     // public ICollection<UserDto> Participants { get; set; } = null!;
 
     public static CampaignDto Get(int id)

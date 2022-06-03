@@ -4,8 +4,9 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-import { RouterProvider, createBrowserRouter } from "yarr";
+import { createBrowserRouter, RouterProvider } from "yarr";
 import { routes } from "routes";
+import { SessionContextProvider } from "components/LoginContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -17,9 +18,11 @@ const router = createBrowserRouter({
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router}>
-      <App />
-    </RouterProvider>
+    <SessionContextProvider>
+      <RouterProvider router={router}>
+        <App />
+      </RouterProvider>
+    </SessionContextProvider>
   </React.StrictMode>
 );
 

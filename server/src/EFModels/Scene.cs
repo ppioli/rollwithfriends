@@ -11,7 +11,7 @@ public class Scene
     public virtual Campaign Campaign { get; set; } = null!;
     public int CampaignId { get; set; }
     
-    public virtual ICollection<MapEntity> Entities { get; set; } = null!;
+    public virtual ICollection<MapEntity> Entities { get; set; } = new List<MapEntity>();
 
     public static Scene Create(int id, string name, ICollection<MapEntity> tokens)
     {

@@ -14,16 +14,16 @@ public class SceneInput : SceneBase
 }
 
 [Node]
+[GraphQLName("Scene")]
 public class SceneDto: SceneBase
 {
     [ID]
     public int Id { get; set; }
-    // public ICollection<MapEntityDto> Entities { get; set; } = null!;
+    public List<MapEntityDto> Entities { get; set; } = new ();
 
     public static SceneDto Get(int id)
     {
         throw new NotImplementedException();
-
     }
 
     public static SceneDto Create(int id, string name, ICollection<MapEntityDto> tokens)
