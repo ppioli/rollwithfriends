@@ -4,7 +4,7 @@ namespace Server.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            // services.AddTransient<IMapEntityService, MapEntityService>();
+            services.AddSingleton<GoogleTokenValidator>();
             
             return services;
         }

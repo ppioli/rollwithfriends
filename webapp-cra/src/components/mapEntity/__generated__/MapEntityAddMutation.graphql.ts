@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6d870f3c4ccd9320978ccb88e3e5fd65>>
+ * @generated SignedSource<<404d986e0405d2e5c18cf1493ed58547>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,8 +9,8 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
 export type MapEntityAddInput = {
+  sceneId: string;
   x: number;
   y: number;
   width: number;
@@ -23,7 +23,10 @@ export type MapEntityAddMutation$data = {
   readonly mapEntityAdd: {
     readonly mapEntity: {
       readonly id: string;
-      readonly " $fragmentSpreads": FragmentRefs<"MapEntity_Token">;
+      readonly x: number;
+      readonly y: number;
+      readonly width: number;
+      readonly height: number;
     } | null;
   };
 };
@@ -42,54 +45,76 @@ var v0 = [
 ],
 v1 = [
   {
-    "kind": "Variable",
-    "name": "input",
-    "variableName": "input"
-  }
-],
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "id",
-  "storageKey": null
-};
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "MapEntityAddMutation",
+    "alias": null,
+    "args": [
+      {
+        "kind": "Variable",
+        "name": "input",
+        "variableName": "input"
+      }
+    ],
+    "concreteType": "MapEntityAddPayload",
+    "kind": "LinkedField",
+    "name": "mapEntityAdd",
+    "plural": false,
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
-        "concreteType": "MapEntityAddPayload",
+        "args": null,
+        "concreteType": "MapEntity",
         "kind": "LinkedField",
-        "name": "mapEntityAdd",
+        "name": "mapEntity",
         "plural": false,
         "selections": [
           {
             "alias": null,
             "args": null,
-            "concreteType": "MapEntity",
-            "kind": "LinkedField",
-            "name": "mapEntity",
-            "plural": false,
-            "selections": [
-              (v2/*: any*/),
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "MapEntity_Token"
-              }
-            ],
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "x",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "y",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "width",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "height",
             "storageKey": null
           }
         ],
         "storageKey": null
       }
     ],
+    "storageKey": null
+  }
+];
+return {
+  "fragment": {
+    "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "MapEntityAddMutation",
+    "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
@@ -98,71 +123,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "MapEntityAddMutation",
-    "selections": [
-      {
-        "alias": null,
-        "args": (v1/*: any*/),
-        "concreteType": "MapEntityAddPayload",
-        "kind": "LinkedField",
-        "name": "mapEntityAdd",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "MapEntity",
-            "kind": "LinkedField",
-            "name": "mapEntity",
-            "plural": false,
-            "selections": [
-              (v2/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "x",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "y",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "width",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "height",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      }
-    ]
+    "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "1e463c27be7eb8dd477bde65a06dd2a9",
+    "cacheID": "8573b16cd3bc35be439044aea43482f1",
     "id": null,
     "metadata": {},
     "name": "MapEntityAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityAddMutation(\n  $input: MapEntityAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      ...MapEntity_Token\n    }\n  }\n}\n\nfragment MapEntity_Token on MapEntity {\n  x\n  y\n  width\n  height\n}\n"
+    "text": "mutation MapEntityAddMutation(\n  $input: MapEntityAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b8db787ffdd743e2a3789bc9f3e6fabf";
+(node as any).hash = "2eba50c753d03bc10632fcec59d5df2c";
 
 export default node;

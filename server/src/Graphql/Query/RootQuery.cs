@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Resolvers;
-using Microsoft.AspNetCore.Authorization;
 using Server.EFModels;
 using server.Infraestructure;
 using IConfigurationProvider = AutoMapper.IConfigurationProvider;
@@ -18,42 +18,17 @@ public class RootQuery
         _mapper = mapper;
         _configuration = configuration;
     }
-    
-    
-    // [UseProjection()]
-    // [UseFiltering()]
-    // public IQueryable<Campaign> Campaigns(
-    //     ClaimsPrincipal user,
-    //     RwfDbContext context
-    //     )
-    // {
-    //     //var id = user.GetId(); 
-    //     return context.Campaigns;
-    // }
-    
-    // [UseProjection()]
-    // [UseFiltering()]
-    // public IQueryable<Campaign> Campaigns(
-    //     ClaimsPrincipal user,
-    //     RwfDbContext context
-    // )
-    // {
-    //     //var id = user.GetId(); 
-    //     return context.Campaigns;
-    // }
 
     [UseProjection()]
     [UseFiltering()]
-    [Authorize]
+    [Authorize()]
     public IQueryable<Campaign> Campaigns(
         RwfDbContext db,
-        ClaimsPrincipal user,
-        IResolverContext context
-
+        ClaimsPrincipal user
     )
     {
         var id = user.GetId();
 
-        return db.Campaigns;
+        return db.Campaigns.Where( c => c.Participants.Any( p => p.UserId == id));
     }
 }

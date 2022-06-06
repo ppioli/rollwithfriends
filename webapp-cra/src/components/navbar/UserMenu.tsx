@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import classNames from "classnames";
 import { useToggle } from "utils/hooks/useToggle";
 import { useSessionContext } from "components/LoginContext";
-import jwt_decode from "jwt-decode";
 
 interface UserInfo {
   picture: string;
@@ -11,17 +10,21 @@ interface UserInfo {
 }
 
 export function UserMenu() {
-  const { tokenRef, logout } = useSessionContext();
-  const [show, toggle, setShow] = useToggle(false);
+  const { logout } = useSessionContext();
+  const [show, toggle] = useToggle(false);
 
-  const userProfile = useMemo(() => {
-    if (tokenRef.current === null) {
-      throw new Error("Invalid state");
-    }
-    return jwt_decode(tokenRef.current) as UserInfo;
-  }, [tokenRef]);
-
-  console.log(userProfile);
+  const userProfile = useMemo((): UserInfo => {
+    // if (tokenRef.current === null) {
+    //   throw new Error("Invalid state");
+    // }
+    // return jwt_decode(tokenRef.current) as UserInfo;
+    return {
+      picture:
+        "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
+      email: "example@email.com",
+      name: "user",
+    };
+  }, []);
 
   return (
     <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">

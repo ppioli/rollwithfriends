@@ -6,9 +6,10 @@ export interface MapGraphic {
   y: number;
   width: number;
   height: number;
+  onClick: () => void;
 }
 
-function Image({ x, y, width, height }: MapGraphic) {
+function Image({ x, y, width, height, onClick }: MapGraphic) {
   const style: CSSProperties = {
     position: "absolute",
     top: y,
@@ -20,6 +21,7 @@ function Image({ x, y, width, height }: MapGraphic) {
   return (
     <div style={style}>
       <img
+        onClick={onClick}
         src={
           "https://i.pinimg.com/originals/6c/12/e7/6c12e78a564a65f2c4d56556a1ff922c.png"
         }
@@ -34,4 +36,4 @@ function Image({ x, y, width, height }: MapGraphic) {
 
 export const MapGraphic = React.memo(Image);
 
-export const SelectedMapGraphic = withMoveResizeHandler(Image);
+// export const SelectedMapGraphic = withMoveResizeHandler(Image);

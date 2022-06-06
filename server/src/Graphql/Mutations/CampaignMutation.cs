@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using HotChocolate.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Server.EFModels;
 using server.Infraestructure;
@@ -10,20 +11,20 @@ namespace Server.Graphql.Mutations;
 public class CampaignMutation
 {
     
+    [Authorize]
     public async Task<Campaign> CampaignAdd(
         ClaimsPrincipal user,
         RwfDbContext context,
-        [Service] IMapper mapper,
         string name,
         string description)
     {
-
-
+        var userId = user.GetId();
         var created = new Campaign(
             name: name,
-            description: description);
+            description: description,
+            dungeonMasterId: userId);
 
-        var enrollment = new CampaignEnrollment(userId: user.GetId(), rol: Rol.DungeonMaster);
+        var enrollment = new CampaignEnrollment(userId: userId);
 
         created.Participants.Add(enrollment);
 

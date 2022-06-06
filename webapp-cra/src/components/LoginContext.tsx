@@ -3,23 +3,21 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
-  useRef,
-  useState,
 } from "react";
 
-import { ACCESS_TOKEN } from "lib/useRefreshToken";
+import { LoginResponse, useRefreshToken } from "lib/useRefreshToken";
 
 interface SessionContextState {
-  login: (token: string) => void;
+  setResponse: (response: LoginResponse) => void;
   logout: () => void;
   isLoggedIn: boolean;
-  tokenRef: MutableRefObject<string | null>;
+  isLoading: boolean;
 }
 
 const DefaultSessionState: SessionContextState = {
   isLoggedIn: false,
-  tokenRef: null as any,
-  login: () => console.error("Session not initialized"),
+  isLoading: false,
+  setResponse: () => console.error("Session not initialized"),
   logout: () => console.error("Session not initialized"),
 };
 
@@ -33,26 +31,26 @@ interface SessionContextProviderProps {
 export function SessionContextProvider({
   children,
 }: SessionContextProviderProps) {
-  const tokenRef = useRef<string | null>(localStorage.getItem(ACCESS_TOKEN));
-  const [isLoggedIn, setLoggedIn] = useState(tokenRef.current !== null);
+  const { isLoggedIn, setResponse, isLoading } = useRefreshToken();
 
   const login = useCallback((token: string) => {
-    tokenRef.current = token;
-    setLoggedIn(true);
-    localStorage.setItem(ACCESS_TOKEN, token);
+    // tokenRef.current = token;
+    // setLoggedIn(true);
+    // localStorage.setItem(ACCESS_TOKEN, token);
   }, []);
 
   const logout = useCallback(() => {
-    setLoggedIn(false);
-    tokenRef.current = null;
-    localStorage.removeItem(ACCESS_TOKEN);
-  }, []);
+    setResponse(null);
+    // setLoggedIn(false);
+    // tokenRef.current = null;
+    // localStorage.removeItem(ACCESS_TOKEN);
+  }, [setResponse]);
 
   const value = {
-    login,
+    isLoading,
+    setResponse,
     logout,
     isLoggedIn,
-    tokenRef,
   };
 
   return (

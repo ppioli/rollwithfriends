@@ -9,11 +9,11 @@ using server.Infraestructure;
 
 #nullable disable
 
-namespace server.Migrations
+namespace Server.Migrations
 {
     [DbContext(typeof(RwfDbContext))]
-    [Migration("20220603144634_REMOVEME_3")]
-    partial class REMOVEME_3
+    [Migration("20220605122851_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -366,6 +366,10 @@ namespace server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("DungeonMasterId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -374,6 +378,8 @@ namespace server.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DungeonMasterId");
 
                     b.HasIndex("SelectedSceneId")
                         .IsUnique();
@@ -390,9 +396,6 @@ namespace server.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CampaignId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Rol")
                         .HasColumnType("integer");
 
                     b.Property<string>("UserId")
@@ -479,6 +482,9 @@ namespace server.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 
@@ -502,7 +508,13 @@ namespace server.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("text");
+
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SurName")
                         .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -605,9 +617,17 @@ namespace server.Migrations
 
             modelBuilder.Entity("Server.EFModels.Campaign", b =>
                 {
+                    b.HasOne("Server.EFModels.User", "DungeonMaster")
+                        .WithMany()
+                        .HasForeignKey("DungeonMasterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Server.EFModels.Scene", "SelectedScene")
                         .WithOne()
                         .HasForeignKey("Server.EFModels.Campaign", "SelectedSceneId");
+
+                    b.Navigation("DungeonMaster");
 
                     b.Navigation("SelectedScene");
                 });

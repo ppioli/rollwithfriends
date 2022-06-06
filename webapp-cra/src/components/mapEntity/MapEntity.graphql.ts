@@ -1,75 +1,75 @@
-import { MapEntityUpdate } from "components/mapEntity/MapEntity";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { RecordSourceSelectorProxy } from "relay-runtime";
-import { useMutation, useSubscription } from "react-relay";
+import { useMutation } from "react-relay";
+import { MapEntityAddInput } from "components/mapEntity/__generated__/MapEntityAddMutation.graphql";
+import {
+  MapEntityUpdateInput,
+  MapEntityUpdateMutation,
+} from "components/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
-export function useMapEntityUpdateMutation(id: string) {
-  const [commit, isInFlight] = useMutation(graphql`
+export function useMapEntityUpdateMutation() {
+  const [commit, isInFlight] = useMutation<MapEntityUpdateMutation>(graphql`
     mutation MapEntityUpdateMutation($input: MapEntityUpdateInput!) {
       mapEntityUpdate(input: $input) {
         mapEntity {
           id
-          ...MapEntity_Token
+          x
+          y
+          width
+          height
         }
       }
     }
   `);
 
   return useCallback(
-    (input: MapEntityUpdate) => {
+    (input: MapEntityUpdateInput) => {
       commit({
         variables: {
-          input: {
-            id: id,
-            mapEntity: input,
-          },
+          input: input,
         },
         optimisticResponse: {
-          mapEntityUpdate: {
-            mapEntity: {
-              id: id,
-              ...input,
-            },
-          },
+          mapEntityUpdate: { mapEntity: input },
         },
       });
     },
-    [id, commit]
+    [commit]
   );
 }
 
-export function useMapEntityAddMutation(selectedScene: string) {
+export function useMapEntityAddMutation() {
   const [commit] = useMutation(graphql`
     mutation MapEntityAddMutation($input: MapEntityAddInput!) {
       mapEntityAdd(input: $input) {
         mapEntity {
           id
-          ...MapEntity_Token
+          x
+          y
+          width
+          height
         }
       }
     }
   `);
 
   return useCallback(
-    (input: MapEntityUpdate) => {
+    (input: MapEntityAddInput) => {
       commit({
         variables: {
-          input: {
-            mapEntity: input,
-          },
+          input: { ...input },
         },
         updater: (store: RecordSourceSelectorProxy) => {
           const payload = store.getRootField("mapEntityAdd")!;
           const newEntity = payload.getLinkedRecord("mapEntity");
-          const scene = store.get(selectedScene)!;
+          const scene = store.get(input.sceneId)!;
           const existing = scene.getLinkedRecords("entities") || [];
           scene.setLinkedRecords([...existing, newEntity], "entities");
         },
       });
     },
-    [commit, selectedScene]
+    [commit]
   );
 }
 

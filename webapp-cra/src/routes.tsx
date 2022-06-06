@@ -1,8 +1,10 @@
-import { RouteConfig } from "yarr";
+import { RouteConfig, RouteParameters, RouteProps } from "yarr";
 import { loadQuery, PreloadedQuery } from "react-relay";
 import { RelayEnvironment } from "lib/getRelayClientEnvironment";
 import { CampaignSelect } from "features/campaign/CampaignSelect";
 import { OperationType } from "relay-runtime";
+import { CampaignQuery } from "features/campaign/Campaign";
+import CampaignQueryGraphql from "features/campaign/__generated__/CampaignQuery.graphql";
 
 export interface PreloadedProps<T> {
   preloaded: T;
@@ -28,12 +30,36 @@ export const routes: RouteConfig[] = [
     component: async () => {
       const module = await import("features/campaign/CampaignSelect");
 
-      return module.CampaignSelectPage;
+      return module.CampaignSelectPage as any;
     },
     path: "/campaign",
-    preload: () => ({
+    preload: (a, b) => ({
       query: loadQuery(RelayEnvironment, CampaignSelect, {}),
     }),
+  },
+  {
+    component: async () => {
+      const module = await import("features/campaign/Campaign");
+
+      return module.CampaignPage;
+    },
+    path: "/campaign/:campaignId",
+    preload: (routeParameters: any, query: any) => {
+      return {
+        query: loadQuery(RelayEnvironment, CampaignQuery, {
+          id: routeParameters.campaignId,
+          selectedScene: query.selectedScene,
+        }),
+      };
+    },
+  },
+  {
+    component: async () => {
+      const module = await import("features/login/Login");
+
+      return module.Login;
+    },
+    path: "/login",
   },
   {
     component: async () => {

@@ -1,21 +1,13 @@
-import {
-  MapGraphic,
-  SelectedMapGraphic,
-} from "components/battleMap/MapGraphic";
-import {
-  MapEntity_Token$data,
-  MapEntity_Token$key,
-} from "components/mapEntity/__generated__/MapEntity_Token.graphql";
+import { MapGraphic } from "components/battleMap/MapGraphic";
+
 import { useMapEntityUpdateMutation } from "components/mapEntity/MapEntity.graphql";
 import React from "react";
-import { useFragment } from "react-relay";
 
-const graphql = require("babel-plugin-relay/macro");
+import { useMapEntityContext } from "components/battleMap/mapEntityLayer/MapEntityContext";
 
 export interface MapEntityProps {
   id: string;
-  entityData: MapEntity_Token$key;
-  selected: boolean;
+  data: MapEntityUpdate;
 }
 
 export interface MapEntityUpdate {
@@ -25,24 +17,18 @@ export interface MapEntityUpdate {
   height: number;
 }
 
-export function MapEntity({ id, entityData, selected }: MapEntityProps) {
-  const data: MapEntity_Token$data = useFragment(
-    graphql`
-      fragment MapEntity_Token on MapEntity {
-        x
-        y
-        width
-        height
-      }
-    `,
-    entityData
-  );
+export interface MapEntity {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
-  const update = useMapEntityUpdateMutation(id);
+export function MapEntity({ id, data }: MapEntityProps) {
+  const { select, isSelected } = useMapEntityContext();
 
-  if (selected) {
-    return <SelectedMapGraphic {...data} onUpdate={update} />;
-  }
+  const update = useMapEntityUpdateMutation();
 
-  return <MapGraphic {...data} />;
+  return <MapGraphic {...data} onClick={() => select(id)} />;
 }

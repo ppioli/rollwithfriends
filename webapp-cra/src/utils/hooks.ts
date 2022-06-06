@@ -1,5 +1,12 @@
 import { Point } from "utils/Point";
-import { useCallback, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import { isFunction } from "utils/tsHelpers";
 
 export function usePosition(
   initialPosition?: Point
@@ -31,19 +38,21 @@ const recoverStoredValue = (key: string) => {
 
 export function useLocalStorage<T = string>(
   key: string
-): [T | null, (val: T | null) => void] {
+): [T | null, Dispatch<SetStateAction<T | null>>] {
   const [value, setValue] = useState<T | null>(recoverStoredValue(key));
 
-  const setValueWrapper = useCallback(
-    (value: T | null) => {
-      setValue(value);
-      if (value === null) {
+  const setValueWrapper: Dispatch<SetStateAction<T | null>> = useCallback(
+    (action: SetStateAction<T | null>) => {
+      const newValue = isFunction(action) ? action(value) : action;
+
+      setValue(newValue);
+      if (newValue === null) {
         localStorage.removeItem(key);
       } else {
-        localStorage.setItem(key, JSON.stringify(value));
+        localStorage.setItem(key, JSON.stringify(newValue));
       }
     },
-    [key]
+    [key, value]
   );
 
   return [value, setValueWrapper];

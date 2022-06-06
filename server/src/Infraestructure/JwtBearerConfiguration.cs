@@ -21,7 +21,6 @@ public static class JwtBearerConfiguration
       options.TokenValidationParameters = new TokenValidationParameters()
       {
         ClockSkew = new System.TimeSpan(0, 0, 30),
-        ValidateLifetime = false
       };
       options.Events = new JwtBearerEvents()
       {

@@ -5,12 +5,6 @@ import { CornerData, CornersValues } from "utils/Corners";
 import { useDrag } from "@use-gesture/react";
 import { Point } from "utils/Point";
 
-const resizeHandlerStyle: CSSProperties = {
-  position: "absolute",
-  border: "1px solid black",
-  touchAction: "none",
-};
-
 const resizeHandlerSize = 10;
 
 interface MoveResizeHandlerProps {
@@ -98,33 +92,26 @@ function ResizeMoveBox({
   onResize,
   onUpdate,
 }: ResizeMoveBoxProps) {
-  const bind = useDrag(
-    ({ down, movement: [mx, my] }) => {
-      onMove({ x: mx, y: my });
-      if (!down) {
-        onUpdate({
-          x,
-          y,
-          width,
-          height,
-        });
-      }
-    },
-    {
-      preventDefault: true,
-      eventOptions: {
-        passive: false,
-        capture: true,
-      },
+  const bind = useDrag(({ down, movement: [mx, my], event }) => {
+    event.stopPropagation();
+
+    onMove({ x: mx, y: my });
+    if (!down) {
+      onUpdate({
+        x,
+        y,
+        width,
+        height,
+      });
     }
-  );
+  });
 
   return (
     <>
       <div
         {...bind()}
+        className={"border-primary border-2 absolute touch-none"}
         style={{
-          ...resizeHandlerStyle,
           top: y,
           left: x,
           width: width,
@@ -164,33 +151,25 @@ export const CornerDrag = ({
   const {
     vector: [cx, cy],
   } = corner;
-  const bind = useDrag(
-    ({ down, movement, ctrlKey }) => {
-      const { deltaSize, deltaPosition } = deltaHandler(movement, ctrlKey);
-      onResize(deltaSize, deltaPosition);
-      if (!down) {
-        onUpdate({
-          x,
-          y,
-          width,
-          height,
-        });
-      }
-    },
-    {
-      preventDefault: true,
-      eventOptions: {
-        passive: false,
-        capture: true,
-      },
+  const bind = useDrag(({ down, movement, ctrlKey, event }) => {
+    event.stopPropagation();
+    const { deltaSize, deltaPosition } = deltaHandler(movement, ctrlKey);
+    onResize(deltaSize, deltaPosition);
+    if (!down) {
+      onUpdate({
+        x,
+        y,
+        width,
+        height,
+      });
     }
-  );
+  });
   const { x, y, width, height } = tokenProps;
   return (
     <div
+      className={"bg-primary absolute touch-none"}
       {...bind()}
       style={{
-        ...resizeHandlerStyle,
         top: y + height / 2 + (cy * height) / 2 - resizeHandlerSize / 2,
         left: x + width / 2 + (cx * width) / 2 - resizeHandlerSize / 2,
         width: resizeHandlerSize,

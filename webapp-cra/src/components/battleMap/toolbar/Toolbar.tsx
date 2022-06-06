@@ -1,13 +1,6 @@
 import { useMapEntityAddMutation } from "components/mapEntity/MapEntity.graphql";
 import { CSSProperties } from "react";
 
-const style: CSSProperties = {
-  position: "absolute",
-  top: 10,
-  left: 10,
-  zIndex: 1000000,
-};
-
 const testToken = {
   x: 500,
   y: 500,
@@ -17,20 +10,23 @@ const testToken = {
 
 interface ToolbarProps {
   sceneId: string;
+  className: string;
 }
 
-export default function Toolbar({ sceneId }: ToolbarProps) {
-  const addEntity = useMapEntityAddMutation(sceneId);
+export default function Toolbar({ sceneId, className }: ToolbarProps) {
+  const addEntity = useMapEntityAddMutation();
 
   return (
-    <div style={style}>
-      <div className={"d-flex"}>
+    <div className={className}>
+      <div className={"d-flex flex-col"}>
         <button
           type={"button"}
-          className={"btn-primary"}
-          onClick={() => addEntity({ x: 100, y: 100, width: 100, height: 100 })}
+          className={"btn btn-primary rounded-full"}
+          onClick={() =>
+            addEntity({ sceneId, x: 100, y: 100, width: 100, height: 100 })
+          }
         >
-          Agregar token
+          +
         </button>
       </div>
     </div>

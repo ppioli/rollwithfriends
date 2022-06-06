@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3e0576608b8dc9065ad5e0a6f2c05394>>
+ * @generated SignedSource<<303ddcf99d6c997cc6f3b4c68ba9121c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,7 +13,10 @@ import { FragmentRefs } from "relay-runtime";
 export type MapEntityLayer_scene$data = {
   readonly entities: ReadonlyArray<{
     readonly id: string;
-    readonly " $fragmentSpreads": FragmentRefs<"MapEntity_Token">;
+    readonly x: number;
+    readonly y: number;
+    readonly width: number;
+    readonly height: number;
   }>;
   readonly " $fragmentType": "MapEntityLayer_scene";
 };
@@ -44,9 +47,32 @@ const node: ReaderFragment = {
           "storageKey": null
         },
         {
+          "alias": null,
           "args": null,
-          "kind": "FragmentSpread",
-          "name": "MapEntity_Token"
+          "kind": "ScalarField",
+          "name": "x",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "y",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "width",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "height",
+          "storageKey": null
         }
       ],
       "storageKey": null
@@ -56,6 +82,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "62fae52ea3d19251146cf3d1206d2114";
+(node as any).hash = "111acbdfe6145ba9ac1c0bc54a05343c";
 
 export default node;

@@ -9,7 +9,6 @@ import {
 } from "relay-runtime";
 
 import { createClient } from "graphql-ws";
-import { MutableRefObject } from "react";
 import { ACCESS_TOKEN } from "lib/useRefreshToken";
 
 export const GoogleClientId =
@@ -17,6 +16,7 @@ export const GoogleClientId =
 export const ServerAddress = "localhost:5289";
 export const ServerUrl = `http://${ServerAddress}`;
 export const ServerWsUrl = `ws://${ServerAddress}`;
+export const TokenUrl = `http://${ServerAddress}/connect/token`;
 
 function createSubscription(): SubscribeFunction {
   const wsClient = createClient({

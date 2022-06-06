@@ -24,4 +24,18 @@ public class MapEntity
     {
         throw new NotImplementedException();
     }
+
+    protected MapEntity()
+    {
+        
+    }
+    
+    public MapEntity(int x, int y, int width, int height, int sceneId)
+    {
+        X = x;
+        Y = y;
+        Width = width;
+        Height = height;
+        SceneId = sceneId;
+    }
 }

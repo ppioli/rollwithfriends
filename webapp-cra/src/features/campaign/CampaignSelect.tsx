@@ -1,12 +1,10 @@
 import { PreloadedQuery, usePreloadedQuery } from "react-relay";
 import { CampaignSelectQuery } from "./__generated__/CampaignSelectQuery.graphql";
-import { RouteProps } from "yarr";
-import {
-  CampaignCreate,
-  Card,
-  TitlePanel,
-} from "components/campaing/CampaignCreate";
-import { Input } from "components/campaing/Input";
+import { Link, RouteProps } from "yarr";
+import { CampaignCreate } from "components/campaing/CampaignCreate";
+import { TitlePanel } from "components/panel/TitlePanel";
+import { Card } from "components/panel/Card";
+
 const graphql = require("babel-plugin-relay/macro");
 
 export const CampaignSelect = graphql`
@@ -19,37 +17,43 @@ export const CampaignSelect = graphql`
   }
 `;
 
-type CampaignSelectPageProps = RouteProps<"/team">;
+export interface CampaignSelectPageProps extends RouteProps<"/campaign"> {
+  preloaded: {
+    query: PreloadedQuery<CampaignSelectQuery>;
+  };
+}
 
-export const CampaignSelectPage = ({ preloaded }: any) => {
+export const CampaignSelectPage = ({ preloaded }: CampaignSelectPageProps) => {
   const data = usePreloadedQuery<CampaignSelectQuery>(
     CampaignSelect,
     preloaded.query
   );
 
   return (
-    <>
+    <div className={"mx-auto container"}>
       {data.campaigns.length === 0 && <EmptyCampaignList />}
       {data.campaigns.length > 0 && (
-        <TitlePanel
-          title={"Select a campaign"}
-          description={"Jump right back to action"}
-        >
-          <Card>
+        <div>
+          <h1>Select a campaign</h1>
+          <h2>Jump right back to action</h2>
+          <div className={"d-flex flex-nowrap gap-2"}>
             {data.campaigns.map((c) => (
-              <div key={c.id}>
-                Id: {c.id} <br />
-                Name: {c.name} <br />
-                Description: {c.description} <br />
-                {/*<Link to={`/campaign/${c.id}`}>Go!</Link>*/}
+              <div key={c.id} className={"flex-none max-w-sm"}>
+                <Card>
+                  Name: {c.name} <br />
+                  Description: {c.description} <br />
+                  <Link className="btn btn-primary" to={`/campaign/${c.id}`}>
+                    Go!
+                  </Link>
+                </Card>
               </div>
             ))}
-          </Card>
-        </TitlePanel>
+          </div>
+        </div>
       )}
 
       <CampaignCreate />
-    </>
+    </div>
   );
 };
 
@@ -66,7 +70,7 @@ function EmptyCampaignList() {
           viewBox="0 0 24 24"
         >
           <path
-            fill-rule="evenodd"
+            fillRule="evenodd"
             d="M0 3.75A.75.75 0 01.75 3h7.497c1.566 0 2.945.8 3.751 2.014A4.496 4.496 0 0115.75 3h7.5a.75.75 0 01.75.75v15.063a.75.75 0 01-.755.75l-7.682-.052a3 3 0 00-2.142.878l-.89.891a.75.75 0 01-1.061 0l-.902-.901a3 3 0 00-2.121-.879H.75a.75.75 0 01-.75-.75v-15zm11.247 3.747a3 3 0 00-3-2.997H1.5V18h6.947a4.5 4.5 0 012.803.98l-.003-11.483zm1.503 11.485V7.5a3 3 0 013-3h6.75v13.558l-6.927-.047a4.5 4.5 0 00-2.823.971z"
           ></path>
         </svg>

@@ -51,11 +51,13 @@ enum ApplyPolicy {
 }
 
 type Campaign {
+  isDungeonMaster: Boolean!
+  selectedScene(sceneId: ID): Scene
   id: ID!
   name: String!
   description: String!
+  dungeonMasterId: String!
   scenes: [Scene!]!
-  selectedScene: Scene
   selectedSceneId: Int
   participants: [CampaignEnrollment!]!
 }
@@ -72,7 +74,6 @@ type CampaignAddPayload {
 type CampaignEnrollment implements Node {
   id: ID!
   userId: String!
-  rol: Rol!
   campaign: Campaign!
   campaignId: Int!
 }
@@ -82,7 +83,6 @@ input CampaignEnrollmentFilterInput {
   or: [CampaignEnrollmentFilterInput!]
   id: IdOperationFilterInput
   userId: StringOperationFilterInput
-  rol: RolOperationFilterInput
   campaign: CampaignFilterInput
   campaignId: ComparableInt32OperationFilterInput
 }
@@ -93,8 +93,8 @@ input CampaignFilterInput {
   id: IdOperationFilterInput
   name: StringOperationFilterInput
   description: StringOperationFilterInput
+  dungeonMasterId: StringOperationFilterInput
   scenes: ListFilterInputTypeOfSceneFilterInput
-  selectedScene: SceneFilterInput
   selectedSceneId: ComparableNullableOfInt32OperationFilterInput
   participants: ListFilterInputTypeOfCampaignEnrollmentFilterInput
 }
@@ -176,6 +176,7 @@ type MapEntity implements Node {
 }
 
 input MapEntityAddInput {
+  sceneId: ID!
   x: Int!
   y: Int!
   width: Int!
@@ -234,6 +235,9 @@ type Mutation {
   mapEntityUpdate(input: MapEntityUpdateInput!): MapEntityUpdatePayload!
   mapEntityAdd(input: MapEntityAddInput!): MapEntityAddPayload!
   mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
+  sceneAdd(input: SceneAddInput!): SceneAddPayload!
+  sceneAddDelete(input: SceneAddDeleteInput!): SceneAddDeletePayload!
+  sceneAddUpdate(input: SceneAddUpdateInput!): SceneAddUpdatePayload!
 }
 
 """
@@ -241,18 +245,6 @@ The node interface is implemented by entities that have a global unique identifi
 """
 interface Node {
   id: ID!
-}
-
-enum Rol {
-  DUNGEON_MASTER
-  PLAYER
-}
-
-input RolOperationFilterInput {
-  eq: Rol
-  neq: Rol
-  in: [Rol!]
-  nin: [Rol!]
 }
 
 type RootQuery {
@@ -276,6 +268,32 @@ type Scene implements Node {
   campaign: Campaign!
   campaignId: Int!
   entities: [MapEntity!]!
+}
+
+input SceneAddDeleteInput {
+  sceneId: ID!
+}
+
+type SceneAddDeletePayload {
+  scene: Scene
+}
+
+input SceneAddInput {
+  campaignId: ID!
+  name: String!
+}
+
+type SceneAddPayload {
+  scene: Scene
+}
+
+input SceneAddUpdateInput {
+  sceneId: ID!
+  name: String!
+}
+
+type SceneAddUpdatePayload {
+  scene: Scene
 }
 
 input SceneFilterInput {

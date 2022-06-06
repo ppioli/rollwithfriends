@@ -3,9 +3,9 @@ import React, { HTMLProps } from "react";
 
 interface InputProps {
   name: string;
-  label: string;
-  onBlur: any;
-  onChange: any;
+  label?: string;
+  onBlur?: any;
+  onChange?: any;
   layout?: string;
   input?: HTMLProps<HTMLInputElement>;
 }
@@ -27,13 +27,15 @@ export const Input = React.forwardRef(
     }
 
     return (
-      <div className={layout ?? "col-span-6 sm:col-span-3"}>
-        <label
-          htmlFor={name}
-          className="block text-sm font-medium text-gray-700"
-        >
-          {label}
-        </label>
+      <div className={layout ?? "w-full"}>
+        {label && (
+          <label
+            htmlFor={name}
+            className="block text-sm font-medium text-gray-700"
+          >
+            {label}
+          </label>
+        )}
         <input
           ref={ref}
           type={type ?? "text"}

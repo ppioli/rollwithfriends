@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
+using OpenIddict.Server.AspNetCore;
+using OpenIddict.Validation.AspNetCore;
 using Quartz;
 using Serilog;
 using Server.EFModels;
@@ -44,11 +46,6 @@ builder.Services
             options.UseOpenIddict();
         });
 
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearerConfiguration(
-        configuration["Jwt:Issuer"],
-        configuration["Jwt:Audience"]);
 
 builder.Services.AddIdentity<User, ApplicationRole>()
     .AddEntityFrameworkStores<RwfDbContext>()
@@ -99,21 +96,24 @@ builder.Services.AddOpenIddict()
         options =>
         {
             // Enable the token endpoint.
-            options.SetTokenEndpointUris("/connect/token");
+            options.SetTokenEndpointUris( new []{ "/connect/token", "/connect/google-sign-in" });
 
             // Enable the password and the refresh token flows.
             options.AllowPasswordFlow()
-                .AllowRefreshTokenFlow();
-
+                .AllowRefreshTokenFlow()
+                .AllowCustomFlow(AuthConstants.OpenIdTokenGrant);
+            
+            
             // Accept anonymous clients (i.e clients that don't send a client_id).
             options.AcceptAnonymousClients();
-
+            
             // Register the signing and encryption credentials.
             options.AddDevelopmentEncryptionCertificate()
                 .AddDevelopmentSigningCertificate();
 
             // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
             options.UseAspNetCore()
+                .DisableTransportSecurityRequirement()
                 .EnableTokenEndpointPassthrough();
         })
 
@@ -123,11 +123,17 @@ builder.Services.AddOpenIddict()
         {
             // Import the configuration from the local OpenIddict server instance.
             options.UseLocalServer();
-
+            
             // Register the ASP.NET Core host.
             options.UseAspNetCore();
         });
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+    options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+});
 
 builder.Services
     .AddGraphQLServer()
@@ -138,6 +144,7 @@ builder.Services
     .AddTypeExtension<CampaignMutation>()
     .AddTypeExtension<EnrollmentMutation>()
     .AddTypeExtension<MapEntityMutation>()
+    .AddTypeExtension<SceneMutations>()
     .AddProjections()
     .AddFiltering()
     .AddGlobalObjectIdentification()

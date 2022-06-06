@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.EFModels;
 
@@ -12,6 +13,8 @@ public static class WebHostExtensions
         var env = services.GetService<IHostEnvironment>();
         var context = services.GetService<RwfDbContext>()!;
 
+        // var userService = services.GetService<UserManager<User>>();
+        
         if (env.IsDevelopment() || env.IsStaging())
         {
             await context.Database.MigrateAsync();
@@ -73,5 +76,8 @@ public static class WebHostExtensions
 
             // await DatabaseSeeder.Seed(services);
         }
+        
+        // TODO Create admin user and roles
+
     }
 }

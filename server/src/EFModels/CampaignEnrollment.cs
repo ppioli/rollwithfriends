@@ -13,8 +13,6 @@ public class CampaignEnrollment
 
     public string UserId { get; set; } = default!;
 
-    public Rol Rol { get; set; }
-    
     public virtual Campaign Campaign { get; set; } = default!;
     public int CampaignId { get; set; }
 
@@ -23,10 +21,9 @@ public class CampaignEnrollment
         
     }
 
-    public CampaignEnrollment(string userId, Rol rol)
+    public CampaignEnrollment(string userId)
     {
         UserId = userId;
-        Rol = rol;
     }
 
     public static CampaignEnrollment Get(int id)

@@ -400,3 +400,4 @@ FodyWeavers.xsd
 Logs/
 
 appsettings.Development.json
+appsettings.Production.json

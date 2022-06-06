@@ -1,6 +1,11 @@
 import { useEffect, useRef } from "react";
-import { layer } from "components/battleMap/mapStyles";
 import BaseLayerProps from "components/battleMap/BaseLayerProps";
+
+interface GridProps extends BaseLayerProps {
+  width: number;
+  height: number;
+  className: string;
+}
 
 export default function Grid({
   cellSize,
@@ -8,7 +13,8 @@ export default function Grid({
   offsetY,
   width,
   height,
-}: BaseLayerProps) {
+  className,
+}: GridProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // const { ref, width, height } = useResizeDetector();
@@ -32,7 +38,7 @@ export default function Grid({
   }, [canvasRef, offsetX, offsetY, cellSize, width, height]);
 
   return (
-    <div style={{ ...layer, border: "2px solid red" }}>
+    <div className={className}>
       <canvas ref={canvasRef} width={width} height={height} />
     </div>
   );

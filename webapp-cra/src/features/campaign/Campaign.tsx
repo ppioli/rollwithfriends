@@ -1,58 +1,65 @@
+import { usePreloadedQuery } from "react-relay";
+import { CampaignQuery as CampaignQueryType } from "features/campaign/__generated__/CampaignQuery.graphql";
+import { SceneSelector } from "features/scene/SceneSelector";
+import { Chat } from "features/Chat";
+import { useNavigation } from "yarr";
 import { SelectedScene } from "features/scene/SelectedScene";
-import { useLazyLoadQuery } from "react-relay";
-import { CampaignQuery } from "features/campaign/__generated__/CampaignQuery.graphql";
+import Toolbar from "components/battleMap/toolbar/Toolbar";
 
 const graphql = require("babel-plugin-relay/macro");
 
-export const Campaign = () => {
-  // const { campaignId } = useParams();
-  const campaignId = "1";
-  const data = useLazyLoadQuery<CampaignQuery>(
-    graphql`
-      query CampaignQuery($id: ID!) {
-        campaigns(where: { id: { eq: $id } }) {
-          id
-          name
-          description
-          scenes {
-            id
-            ...SelectedScene_scene
-          }
-          selectedScene {
-            id
-          }
-        }
+export const CampaignQuery = graphql`
+  query CampaignQuery($id: ID!, $selectedScene: ID) {
+    campaigns(where: { id: { eq: $id } }) {
+      id
+      name
+      description
+      ...SceneSelector_campaign
+      selectedScene(sceneId: $selectedScene) {
+        id
+        ...SelectedScene_scene
       }
-    `,
-    { id: campaignId ?? "" }
+    }
+  }
+`;
+
+export const CampaignPage = ({ preloaded }: any) => {
+  const { replace } = useNavigation();
+
+  const data = usePreloadedQuery<CampaignQueryType>(
+    CampaignQuery,
+    preloaded.query
   );
 
   const campaign = data.campaigns[0];
 
-  if (!campaign.selectedScene) {
-    return <div>No scene selected</div>;
-  }
+  console.log(campaign.selectedScene);
 
   return (
-    <div>
-      <h1>Campaign {campaignId}</h1>
-
-      <div
-        className={"flex flex-row items-stretch"}
-        style={{
-          width: "100vw",
-          maxWidth: "100vw",
-          height: "100vh",
-          maxHeight: "100vh",
-          overflow: "hidden",
-        }}
-      >
+    <div className={"content-area relative"}>
+      {campaign.selectedScene && (
         <SelectedScene
-          id={campaign.scenes[0].id}
-          container={{ className: "grow h-full" }}
-          scene={campaign.scenes[0]}
+          className={"absolute inset-0"}
+          id={campaign.selectedScene.id}
+          scene={campaign.selectedScene}
         />
-        <div className={"flex-non w-96"}>Asdf</div>
+      )}
+
+      <div className={"absolute"}>
+        <SceneSelector
+          campaignId={campaign.id}
+          campaign={campaign}
+          onSceneChange={(sceneId) => {
+            replace({
+              pathname: `/campaign/${campaign.id}`,
+              search: `selectedScene=${encodeURIComponent(sceneId)}`,
+            });
+          }}
+        />
+      </div>
+
+      <div className={"absolute w-96 p-3 bottom-1 top-1 right-1"}>
+        <Chat />
       </div>
     </div>
   );
