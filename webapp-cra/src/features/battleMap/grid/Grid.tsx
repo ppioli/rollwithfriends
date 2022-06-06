@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import BaseLayerProps from "components/battleMap/BaseLayerProps";
+import BaseLayerProps from "features/battleMap/BaseLayerProps";
 
 interface GridProps extends BaseLayerProps {
   width: number;

@@ -6,7 +6,7 @@ import { Input } from "components/form/Input";
 import {
   CampaignAddInput,
   CampaignCreateMutation,
-} from "components/campaing/__generated__/CampaignCreateMutation.graphql";
+} from "features/campaing/__generated__/CampaignCreateMutation.graphql";
 import { TitlePanel } from "components/panel/TitlePanel";
 import { Card } from "components/panel/Card";
 import { useNavigation } from "yarr";

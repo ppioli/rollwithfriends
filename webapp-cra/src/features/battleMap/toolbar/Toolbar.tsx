@@ -1,4 +1,4 @@
-import { useMapEntityAddMutation } from "components/mapEntity/MapEntity.graphql";
+import { useMapEntityAddMutation } from "features/mapEntity/MapEntity.graphql";
 import { CSSProperties } from "react";
 
 const testToken = {

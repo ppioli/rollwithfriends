@@ -1,7 +1,7 @@
 import { PreloadedQuery, usePreloadedQuery } from "react-relay";
 import { CampaignSelectQuery } from "./__generated__/CampaignSelectQuery.graphql";
 import { Link, RouteProps } from "yarr";
-import { CampaignCreate } from "components/campaing/CampaignCreate";
+import { CampaignCreate } from "features/campaing/CampaignCreate";
 import { TitlePanel } from "components/panel/TitlePanel";
 import { Card } from "components/panel/Card";
 

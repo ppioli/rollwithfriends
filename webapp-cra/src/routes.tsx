@@ -1,10 +1,10 @@
 import { RouteConfig, RouteParameters, RouteProps } from "yarr";
 import { loadQuery, PreloadedQuery } from "react-relay";
 import { RelayEnvironment } from "lib/getRelayClientEnvironment";
-import { CampaignSelect } from "features/campaign/CampaignSelect";
+import { CampaignSelect } from "pages/campaign/CampaignSelect";
 import { OperationType } from "relay-runtime";
-import { CampaignQuery } from "features/campaign/Campaign";
-import CampaignQueryGraphql from "features/campaign/__generated__/CampaignQuery.graphql";
+import { CampaignQuery } from "pages/campaign/Campaign";
+import CampaignQueryGraphql from "pages/campaign/__generated__/CampaignQuery.graphql";
 
 export interface PreloadedProps<T> {
   preloaded: T;
@@ -20,7 +20,7 @@ export interface PreloadedQueryProps<TQuery extends OperationType>
 export const routes: RouteConfig[] = [
   {
     component: async () => {
-      const module = await import("features/dashboard/Dashboard");
+      const module = await import("pages/dashboard/Dashboard");
 
       return module.Dashboard;
     },
@@ -28,7 +28,7 @@ export const routes: RouteConfig[] = [
   },
   {
     component: async () => {
-      const module = await import("features/campaign/CampaignSelect");
+      const module = await import("pages/campaign/CampaignSelect");
 
       return module.CampaignSelectPage as any;
     },
@@ -39,7 +39,7 @@ export const routes: RouteConfig[] = [
   },
   {
     component: async () => {
-      const module = await import("features/campaign/Campaign");
+      const module = await import("pages/campaign/Campaign");
 
       return module.CampaignPage;
     },
@@ -55,7 +55,7 @@ export const routes: RouteConfig[] = [
   },
   {
     component: async () => {
-      const module = await import("features/login/Login");
+      const module = await import("pages/login/Login");
 
       return module.Login;
     },
@@ -63,7 +63,7 @@ export const routes: RouteConfig[] = [
   },
   {
     component: async () => {
-      const module = await import("features/home/Home");
+      const module = await import("pages/home/Home");
 
       return module.Home;
     },

@@ -19,7 +19,6 @@ const tryGetBoundingClientRect = (
   const target = event.event.currentTarget as any;
   if (target["getBoundingClientRect"] !== undefined) {
     const { x, y } = target.getBoundingClientRect();
-    console.log(" X Y ", x, y);
     return [x, y];
   }
 

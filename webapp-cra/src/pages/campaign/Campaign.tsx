@@ -1,10 +1,10 @@
 import { usePreloadedQuery } from "react-relay";
-import { CampaignQuery as CampaignQueryType } from "features/campaign/__generated__/CampaignQuery.graphql";
-import { SceneSelector } from "features/scene/SceneSelector";
-import { Chat } from "features/Chat";
+import { CampaignQuery as CampaignQueryType } from "pages/campaign/__generated__/CampaignQuery.graphql";
+import { SceneSelector } from "pages/scene/SceneSelector";
+import { Chat } from "pages/Chat";
 import { useNavigation } from "yarr";
-import { SelectedScene } from "features/scene/SelectedScene";
-import Toolbar from "components/battleMap/toolbar/Toolbar";
+import { SelectedScene } from "pages/scene/SelectedScene";
+import Toolbar from "features/battleMap/toolbar/Toolbar";
 
 const graphql = require("babel-plugin-relay/macro");
 

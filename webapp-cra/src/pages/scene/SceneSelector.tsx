@@ -1,9 +1,9 @@
 import { useFragment, useMutation } from "react-relay";
-import { useSceneAddMutation } from "features/scene/Scene.graphql";
+import { useSceneAddMutation } from "pages/scene/Scene.graphql";
 import {
   SceneSelector_campaign$data,
   SceneSelector_campaign$key,
-} from "features/scene/__generated__/SceneSelector_campaign.graphql";
+} from "pages/scene/__generated__/SceneSelector_campaign.graphql";
 import { useNavigation } from "yarr";
 const graphql = require("babel-plugin-relay/macro");
 

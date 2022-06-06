@@ -1,11 +1,11 @@
 import { useCallback } from "react";
 import { RecordSourceSelectorProxy } from "relay-runtime";
 import { useMutation } from "react-relay";
-import { MapEntityAddInput } from "components/mapEntity/__generated__/MapEntityAddMutation.graphql";
+import { MapEntityAddInput } from "features/mapEntity/__generated__/MapEntityAddMutation.graphql";
 import {
   MapEntityUpdateInput,
   MapEntityUpdateMutation,
-} from "components/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
+} from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 

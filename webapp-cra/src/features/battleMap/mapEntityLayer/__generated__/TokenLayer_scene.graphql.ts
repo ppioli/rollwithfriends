@@ -71,7 +71,7 @@ const node: ReaderFragment = (function () {
                 "fragmentPathInResult": [
                     "node"
                 ],
-                "operation": require('./TokenListQuery.graphql'),
+                "operation": require('features/battleMap/mapEntityLayer/__generated__/TokenListQuery.graphql'),
                 "identifierField": "id"
             }
         },

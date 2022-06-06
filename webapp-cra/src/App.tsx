@@ -4,7 +4,7 @@ import { RouteRenderer } from "yarr";
 import { RelayEnvironmentProvider } from "react-relay";
 import { Navbar } from "components/navbar/Navbar";
 import { RelayEnvironment } from "lib/getRelayClientEnvironment";
-import { Login } from "features/login/Login";
+import { Login } from "pages/login/Login";
 
 export default function App() {
   const { isLoading, isLoggedIn } = useSessionContext();

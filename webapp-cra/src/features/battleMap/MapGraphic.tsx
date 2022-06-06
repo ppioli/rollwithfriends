@@ -1,12 +1,11 @@
-import withMoveResizeHandler from "components/battleMap/withMoveResizeHandler";
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, MouseEventHandler } from "react";
 
 export interface MapGraphic {
   x: number;
   y: number;
   width: number;
   height: number;
-  onClick: () => void;
+  onClick: MouseEventHandler;
 }
 
 function Image({ x, y, width, height, onClick }: MapGraphic) {
@@ -19,9 +18,8 @@ function Image({ x, y, width, height, onClick }: MapGraphic) {
   };
 
   return (
-    <div style={style}>
+    <div style={style} onClick={onClick}>
       <img
-        onClick={onClick}
         src={
           "https://i.pinimg.com/originals/6c/12/e7/6c12e78a564a65f2c4d56556a1ff922c.png"
         }

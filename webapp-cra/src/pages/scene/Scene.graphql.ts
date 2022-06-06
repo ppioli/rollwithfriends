@@ -1,6 +1,6 @@
 import { useMutation } from "react-relay";
 import { useCallback } from "react";
-import { SceneAddMutation } from "features/scene/__generated__/SceneAddMutation.graphql";
+import { SceneAddMutation } from "pages/scene/__generated__/SceneAddMutation.graphql";
 import { RecordSourceSelectorProxy } from "relay-runtime";
 
 const graphql = require("babel-plugin-relay/macro");

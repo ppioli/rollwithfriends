@@ -29,7 +29,7 @@
     }
 
     .bg-primary {
-        @apply bg-indigo-600
+        @apply bg-indigo-800
     }
 
     .border-primary {

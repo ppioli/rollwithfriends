@@ -1,15 +1,15 @@
 import {
   SelectedScene_scene$data,
   SelectedScene_scene$key,
-} from "features/scene/__generated__/SelectedScene_scene.graphql";
+} from "pages/scene/__generated__/SelectedScene_scene.graphql";
 import { HTMLProps, useRef } from "react";
 import { useFragment } from "react-relay";
 import { useResizeDetector } from "react-resize-detector";
-import { useMapEntitySubscription } from "components/mapEntity/MapEntity.graphql";
-import Grid from "components/battleMap/grid/Grid";
-import MapEntityLayer from "components/battleMap/mapEntityLayer/MapEntityLayer";
-import useMapControl from "components/battleMap/useMapControl";
-import Toolbar from "components/battleMap/toolbar/Toolbar";
+import { useMapEntitySubscription } from "features/mapEntity/MapEntity.graphql";
+import Grid from "features/battleMap/grid/Grid";
+import MapEntityLayer from "features/battleMap/mapEntityLayer/MapEntityLayer";
+import useMapControl from "features/battleMap/useMapControl";
+import Toolbar from "features/battleMap/toolbar/Toolbar";
 
 export interface SceneProps {
   id: string;

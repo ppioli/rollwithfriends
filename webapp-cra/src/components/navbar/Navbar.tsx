@@ -7,8 +7,6 @@ import {
 } from "components/navbar/NavbarItem";
 import classNames from "classnames";
 import { useToggle } from "utils/hooks/useToggle";
-import { useSessionContext } from "components/LoginContext";
-import { Link } from "yarr";
 
 const navbarMenuItems: NavbarItemProps[] = [
   { label: "Home", href: "/" },
