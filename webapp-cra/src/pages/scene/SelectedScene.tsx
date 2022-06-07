@@ -2,14 +2,14 @@ import {
   SelectedScene_scene$data,
   SelectedScene_scene$key,
 } from "pages/scene/__generated__/SelectedScene_scene.graphql";
-import { HTMLProps, useRef } from "react";
+import { useRef } from "react";
 import { useFragment } from "react-relay";
 import { useResizeDetector } from "react-resize-detector";
-import { useMapEntitySubscription } from "features/mapEntity/MapEntity.graphql";
 import Grid from "features/battleMap/grid/Grid";
 import MapEntityLayer from "features/battleMap/mapEntityLayer/MapEntityLayer";
 import useMapControl from "features/battleMap/useMapControl";
 import Toolbar from "features/battleMap/toolbar/Toolbar";
+import { Point } from "utils/Point";
 
 export interface SceneProps {
   id: string;
@@ -20,7 +20,10 @@ export interface SceneProps {
 const graphql = require("babel-plugin-relay/macro");
 
 export function SelectedScene({ id, scene, className }: SceneProps) {
-  useMapEntitySubscription(id);
+  console.info(
+    " ++++++++ ++++++++ ++++++++ ++++++++ Redrawing scene ++++++++ ++++++++ ++++++++ ++++++++ "
+  );
+  // useMapEntitySubscription(id);
 
   const data: SelectedScene_scene$data = useFragment(
     graphql`
@@ -34,28 +37,26 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
 
   const { ref, width, height } = useResizeDetector();
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const {
-    bind,
-    x: offsetX,
-    y: offsetY,
-  } = useMapControl({
-    onDrag: ({ x: dx, y: dy }) => {
+  const { bind, offsetX, offsetY, scale } = useMapControl({
+    inputContainerRef,
+    onChange: ([dx, dy], scale) => {
       if (containerRef.current) {
-        containerRef.current.style.setProperty(
-          "transform",
-          `translate(${dx}px, ${dy}px)`
-        );
+        containerRef.current.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
       }
     },
   });
 
   const cellSize = 60;
 
+  console.info(scale);
+
   const layerProps = {
     offsetX,
     offsetY,
     cellSize,
+    scale,
   };
 
   const draw = width && height && width > 50 && height > 50;
@@ -63,6 +64,7 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
   return (
     <div ref={ref} className={className}>
       <div
+        ref={inputContainerRef}
         {...bind()}
         className={"w-full h-full relative touch-none overflow-hidden"}
       >
@@ -75,17 +77,13 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
               className={"absolute"}
             />
 
-            <MapEntityLayer
-              {...layerProps}
-              className={"absolute"}
-              entities={data}
-            />
+            <MapEntityLayer {...layerProps} entities={data} />
           </div>
         )}
         <div className={"absolute left-1 bottom-1"}>
           {`Position (${offsetX},${offsetY})`} <br />
           {`Canvas size (${width},${height})`} <br />
-          {`Scale (${1})`} <br />
+          {`Scale (${scale})`} <br />
         </div>
 
         <Toolbar

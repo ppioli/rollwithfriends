@@ -1,5 +1,4 @@
 import React, { CSSProperties, ReactNode, useCallback, useState } from "react";
-import { usePosition } from "utils/hooks";
 import { CornerData, CornersValues } from "utils/Corners";
 import { useDrag, useGesture } from "@use-gesture/react";
 import { Point } from "utils/Point";
@@ -104,8 +103,11 @@ export function ResizeMoveBox({
   onChange,
   onSubmit,
 }: ResizeMoveBoxProps) {
-  const [dx, dy, setDeltaPosition] = usePosition({ x: 0, y: 0 });
-  const [dw, dh, setDeltaSize] = usePosition({ x: 0, y: 0 });
+  const [deltaPos, setDeltaPos] = useState([0, 0]);
+  const [deltaSize, setDeltaSize] = useState([0, 0]);
+
+  const [dx, dy] = deltaPos;
+  const [dw, dh] = deltaSize;
 
   const isChanged =
     Math.abs(dx) > 5 ||
@@ -133,17 +135,17 @@ export function ResizeMoveBox({
     if (onSubmit && isChanged) {
       onSubmit(buildEvent());
     }
-    setDeltaPosition({ x: 0, y: 0 });
-    setDeltaSize({ x: 0, y: 0 });
+    setDeltaPos([0, 0]);
+    setDeltaSize([0, 0]);
   };
 
   const bind = useGesture({
     onDragStart: ({ event, movement: [mx, my] }) => {
       event.stopPropagation();
     },
-    onDrag: ({ event, dragging, movement: [mx, my] }) => {
+    onDrag: ({ event, dragging, movement }) => {
       event.stopPropagation();
-      setDeltaPosition({ x: mx, y: my });
+      setDeltaPos(movement);
       notifyChange();
     },
     onDragEnd: ({ event, dragging }) => {
@@ -167,8 +169,8 @@ export function ResizeMoveBox({
         <CornerDrag
           key={`corner-${corner.vector[0]}-${corner.vector[1]}`}
           onResize={({ dx, dy, dw, dh }) => {
-            setDeltaPosition({ x: dx, y: dy });
-            setDeltaSize({ x: dw, y: dh });
+            setDeltaPos([dx, dy]);
+            setDeltaSize([dw, dh]);
             notifyChange();
           }}
           onSubmit={() => notifySubmit()}

@@ -1,10 +1,11 @@
 import { FullGestureState } from "@use-gesture/react";
+import { Point } from "utils/Point";
 
 export function localPoint(
   event: Omit<FullGestureState<"drag">, "event"> & {
     event: PointerEvent | MouseEvent | TouchEvent | KeyboardEvent;
   }
-) {
+): Point {
   const [x, y] = event.xy;
   const [cx, cy] = tryGetBoundingClientRect(event);
 

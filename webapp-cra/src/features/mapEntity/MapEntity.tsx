@@ -9,7 +9,7 @@ export interface MapEntity extends BoxProps {
   id: string;
 }
 
-export function MapEntity({ id, ...data }: MapEntity) {
+export function MapEntity({ id, ...data }: MapEntity & { scale: number }) {
   const { selectToggle, selectSet } = useMapEntityContext();
 
   const handleClick = (add: boolean) => {

@@ -8,6 +8,7 @@ interface GridProps extends BaseLayerProps {
 }
 
 export default function Grid({
+  scale,
   cellSize,
   offsetX,
   offsetY,
@@ -17,25 +18,28 @@ export default function Grid({
 }: GridProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // const { ref, width, height } = useResizeDetector();
-
   useEffect(() => {
     if (canvasRef.current) {
       console.log("Drawing grid");
-      const startX = -(cellSize - (offsetX % cellSize));
-      const startY = -(cellSize - (offsetY % cellSize));
+      let scaleCellSize = cellSize * scale;
+
+      while (scaleCellSize < 10) {
+        scaleCellSize *= 5;
+      }
+      const startX = -(scaleCellSize - (offsetX % scaleCellSize));
+      const startY = -(scaleCellSize - (offsetY % scaleCellSize));
 
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
         ctx.clearRect(0, 0, width, height);
-        for (let i = startX; i < width; i += cellSize) {
-          for (let j = startY; j < height; j += cellSize) {
-            ctx.strokeRect(i, j, cellSize, cellSize);
+        for (let i = startX; i < width; i += scaleCellSize) {
+          for (let j = startY; j < height; j += scaleCellSize) {
+            ctx.strokeRect(i, j, scaleCellSize, scaleCellSize);
           }
         }
       }
     }
-  }, [canvasRef, offsetX, offsetY, cellSize, width, height]);
+  }, [canvasRef, offsetX, offsetY, cellSize, width, height, scale]);
 
   return (
     <div className={className}>

@@ -8,20 +8,6 @@ import {
 } from "react";
 import { isFunction } from "utils/tsHelpers";
 
-export function usePosition(
-  initialPosition?: Point
-): [number, number, (value: Point) => void] {
-  const [x, setX] = useState(initialPosition?.x ?? 0);
-  const [y, setY] = useState(initialPosition?.y ?? 0);
-
-  const setPosition = useCallback(({ x, y }: Point) => {
-    setX(x);
-    setY(y);
-  }, []);
-
-  return [x, y, setPosition];
-}
-
 const recoverStoredValue = (key: string) => {
   try {
     const stored = localStorage.getItem(key);
