@@ -12,8 +12,8 @@ export interface MapEntity extends BoxProps {
 export function MapEntity({ id, ...data }: MapEntity) {
   const { selectToggle, selectSet } = useMapEntityContext();
 
-  const handleClick: MouseEventHandler = (e) => {
-    if (e.shiftKey) {
+  const handleClick = (add: boolean) => {
+    if (add) {
       selectToggle([id]);
     } else {
       selectSet([id]);

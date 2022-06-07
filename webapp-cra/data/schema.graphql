@@ -226,13 +226,13 @@ input MapEntityUpdateInput {
 }
 
 type MapEntityUpdatePayload {
-  mapEntity: MapEntity
+  mapEntity: [MapEntity!]
 }
 
 type Mutation {
   campaignAdd(input: CampaignAddInput!): CampaignAddPayload!
   enrollmentAdd(input: EnrollmentAddInput!): EnrollmentAddPayload!
-  mapEntityUpdate(input: MapEntityUpdateInput!): MapEntityUpdatePayload!
+  mapEntityUpdate(input: [MapEntityUpdateInput!]!): MapEntityUpdatePayload!
   mapEntityAdd(input: MapEntityAddInput!): MapEntityAddPayload!
   mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
   sceneAdd(input: SceneAddInput!): SceneAddPayload!

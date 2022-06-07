@@ -4,7 +4,9 @@ import { MapEntity } from "features/mapEntity/MapEntity";
 import { useFragment } from "react-relay";
 import { MapEntityContext } from "features/battleMap/mapEntityLayer/MapEntityContext";
 import { EntitySelectBox } from "features/battleMap/mapEntityLayer/EntitySelectBox";
-import { useCallback, useMemo, useState } from "react";
+import { SyntheticEvent, useCallback, useMemo, useRef, useState } from "react";
+import classNames from "classnames";
+import { useDrag, useGesture } from "@use-gesture/react";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -74,8 +76,6 @@ export default function MapEntityLayer({
     setSelected(new Set(ids));
   }, []);
 
-  console.log("Selection size ", selected.size);
-
   const selectionBounds: [[number, number], [number, number]] | null =
     useMemo(() => {
       if (selected.size === 0) {
@@ -101,9 +101,84 @@ export default function MapEntityLayer({
       ];
     }, [selected, data]);
 
-  console.log("Bounds ", selectionBounds);
-
   const isSelected = useCallback((id: string) => selected.has(id), [selected]);
+  const selectBoxRef = useRef<HTMLDivElement>(null);
+  const bindOuter = useGesture(
+    {
+      onClick: (event) => {
+        // console.log(event);
+        console.log("Clicked");
+        selectSet([]);
+      },
+      onDragStart: () => {
+        console.log("START");
+      },
+      onDrag: (e) => {
+        if (!e.intentional) {
+          return;
+        }
+        console.log("DRAG int", e.intentional);
+      },
+      onDragEnd: (event) => {
+        if (!event.intentional) {
+          return;
+        }
+        console.log("END ", event.intentional);
+      },
+    },
+    {
+      drag: {
+        filterTaps: true,
+        tapsThreshold: 10,
+      },
+    }
+  );
+
+  // onPointerUp: ({ event, shiftKey }) => {
+  //   if (!event.isPropagationStopped() && !shiftKey) {
+  //     console.log("up parent");
+  //
+  //   }
+  // },
+  // onDragStart: (e) => {
+  //   console.log(e);
+  //   if (!e.ctrlKey) {
+  //     e.event.stopPropagation();
+  //     setDragging(true);
+  //     console.log("drag start parent");
+  //   }
+  // },
+  // onDrag: ({ event, ctrlKey, dragging }) => {
+  //   if (!event.bubbles) {
+  //     console.log("No Bubbles");
+  //   }
+  //   if (ctrlKey || !dragging) {
+  //     return;
+  //   }
+  //   event.stopPropagation();
+  //   console.log("dragging parent");
+  // },
+  // onDragEnd: ({ event, ctrlKey }) => {
+  //   if (!event.bubbles) {
+  //     console.log("No Bubbles");
+  //   }
+  //   if (dragging) {
+  //     event.stopPropagation();
+  //     event.preventDefault();
+  //     console.log("end parent");
+  //   } else {
+  //     console.log("Clicked kinda");
+  //     selectSet([]);
+  //   }
+  //   setDragging(false);
+  // },
+  //   },
+  //   {
+  //     drag: {
+  //       filterTaps: true,
+  //     },
+  //   }
+  // );
 
   const context = {
     selectionBounds,
@@ -116,30 +191,44 @@ export default function MapEntityLayer({
 
   return (
     <MapEntityContext.Provider value={context}>
-      <div className={className} style={{ top: offsetY, left: offsetX }}>
-        {data.entities
-          .filter((e) => !isSelected(e.id))
-          .map((data) => {
-            return <MapEntity key={data.id} {...data} />;
-          })}
-      </div>
-      <EntitySelectBox>
-        {(offsetX, offsetY) =>
-          data.entities
-            .filter((e) => isSelected(e.id))
+      <div
+        id={"click-box"}
+        className={"absolute w-screen h-screen bg-cyan-700 touch-none"}
+        {...bindOuter()}
+      >
+        <div
+          className={classNames(className)}
+          style={{ top: offsetY, left: offsetX }}
+        >
+          {data.entities
+            .filter((e) => !isSelected(e.id))
             .map((data) => {
-              const { x, y, ...rest } = data;
-              return (
-                <MapEntity
-                  key={data.id}
-                  x={x - offsetX}
-                  y={y - offsetY}
-                  {...rest}
-                />
-              );
-            })
-        }
-      </EntitySelectBox>
+              return <MapEntity key={data.id} {...data} />;
+            })}
+
+          <EntitySelectBox>
+            {(offsetX, offsetY) =>
+              data.entities
+                .filter((e) => isSelected(e.id))
+                .map((data) => {
+                  const { x, y, ...rest } = data;
+                  return (
+                    <MapEntity
+                      key={data.id}
+                      x={x - offsetX}
+                      y={y - offsetY}
+                      {...rest}
+                    />
+                  );
+                })
+            }
+          </EntitySelectBox>
+          <div className={"absolute"} ref={selectBoxRef}>
+            <div className={"w-full h-full border-2 border-primary absolute"} />
+            <div className={"w-full h-full bg-primary opacity-30 absolute"} />
+          </div>
+        </div>
+      </div>
     </MapEntityContext.Provider>
   );
 }

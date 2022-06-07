@@ -1,7 +1,7 @@
-import React, { CSSProperties, ReactNode, useCallback } from "react";
+import React, { CSSProperties, ReactNode, useCallback, useState } from "react";
 import { usePosition } from "utils/hooks";
 import { CornerData, CornersValues } from "utils/Corners";
-import { useDrag } from "@use-gesture/react";
+import { useDrag, useGesture } from "@use-gesture/react";
 import { Point } from "utils/Point";
 import { BoxProps } from "components/moveResizeHandler/BoxProps";
 
@@ -107,6 +107,18 @@ export function ResizeMoveBox({
   const [dx, dy, setDeltaPosition] = usePosition({ x: 0, y: 0 });
   const [dw, dh, setDeltaSize] = usePosition({ x: 0, y: 0 });
 
+  const isChanged =
+    Math.abs(dx) > 5 ||
+    Math.abs(dy) > 5 ||
+    Math.abs(dw) > 5 ||
+    Math.abs(dh) > 5;
+
+  const notifyChange = () => {
+    if (onChange && isChanged) {
+      onChange(buildEvent());
+    }
+  };
+
   const buildEvent = () => {
     return {
       dx,
@@ -116,30 +128,29 @@ export function ResizeMoveBox({
     };
   };
 
-  const notifyChange = () => {
-    if (onChange) {
-      onChange(buildEvent());
-    }
-  };
-
   const notifySubmit = () => {
-    if (onSubmit) {
+    console.log("Notify submit ", isChanged);
+    if (onSubmit && isChanged) {
       onSubmit(buildEvent());
-      setDeltaPosition({ x: 0, y: 0 });
-      setDeltaSize({ x: 0, y: 0 });
     }
+    setDeltaPosition({ x: 0, y: 0 });
+    setDeltaSize({ x: 0, y: 0 });
   };
 
-  const bind = useDrag(({ down, movement: [mx, my], event }) => {
-    event.stopPropagation();
-
-    setDeltaPosition({ x: mx, y: my });
-    notifyChange();
-    if (!down) {
+  const bind = useGesture({
+    onDragStart: ({ event, movement: [mx, my] }) => {
+      event.stopPropagation();
+    },
+    onDrag: ({ event, dragging, movement: [mx, my] }) => {
+      event.stopPropagation();
+      setDeltaPosition({ x: mx, y: my });
+      notifyChange();
+    },
+    onDragEnd: ({ event, dragging }) => {
+      event.stopPropagation();
       notifySubmit();
-    }
+    },
   });
-
   return (
     <>
       <div
@@ -188,21 +199,26 @@ export const CornerDrag = ({
   const {
     vector: [cx, cy],
   } = corner;
-  const bind = useDrag(({ down, movement, ctrlKey, event }) => {
-    event.stopPropagation();
-    const { deltaSize, deltaPosition } = deltaHandler(movement, ctrlKey);
+  const bind = useDrag(
+    ({ down, movement, ctrlKey, event }) => {
+      event.stopPropagation();
+      const { deltaSize, deltaPosition } = deltaHandler(movement, ctrlKey);
 
-    onResize({
-      dx: deltaPosition.x,
-      dy: deltaPosition.y,
-      dw: deltaSize.x,
-      dh: deltaSize.y,
-    });
+      onResize({
+        dx: deltaPosition.x,
+        dy: deltaPosition.y,
+        dw: deltaSize.x,
+        dh: deltaSize.y,
+      });
 
-    if (!down) {
-      onSubmit();
+      if (!down) {
+        onSubmit();
+      }
+    },
+    {
+      filterTaps: true,
     }
-  });
+  );
   const { x, y, width, height } = tokenProps;
   return (
     <div

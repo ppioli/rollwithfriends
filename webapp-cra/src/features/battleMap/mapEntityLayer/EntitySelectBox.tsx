@@ -5,6 +5,7 @@ import {
 import { useMapEntityContext } from "features/battleMap/mapEntityLayer/MapEntityContext";
 import { ReactNode, useRef } from "react";
 import { useMapEntityUpdateMutation } from "features/mapEntity/MapEntity.graphql";
+import { MapEntityUpdateInput } from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
 
 interface EntitySelectBoxProps {
   children: (offsetX: number, offsetY: number) => ReactNode;
@@ -13,39 +14,39 @@ interface EntitySelectBoxProps {
 export function EntitySelectBox({ children }: EntitySelectBoxProps) {
   const { selectionBounds, getSelected } = useMapEntityContext();
   const update = useMapEntityUpdateMutation();
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   if (selectionBounds === null) {
     return null;
   }
-
+  const [[sx, sy], [ex, ey]] = selectionBounds;
   const onChange = ({ dx, dy, rw, rh }: ResizeMoveBoxEvent) => {
-    console.log("Changing: ", dx, dy, rw, rh);
     if (containerRef.current !== null) {
       containerRef.current.style.transform = `translate(${dx}px, ${dy}px) scaleX(${rw}) scaleY(${rh})`;
     }
   };
 
   const onSubmit = ({ dx, dy, rw, rh }: ResizeMoveBoxEvent) => {
-    getSelected().forEach((e) => {
-      update({
-        id: e.id,
-        x: e.x + dx,
-        y: e.y + dy,
-        width: e.width * rw,
-        height: e.height * rh,
-      });
-    });
+    const input: MapEntityUpdateInput[] = getSelected().map((e) => ({
+      id: e.id,
+      x: sx + Math.round((e.x - sx + dx) * rw),
+      y: sy + Math.round((e.y - sy + dy) * rh),
+      width: Math.round(e.width * rw),
+      height: Math.round(e.height * rh),
+    }));
+
+    update({ input });
+
     if (containerRef.current !== null) {
       containerRef.current.style.transform = ``;
     }
   };
 
-  const [[sx, sy], [ex, ey]] = selectionBounds;
   return (
     <>
       <div
-        className="absolute "
+        className="absolute"
         style={{ top: sy, left: sx }}
         ref={containerRef}
       >

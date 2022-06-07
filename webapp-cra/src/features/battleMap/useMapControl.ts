@@ -5,16 +5,11 @@ import { usePosition } from "utils/hooks";
 import { localPoint } from "utils/localPoint";
 
 interface MapControlProps {
-  selectBoxRef: RefObject<HTMLDivElement>;
   onDrag?: (deltaPos: Point) => void;
   onScale?: (scale: number) => void;
 }
 
-export default function useMapControl({
-  onDrag,
-  onScale,
-  selectBoxRef,
-}: MapControlProps) {
+export default function useMapControl({ onDrag, onScale }: MapControlProps) {
   const [dragStart, setDragStart] = useState<Point | null>(null);
   const [selectDragStart, setSelectDragStart] = useState<Point | null>(null);
   const [scale, setScale] = useState(1);
@@ -26,9 +21,10 @@ export default function useMapControl({
       const [x, y] = localPoint(evt);
       if (evt.ctrlKey) {
         setDragStart({ x, y });
-      } else if (selectBoxRef.current != null) {
-        setSelectDragStart({ x, y });
       }
+      // else if (selectBoxRef.current != null) {
+      //   setSelectDragStart({ x, y });
+      // }
     },
     onDrag: (evt) => {
       const [nx, ny] = localPoint(evt);
@@ -38,15 +34,15 @@ export default function useMapControl({
         onDrag(deltaPos);
         setDeltaPosition(deltaPos);
       }
-      if (selectDragStart !== null && selectBoxRef.current != null) {
-        // TODO Normalize points so you can drag backwards
-        const { x, y } = selectDragStart;
-        selectBoxRef.current.style.top = `${y}px`;
-        selectBoxRef.current.style.left = `${x}px`;
-        selectBoxRef.current.style.width = `${nx - x}px`;
-        selectBoxRef.current.style.height = `${ny - y}px`;
-        selectBoxRef.current.style.display = "block";
-      }
+      // if (selectDragStart !== null && selectBoxRef.current != null) {
+      //   // TODO Normalize points so you can drag backwards
+      //   const { x, y } = selectDragStart;
+      //   selectBoxRef.current.style.top = `${y}px`;
+      //   selectBoxRef.current.style.left = `${x}px`;
+      //   selectBoxRef.current.style.width = `${nx - x}px`;
+      //   selectBoxRef.current.style.height = `${ny - y}px`;
+      //   selectBoxRef.current.style.display = "block";
+      // }
     },
     onDragEnd: () => {
       if (dragStart != null) {
@@ -57,10 +53,10 @@ export default function useMapControl({
         }
       }
 
-      if (selectDragStart != null && selectBoxRef.current) {
-        setSelectDragStart(null);
-        selectBoxRef.current.style.display = "none";
-      }
+      // if (selectDragStart != null && selectBoxRef.current) {
+      //   setSelectDragStart(null);
+      //   selectBoxRef.current.style.display = "none";
+      // }
     },
     onWheel: (evt) => {},
     onScroll: (evt) => console.log(evt),

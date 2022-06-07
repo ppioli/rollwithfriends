@@ -34,13 +34,12 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
 
   const { ref, width, height } = useResizeDetector();
   const containerRef = useRef<HTMLDivElement>(null);
-  const selectBoxRef = useRef<HTMLDivElement>(null);
+
   const {
     bind,
     x: offsetX,
     y: offsetY,
   } = useMapControl({
-    selectBoxRef,
     onDrag: ({ x: dx, y: dy }) => {
       if (containerRef.current) {
         containerRef.current.style.setProperty(
@@ -87,10 +86,6 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
           {`Position (${offsetX},${offsetY})`} <br />
           {`Canvas size (${width},${height})`} <br />
           {`Scale (${1})`} <br />
-        </div>
-        <div className={"absolute"} ref={selectBoxRef}>
-          <div className={"w-full h-full border-2 border-primary absolute"} />
-          <div className={"w-full h-full bg-primary opacity-30 absolute"} />
         </div>
 
         <Toolbar

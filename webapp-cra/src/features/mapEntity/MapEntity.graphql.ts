@@ -3,15 +3,15 @@ import { RecordSourceSelectorProxy } from "relay-runtime";
 import { useMutation } from "react-relay";
 import { MapEntityAddInput } from "features/mapEntity/__generated__/MapEntityAddMutation.graphql";
 import {
-  MapEntityUpdateInput,
   MapEntityUpdateMutation,
+  MapEntityUpdateMutation$variables,
 } from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
 export function useMapEntityUpdateMutation() {
   const [commit, isInFlight] = useMutation<MapEntityUpdateMutation>(graphql`
-    mutation MapEntityUpdateMutation($input: MapEntityUpdateInput!) {
+    mutation MapEntityUpdateMutation($input: [MapEntityUpdateInput!]!) {
       mapEntityUpdate(input: $input) {
         mapEntity {
           id
@@ -25,13 +25,11 @@ export function useMapEntityUpdateMutation() {
   `);
 
   return useCallback(
-    (input: MapEntityUpdateInput) => {
+    (variables: MapEntityUpdateMutation$variables) => {
       commit({
-        variables: {
-          input: input,
-        },
+        variables,
         optimisticResponse: {
-          mapEntityUpdate: { mapEntity: input },
+          mapEntityUpdate: { mapEntity: variables.input },
         },
       });
     },

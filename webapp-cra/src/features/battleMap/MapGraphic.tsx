@@ -1,15 +1,17 @@
 import React, { CSSProperties, MouseEventHandler } from "react";
+import { useGesture } from "@use-gesture/react";
 
 export interface MapGraphic {
   x: number;
   y: number;
   width: number;
   height: number;
-  onClick: MouseEventHandler;
+  onClick: (add: boolean) => void;
 }
 
 function Image({ x, y, width, height, onClick }: MapGraphic) {
   const style: CSSProperties = {
+    touchAction: "none",
     position: "absolute",
     top: y,
     left: x,
@@ -17,9 +19,36 @@ function Image({ x, y, width, height, onClick }: MapGraphic) {
     height: height,
   };
 
+  const bind = useGesture({
+    // onPointerUp: ({ event, shiftKey }) => {
+    //   event.stopPropagation();
+    //   onClick(event.shiftKey);
+    // },
+    onClick: ({ event, down, shiftKey }) => {
+      console.log("Evt ", event.shiftKey);
+      onClick(event.shiftKey);
+      event.nativeEvent.stopImmediatePropagation();
+      event.stopPropagation();
+    },
+    // onDragStart: ({ event }) => {
+    //   console.log("Evt");
+    //   event.stopPropagation();
+    // },
+    // onDrag: ({ event }) => {
+    //   console.log("Evt");
+    //   event.stopPropagation();
+    // },
+    // onDragEnd: ({ event }) => {
+    //   console.log("Evt");
+    //   event.stopPropagation();
+    // },
+  });
+
   return (
-    <div style={style} onClick={onClick}>
+    <div style={style} {...bind()}>
       <img
+        draggable={false}
+        className={"touch-none"}
         src={
           "https://i.pinimg.com/originals/6c/12/e7/6c12e78a564a65f2c4d56556a1ff922c.png"
         }

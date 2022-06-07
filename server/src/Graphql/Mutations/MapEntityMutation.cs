@@ -1,4 +1,3 @@
-
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Server.EFModels;
@@ -6,45 +5,45 @@ using server.Infraestructure;
 
 namespace Server.Graphql.Mutations;
 
-
 [ExtendObjectType("Mutation")]
 public class MapEntityMutation
 {
-    
     public MapEntityMutation()
     {
-        
     }
 
     [UseMutationConvention]
     [Authorize]
-    public async Task<MapEntity> MapEntityUpdate(
+    public async Task<ICollection<MapEntity>> MapEntityUpdate(
         ClaimsPrincipal user,
         RwfDbContext db,
-        [ID] int id,
-        int x,
-        int y,
-        int width,
-        int height
-        )
+        IEnumerable<MapEntityUpdateInput> input
+    )
     {
-        var updated = await db.FindAsync<MapEntity>(id) ?? throw new EntityNotFound(id);
-
-        if (!IsGameMaster(updated.SceneId, user, db))
+        var result = new List<MapEntity>();
+        foreach (var e in input)
         {
-            throw new EntityNotFound(id);
+            var updated = await db.FindAsync<MapEntity>(e.Id) ?? throw new EntityNotFound(e.Id);
+
+            if (!IsGameMaster(updated.SceneId, user, db))
+            {
+                throw new EntityNotFound(e.Id);
+            }
+
+            updated.X = e.X;
+            updated.Y = e.Y;
+            updated.Width = e.Width;
+            updated.Height = e.Height;
+            
+            result.Add(updated);
         }
         
-        updated.X = x;
-        updated.Y = y;
-        updated.Width = width;
-        updated.Height = height;
         // await _sender.SendAsync(nameof(MapEntityChangeEvent), MapEntityChangeEvent.Updated(updated));
         await db.SaveChangesAsync();
-        return updated;
+        return result;
     }
-    
-    
+
+
     [UseMutationConvention]
     [Authorize]
     public async Task<MapEntity> MapEntityAdd(
@@ -60,15 +59,16 @@ public class MapEntityMutation
         {
             throw new EntityNotFound(sceneId);
         }
-        var created = new MapEntity(x,y,width,height, sceneId);
+
+        var created = new MapEntity(x, y, width, height, sceneId);
 
         db.Add(created);
-        
-        await  db.SaveChangesAsync();
+
+        await db.SaveChangesAsync();
 
         return created;
     }
-    
+
     [UseMutationConvention]
     [Authorize]
     public async Task<MapEntity> MapEntityDelete(
@@ -76,16 +76,15 @@ public class MapEntityMutation
         RwfDbContext db,
         [ID] int id)
     {
-        
         // await _sender.SendAsync(nameof(MapEntityChangeEvent), MapEntityChangeEvent.Deleted(id));
-        
+
         var removed = await db.FindAsync<MapEntity>(id) ?? throw new EntityNotFound(id);
 
         if (!IsGameMaster(removed.SceneId, user, db))
         {
             throw new EntityNotFound(id);
         }
-        
+
         db.Remove(id);
 
         await db.SaveChangesAsync();
@@ -102,6 +101,20 @@ public class MapEntityMutation
             .First();
 
         return dmId == userId;
-
     }
+}
+
+public class MapEntityUpdateInput : MapEntityAddInput
+{
+    [ID] 
+    public int Id { get; set; }
+    
+}
+
+public class MapEntityAddInput
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
 }

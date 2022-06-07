@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e2815b8ca1901e27f7db45929f111749>>
+ * @generated SignedSource<<315d625b2158de5358e9c9b54cc469bf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,17 +17,17 @@ export type MapEntityUpdateInput = {
   height: number;
 };
 export type MapEntityUpdateMutation$variables = {
-  input: MapEntityUpdateInput;
+  input: ReadonlyArray<MapEntityUpdateInput>;
 };
 export type MapEntityUpdateMutation$data = {
   readonly mapEntityUpdate: {
-    readonly mapEntity: {
+    readonly mapEntity: ReadonlyArray<{
       readonly id: string;
       readonly x: number;
       readonly y: number;
       readonly width: number;
       readonly height: number;
-    } | null;
+    }> | null;
   };
 };
 export type MapEntityUpdateMutation = {
@@ -64,7 +64,7 @@ v1 = [
         "concreteType": "MapEntity",
         "kind": "LinkedField",
         "name": "mapEntity",
-        "plural": false,
+        "plural": true,
         "selections": [
           {
             "alias": null,
@@ -126,16 +126,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "97c1fb2717ff3b5bb2c60e55e4aa0b47",
+    "cacheID": "deb6f7030ac5ab4d73b4019d10bff5fa",
     "id": null,
     "metadata": {},
     "name": "MapEntityUpdateMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityUpdateMutation(\n  $input: MapEntityUpdateInput!\n) {\n  mapEntityUpdate(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
+    "text": "mutation MapEntityUpdateMutation(\n  $input: [MapEntityUpdateInput!]!\n) {\n  mapEntityUpdate(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "34f2d33a847ed1c6e3847c31efcd5cd8";
+(node as any).hash = "bc7e6847f8f3086698acf05d1eebe4a3";
 
 export default node;
