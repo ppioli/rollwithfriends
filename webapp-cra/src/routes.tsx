@@ -5,6 +5,7 @@ import { CampaignSelect } from "pages/campaign/CampaignSelect";
 import { OperationType } from "relay-runtime";
 import { CampaignQuery } from "pages/campaign/Campaign";
 import CampaignQueryGraphql from "pages/campaign/__generated__/CampaignQuery.graphql";
+import { EnrollQuery } from "pages/campaign/Enroll";
 
 export interface PreloadedProps<T> {
   preloaded: T;
@@ -49,6 +50,22 @@ export const routes: RouteConfig[] = [
         query: loadQuery(RelayEnvironment, CampaignQuery, {
           id: routeParameters.campaignId,
           selectedScene: query.selectedScene,
+        }),
+      };
+    },
+  },
+  {
+    component: async () => {
+      const module = await import("pages/campaign/Enroll");
+
+      return module.EnrollPage;
+    },
+    path: "/enroll/:code",
+    preload: ({ code }: any, query: any) => {
+      debugger;
+      return {
+        query: loadQuery(RelayEnvironment, EnrollQuery, {
+          code,
         }),
       };
     },

@@ -10,6 +10,7 @@ import MapEntityLayer from "features/battleMap/mapEntityLayer/MapEntityLayer";
 import useMapControl from "features/battleMap/useMapControl";
 import Toolbar from "features/battleMap/toolbar/Toolbar";
 import { Point } from "utils/Point";
+import { useMapEntitySubscription } from "features/mapEntity/MapEntity.graphql";
 
 export interface SceneProps {
   id: string;
@@ -23,7 +24,7 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
   console.info(
     " ++++++++ ++++++++ ++++++++ ++++++++ Redrawing scene ++++++++ ++++++++ ++++++++ ++++++++ "
   );
-  // useMapEntitySubscription(id);
+  useMapEntitySubscription({ sceneId: id });
 
   const data: SelectedScene_scene$data = useFragment(
     graphql`
@@ -77,7 +78,7 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
               className={"absolute"}
             />
 
-            <MapEntityLayer {...layerProps} entities={data} />
+            <MapEntityLayer sceneId={id} {...layerProps} entities={data} />
           </div>
         )}
         <div className={"absolute left-1 bottom-1"}>

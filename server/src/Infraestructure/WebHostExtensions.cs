@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Server.EFModels;
@@ -11,14 +12,38 @@ public static class WebHostExtensions
         using var scope = host.Services.CreateScope();
         var services = scope.ServiceProvider;
         var env = services.GetService<IHostEnvironment>();
-        var context = services.GetService<RwfDbContext>()!;
-
-        // var userService = services.GetService<UserManager<User>>();
         
+        // var userService = services.GetService<UserManager<User>>();
+
         if (env.IsDevelopment() || env.IsStaging())
         {
+            var context = services.GetService<RwfDbContext>()!;
+            var userManager = services.GetService<UserManager<User>>();
+            var configuration = services.GetService<IConfiguration>();
+            
             await context.Database.MigrateAsync();
 
+            Debug.Assert(configuration != null, nameof(configuration) + " != null");
+            Debug.Assert(userManager != null, nameof(userManager) + " != null");
+            
+            var adminUsername = configuration["Admin:Username"];
+            var adminPassword = configuration["Admin:Password"];
+            
+            var user = await userManager.FindByNameAsync(adminUsername);
+
+            if (user == null)
+            {
+                user = new User()
+                {
+                    UserName = adminUsername
+                };
+                var result = await userManager.CreateAsync(user, adminPassword);
+
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine(result.Errors);
+                }
+            }
 
             // var test = new Campaign( description: "description")
             // {
@@ -76,8 +101,7 @@ public static class WebHostExtensions
 
             // await DatabaseSeeder.Seed(services);
         }
-        
-        // TODO Create admin user and roles
 
+        // TODO Create admin user and roles
     }
 }

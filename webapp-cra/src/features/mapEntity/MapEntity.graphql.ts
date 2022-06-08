@@ -1,17 +1,42 @@
-import { useCallback } from "react";
-import { RecordSourceSelectorProxy } from "relay-runtime";
-import { useMutation } from "react-relay";
-import { MapEntityAddInput } from "features/mapEntity/__generated__/MapEntityAddMutation.graphql";
+import { useCallback, useMemo } from "react";
+
+import { useMutation, useSubscription } from "react-relay";
+
 import {
   MapEntityUpdateMutation,
   MapEntityUpdateMutation$variables,
 } from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
+import { RecordSourceSelectorProxy } from "relay-runtime";
+import {
+  MapEntityAddMutation,
+  MapEntityAddMutation$variables,
+} from "features/mapEntity/__generated__/MapEntityAddMutation.graphql";
+import {
+  MapEntityChangeSubscription,
+  MapEntityChangeSubscription$variables,
+} from "features/mapEntity/__generated__/MapEntityChangeSubscription.graphql";
+import { ACCESS_TOKEN } from "lib/useRefreshToken";
+import jwtDecode from "jwt-decode";
 
 const graphql = require("babel-plugin-relay/macro");
 
+interface Subscription {
+  variables: any;
+  response: any;
+}
+
+// export const collectionUpdater = <TSubscription extends Subscription>() => ({
+//   update: () => {},
+//   add: (store: RecordSourceSelectorProxy) => {
+//     const response = Fields<TSubscription>;
+//     console.log(response)
+//   },
+//   delete: (store: RecordSourceSelectorProxy) => {},
+// });
+
 export function useMapEntityUpdateMutation() {
   const [commit, isInFlight] = useMutation<MapEntityUpdateMutation>(graphql`
-    mutation MapEntityUpdateMutation($input: [MapEntityUpdateInput!]!) {
+    mutation MapEntityUpdateMutation($input: MapEntitiesUpdateInput!) {
       mapEntityUpdate(input: $input) {
         mapEntity {
           id
@@ -29,7 +54,7 @@ export function useMapEntityUpdateMutation() {
       commit({
         variables,
         optimisticResponse: {
-          mapEntityUpdate: { mapEntity: variables.input },
+          mapEntityUpdate: { mapEntity: variables.input.entities },
         },
       });
     },
@@ -38,8 +63,8 @@ export function useMapEntityUpdateMutation() {
 }
 
 export function useMapEntityAddMutation() {
-  const [commit] = useMutation(graphql`
-    mutation MapEntityAddMutation($input: MapEntityAddInput!) {
+  const [commit] = useMutation<MapEntityAddMutation>(graphql`
+    mutation MapEntityAddMutation($input: MapEntitiesAddInput!) {
       mapEntityAdd(input: $input) {
         mapEntity {
           id
@@ -53,17 +78,15 @@ export function useMapEntityAddMutation() {
   `);
 
   return useCallback(
-    (input: MapEntityAddInput) => {
+    (variables: MapEntityAddMutation$variables) => {
       commit({
-        variables: {
-          input: { ...input },
-        },
-        updater: (store: RecordSourceSelectorProxy) => {
+        variables: variables,
+        updater: (store: RecordSourceSelectorProxy, data) => {
           const payload = store.getRootField("mapEntityAdd")!;
-          const newEntity = payload.getLinkedRecord("mapEntity");
-          const scene = store.get(input.sceneId)!;
+          const added = payload.getLinkedRecords("mapEntity")!;
+          const scene = store.get(variables.input.sceneId)!;
           const existing = scene.getLinkedRecords("entities") || [];
-          scene.setLinkedRecords([...existing, newEntity], "entities");
+          scene.setLinkedRecords([...existing, ...added], "entities");
         },
       });
     },
@@ -71,43 +94,63 @@ export function useMapEntityAddMutation() {
   );
 }
 
-export function useMapEntitySubscription(selectedScene: string | null) {
-  // const config = useMemo(
-  //   () => ({
-  //     subscription: graphql`
-  //       subscription MapEntitySubscription {
-  //         mapEntitySubscription {
-  //           type
-  //           payload {
-  //             mapEntity {
-  //               id
-  //               ...MapEntity_Token
-  //             }
-  //           }
-  //         }
-  //       }
-  //     `,
-  //     variables: {},
-  //     onCompleted: () => console.log("Subscription established"),
-  //     onError: (error: any) => {} /* Subscription errored */,
-  //     onNext: (response: any) => {} /* Subscription payload received */,
-  //     updater: (store: any, ttt: any) => {
-  //       console.log(ttt);
-  //       const result = store.getRootField("mapEntitySubscription")!;
-  //       const type = result.getValue("type");
-  //
-  //       if (type === "ADDED") {
-  //         const payload: any = result.getLinkedRecord("payload");
-  //         const newEntity = payload.getLinkedRecord("mapEntity")!;
-  //
-  //         const scene = store.get(selectedScene)!;
-  //         const existing = scene.getLinkedRecords("entities") || [];
-  //
-  //         scene.setLinkedRecords([...existing, newEntity], "entities");
-  //       }
-  //     },
-  //   }),
-  //   [selectedScene]
-  // );
-  // useSubscription(config);
+export function useMapEntitySubscription(
+  variables: MapEntityChangeSubscription$variables
+) {
+  const config = useMemo(
+    () => ({
+      subscription: graphql`
+        subscription MapEntityChangeSubscription($sceneId: ID!) {
+          mapEntityChanged(sceneId: $sceneId) {
+            type
+            userId
+            payload {
+              id
+              x
+              y
+              width
+              height
+            }
+          }
+        }
+      `,
+      variables: variables,
+      onCompleted: () => console.log("Subscription established"),
+      onError: (error: any) => {} /* Subscription errored */,
+      onNext: (response: any) => {} /* Subscription payload received */,
+      updater: (store: RecordSourceSelectorProxy) => {
+        const result = store.getRootField("mapEntityChanged")!;
+        const type = result.getValue("type");
+        const userId = result.getValue("userId");
+        const token = localStorage.getItem(ACCESS_TOKEN);
+        const decoded = jwtDecode(token!) as any;
+
+        if (userId === decoded?.sub) {
+          return;
+        }
+        if (type === "ADD") {
+          debugger;
+          const newEntities: any = result.getLinkedRecords("payload");
+
+          const scene = store.get(variables.sceneId)!;
+          const existing = scene.getLinkedRecords("entities") || [];
+
+          scene.setLinkedRecords([...existing, ...newEntities], "entities");
+        }
+
+        // if (type === "DELETE") {
+        //   debugger;
+        //   const newEntities: any = result.getLinkedRecords("payload");
+        //
+        //   const scene = store.get(variables.sceneId)!;
+        //   const existing = scene.getLinkedRecords("entities") || [];
+        //
+        //   scene.setLinkedRecords([...existing, ...newEntities], "entities");
+        // }
+      },
+    }),
+    [variables]
+  );
+
+  useSubscription<MapEntityChangeSubscription>(config);
 }

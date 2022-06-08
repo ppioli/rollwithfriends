@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Server.EFModels;
 using server.Infraestructure;
@@ -10,21 +11,28 @@ namespace Server.Graphql.Mutations;
 [ExtendObjectType("Mutation")]
 public class EnrollmentMutation
 {
-    
-    [UseMutationConvention]
+    [Authorize]
     public async Task<Campaign> EnrollmentAdd(
-        RwfDbContext context,
-        ClaimsPrincipal claimsPrincipal,
-        [Service] IMapper mapper,
-        [ID]int campaignId)
+        RwfDbContext db,
+        ClaimsPrincipal user,
+        [ID] int code )
     {
+        //TODO validate code. For now, the code is just the campaign id
+        var campaign = db.Campaigns
+            .Include( c => c.Participants)
+            .FirstOrDefault(c => c.Id == code) ?? throw new EntityNotFound(code);
         
-        var campaign = await context.Campaigns.FindAsync(campaignId);
+        var userId = user.GetId();
+
+        if (campaign.Participants.Any(p => p.UserId == userId))
+        {
+            return campaign;
+        }
         
-        var created = context.CampaignEnrollments.CreateProxy();
+        campaign.Participants.Add( new CampaignEnrollment(userId));
 
-        await context.SaveChangesAsync();
+        await db.SaveChangesAsync();
 
-        return mapper.Map<Campaign>(created);
+        return campaign;
     }
 }

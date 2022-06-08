@@ -1,6 +1,8 @@
 using System.Security.Claims;
+using HotChocolate.Subscriptions;
 using Microsoft.AspNetCore.Authorization;
 using Server.EFModels;
+using Server.Graphql.Subscriptions;
 using server.Infraestructure;
 
 namespace Server.Graphql.Mutations;
@@ -8,28 +10,37 @@ namespace Server.Graphql.Mutations;
 [ExtendObjectType("Mutation")]
 public class MapEntityMutation
 {
-    public MapEntityMutation()
-    {
-    }
-
-    [UseMutationConvention]
     [Authorize]
     public async Task<ICollection<MapEntity>> MapEntityUpdate(
         ClaimsPrincipal user,
         RwfDbContext db,
-        IEnumerable<MapEntityUpdateInput> input
+        [Service] ITopicEventSender sender,
+        MapEntitiesUpdate input
     )
     {
-        var result = new List<MapEntity>();
-        foreach (var e in input)
+        
+        if (!IsGameMaster(input.SceneId, user, db))
         {
-            var updated = await db.FindAsync<MapEntity>(e.Id) ?? throw new EntityNotFound(e.Id);
+            throw new EntityNotFound(input.SceneId);
+        }
+        
+        var result = new List<MapEntity>();
+        
+        // TODO Should check payload size 
+        var ids = input.Entities
+            .Select(s => s.Id)
+            .ToArray();
+        
+        var updatedDict = db.MapEntities.Where(e => ids.Contains(e.Id) && e.SceneId == input.SceneId)
+            .ToDictionary( e => e.Id, e => e);
 
-            if (!IsGameMaster(updated.SceneId, user, db))
+        foreach (var e in input.Entities)
+        {
+            if (!updatedDict.ContainsKey(e.Id))
             {
                 throw new EntityNotFound(e.Id);
             }
-
+            var updated = updatedDict[e.Id]; 
             updated.X = e.X;
             updated.Y = e.Y;
             updated.Width = e.Width;
@@ -37,59 +48,58 @@ public class MapEntityMutation
             
             result.Add(updated);
         }
-        
-        // await _sender.SendAsync(nameof(MapEntityChangeEvent), MapEntityChangeEvent.Updated(updated));
         await db.SaveChangesAsync();
+        await sender.SendAsync(MapEntityChangeSubscription.GetTopic(input.SceneId), new MapEntityChangeMessage(
+            ChangeMessageType.Update, user.GetId(), result));
         return result;
     }
 
 
-    [UseMutationConvention]
     [Authorize]
-    public async Task<MapEntity> MapEntityAdd(
+    public async Task<ICollection<MapEntity>> MapEntityAdd(
         ClaimsPrincipal user,
         RwfDbContext db,
-        [ID] int sceneId,
-        int x,
-        int y,
-        int width,
-        int height)
+        [Service] ITopicEventSender sender,
+        MapEntitiesAdd input)
     {
-        if (!IsGameMaster(sceneId, user, db))
+        if (!IsGameMaster(input.SceneId, user, db))
         {
-            throw new EntityNotFound(sceneId);
+            throw new EntityNotFound(input.SceneId);
         }
 
-        var created = new MapEntity(x, y, width, height, sceneId);
-
-        db.Add(created);
-
+        var created = input.Entities.Select(n => new MapEntity(n.X, n.Y, n.Width, n.Height, input.SceneId)).ToList();
+        
+        await db.AddRangeAsync(created);
         await db.SaveChangesAsync();
-
+        
+        await sender.SendAsync(MapEntityChangeSubscription.GetTopic(input.SceneId), new MapEntityChangeMessage(
+            ChangeMessageType.Add, user.GetId(), created));
         return created;
     }
-
-    [UseMutationConvention]
+    
     [Authorize]
-    public async Task<MapEntity> MapEntityDelete(
+    public async Task<ICollection<MapEntity>> MapEntityDelete(
         ClaimsPrincipal user,
         RwfDbContext db,
-        [ID] int id)
+        [Service] ITopicEventSender sender,
+        MapEntityDelete input)
     {
-        // await _sender.SendAsync(nameof(MapEntityChangeEvent), MapEntityChangeEvent.Deleted(id));
-
-        var removed = await db.FindAsync<MapEntity>(id) ?? throw new EntityNotFound(id);
-
-        if (!IsGameMaster(removed.SceneId, user, db))
+        if (!IsGameMaster(input.SceneId, user, db))
         {
-            throw new EntityNotFound(id);
+            throw new EntityNotFound(input.SceneId);
         }
-
-        db.Remove(id);
-
+        
+        var result = new List<MapEntity>();
+        
+        // TODO Should check payload size
+        var deletedList = db.MapEntities.Where(e => input.Deleted.Contains(e.Id) && e.SceneId == input.SceneId)
+            .ToList();
+        
+        db.RemoveRange(deletedList);
         await db.SaveChangesAsync();
-
-        return removed;
+        await sender.SendAsync(MapEntityChangeSubscription.GetTopic(input.SceneId), new MapEntityChangeMessage(
+            ChangeMessageType.Delete, user.GetId(), result));
+        return result;
     }
 
     private bool IsGameMaster(int sceneId, ClaimsPrincipal user, RwfDbContext context)
@@ -104,17 +114,42 @@ public class MapEntityMutation
     }
 }
 
-public class MapEntityUpdateInput : MapEntityAddInput
+
+public class MapEntitiesAdd
 {
     [ID] 
-    public int Id { get; set; }
-    
+    public int SceneId { get; set; }
+
+    public MapEntityAdd[] Entities { get; set; } = default!;
+
 }
 
-public class MapEntityAddInput
+public class MapEntityAdd
 {
     public int X { get; set; }
     public int Y { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
+}
+
+public class MapEntitiesUpdate 
+{
+    [ID] 
+    public int SceneId { get; set; }
+    
+    public MapEntityUpdate[] Entities { get; set; } = default!;
+}
+
+public class MapEntityUpdate : MapEntityAdd
+{
+    [ID]
+    public int Id { get; set; }
+}
+
+public class MapEntityDelete
+{
+    [ID] 
+    public int SceneId { get; set; }
+    [ID]
+    public ICollection<int> Deleted { get; set; }
 }

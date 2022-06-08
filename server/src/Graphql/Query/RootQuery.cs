@@ -31,4 +31,19 @@ public class RootQuery
 
         return db.Campaigns.Where( c => c.Participants.Any( p => p.UserId == id));
     }
+    
+    
+    [UseFirstOrDefault()]
+    [UseProjection()]
+    [UseFiltering()]
+    [Authorize()]
+    public IQueryable<Campaign> Enrollment(
+        RwfDbContext db,
+        ClaimsPrincipal user,
+        [ID] int code
+    )
+    {
+        // TODO validate code & hide the rest of the campaign
+        return db.Campaigns.Where( c => c.Id == code);
+    }
 }

@@ -1,40 +1,42 @@
+using System.Security.Claims;
+using HotChocolate.Execution;
+using HotChocolate.Subscriptions;
+using Microsoft.AspNetCore.Authorization;
+using Server.EFModels;
+using server.Infraestructure;
+
 namespace Server.Graphql.Subscriptions;
 
-public class MapEntityChangeEvent
+[ExtendObjectType("Subscription")]
+public class MapEntityChangeSubscription
 {
-    public MapEntityChangeEventType Type { get; set; } = default!;
-    // public MapEntityPayload? Payload { get; set; } = default!;
+    public static string GetTopic(int sceneId)
+    {
+        return $"{sceneId}_EntityUpdate";
+    }
 
-    public static MapEntityChangeEvent Added(  )
+    public ValueTask<ISourceStream<MapEntityChangeMessage>> SubscribeToMapEntity(
+        int sceneId,
+        [Service] ITopicEventReceiver receiver)
+    
     {
-        return new MapEntityChangeEvent()
-        {
-            // Payload = MapEntityPayload.Create(mapEntity),
-            Type = MapEntityChangeEventType.Added,
-        };
+        return receiver.SubscribeAsync<string, MapEntityChangeMessage>(GetTopic(sceneId));
     }
     
-    public static MapEntityChangeEvent Updated( )
+    [Authorize]
+    [Subscribe(With = nameof(SubscribeToMapEntity))]
+    public MapEntityChangeMessage MapEntityChanged(
+        ClaimsPrincipal user,
+        [ID] int sceneId,
+        [EventMessage] MapEntityChangeMessage changeEvent)
     {
-        return new MapEntityChangeEvent()
-        {
-            // Payload = MapEntityPayload.Create(mapEntity),
-            Type = MapEntityChangeEventType.Updated,
-        };
+        return changeEvent;
     }
-    public static MapEntityChangeEvent Deleted( int id )
-    {
-        return new MapEntityChangeEvent()
-        {
-            Type = MapEntityChangeEventType.Deleted,
-        };
-    }
-    
 }
 
-public enum MapEntityChangeEventType
+public class MapEntityChangeMessage : ChangeMessage<List<MapEntity>>
 {
-    Added,
-    Updated,
-    Deleted,
+    public MapEntityChangeMessage(ChangeMessageType type, string userId, List<MapEntity> payload) : base(type, userId, payload)
+    {
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e5a99d5ffb63291cc02a119e06b90bc3>>
+ * @generated SignedSource<<f62f7c2e454f81aed547626d549e5273>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,35 +8,27 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type MapEntitiesUpdateInput = {
+import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
+export type ChangeMessageType = "ADD" | "UPDATE" | "DELETE" | "%future added value";
+export type MapEntityChangeSubscription$variables = {
   sceneId: string;
-  entities: ReadonlyArray<MapEntityUpdateInput>;
 };
-export type MapEntityUpdateInput = {
-  id: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-};
-export type MapEntityUpdateMutation$variables = {
-  input: MapEntitiesUpdateInput;
-};
-export type MapEntityUpdateMutation$data = {
-  readonly mapEntityUpdate: {
-    readonly mapEntity: ReadonlyArray<{
+export type MapEntityChangeSubscription$data = {
+  readonly mapEntityChanged: {
+    readonly type: ChangeMessageType;
+    readonly userId: string;
+    readonly payload: ReadonlyArray<{
       readonly id: string;
       readonly x: number;
       readonly y: number;
       readonly width: number;
       readonly height: number;
-    }> | null;
+    }>;
   };
 };
-export type MapEntityUpdateMutation = {
-  variables: MapEntityUpdateMutation$variables;
-  response: MapEntityUpdateMutation$data;
+export type MapEntityChangeSubscription = {
+  variables: MapEntityChangeSubscription$variables;
+  response: MapEntityChangeSubscription$data;
 };
 
 const node: ConcreteRequest = (function(){
@@ -44,7 +36,7 @@ var v0 = [
   {
     "defaultValue": null,
     "kind": "LocalArgument",
-    "name": "input"
+    "name": "sceneId"
   }
 ],
 v1 = [
@@ -53,21 +45,35 @@ v1 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
+        "name": "sceneId",
+        "variableName": "sceneId"
       }
     ],
-    "concreteType": "MapEntityUpdatePayload",
+    "concreteType": "MapEntityChangeMessage",
     "kind": "LinkedField",
-    "name": "mapEntityUpdate",
+    "name": "mapEntityChanged",
     "plural": false,
     "selections": [
       {
         "alias": null,
         "args": null,
+        "kind": "ScalarField",
+        "name": "type",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "userId",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
         "concreteType": "MapEntity",
         "kind": "LinkedField",
-        "name": "mapEntity",
+        "name": "payload",
         "plural": true,
         "selections": [
           {
@@ -117,29 +123,29 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "MapEntityUpdateMutation",
+    "name": "MapEntityChangeSubscription",
     "selections": (v1/*: any*/),
-    "type": "Mutation",
+    "type": "Subscription",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "MapEntityUpdateMutation",
+    "name": "MapEntityChangeSubscription",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "7f7b63d550d83242301d80311426d37c",
+    "cacheID": "331913324ab964cd82a260db10d98ee0",
     "id": null,
     "metadata": {},
-    "name": "MapEntityUpdateMutation",
-    "operationKind": "mutation",
-    "text": "mutation MapEntityUpdateMutation(\n  $input: MapEntitiesUpdateInput!\n) {\n  mapEntityUpdate(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
+    "name": "MapEntityChangeSubscription",
+    "operationKind": "subscription",
+    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "fd3366da1049e15497849759df3693e0";
+(node as any).hash = "27ab16f81148ad2371484bae3e3bfc84";
 
 export default node;

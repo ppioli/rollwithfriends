@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<404d986e0405d2e5c18cf1493ed58547>>
+ * @generated SignedSource<<a2bb117454f2a0717f03e7d735247a37>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,25 +9,28 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type MapEntityAddInput = {
+export type MapEntitiesAddInput = {
   sceneId: string;
+  entities: ReadonlyArray<MapEntityAddInput>;
+};
+export type MapEntityAddInput = {
   x: number;
   y: number;
   width: number;
   height: number;
 };
 export type MapEntityAddMutation$variables = {
-  input: MapEntityAddInput;
+  input: MapEntitiesAddInput;
 };
 export type MapEntityAddMutation$data = {
   readonly mapEntityAdd: {
-    readonly mapEntity: {
+    readonly mapEntity: ReadonlyArray<{
       readonly id: string;
       readonly x: number;
       readonly y: number;
       readonly width: number;
       readonly height: number;
-    } | null;
+    }> | null;
   };
 };
 export type MapEntityAddMutation = {
@@ -64,7 +67,7 @@ v1 = [
         "concreteType": "MapEntity",
         "kind": "LinkedField",
         "name": "mapEntity",
-        "plural": false,
+        "plural": true,
         "selections": [
           {
             "alias": null,
@@ -126,16 +129,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "8573b16cd3bc35be439044aea43482f1",
+    "cacheID": "2a4e3e471f462a7505ba428dcf7d81fe",
     "id": null,
     "metadata": {},
     "name": "MapEntityAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityAddMutation(\n  $input: MapEntityAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
+    "text": "mutation MapEntityAddMutation(\n  $input: MapEntitiesAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "2eba50c753d03bc10632fcec59d5df2c";
+(node as any).hash = "a2abc41f015e4e233c3040c7840c41a7";
 
 export default node;

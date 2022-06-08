@@ -10,9 +10,14 @@ import { MapEntityUpdateInput } from "features/mapEntity/__generated__/MapEntity
 interface EntitySelectBoxProps {
   scale: number;
   children: (offsetX: number, offsetY: number) => ReactNode;
+  sceneId: string;
 }
 
-export function EntitySelectBox({ children, scale }: EntitySelectBoxProps) {
+export function EntitySelectBox({
+  children,
+  scale,
+  sceneId,
+}: EntitySelectBoxProps) {
   const { selectionBounds, getSelected } = useMapEntityContext();
   const update = useMapEntityUpdateMutation();
 
@@ -38,7 +43,7 @@ export function EntitySelectBox({ children, scale }: EntitySelectBoxProps) {
     const ssy = sy + dy;
     console.info("delta mov ", dx, dy);
 
-    const input: MapEntityUpdateInput[] = getSelected().map((e) => ({
+    const entities: MapEntityUpdateInput[] = getSelected().map((e) => ({
       id: e.id,
       x: Math.round(ssx + (e.x - ssx + dx) * rw),
       y: Math.round(ssy + (e.y - ssy + dy) * rh),
@@ -46,7 +51,12 @@ export function EntitySelectBox({ children, scale }: EntitySelectBoxProps) {
       height: Math.round(e.height * rh),
     }));
 
-    update({ input });
+    update({
+      input: {
+        entities,
+        sceneId,
+      },
+    });
 
     if (containerRef.current !== null) {
       containerRef.current.style.transform = ``;

@@ -12,6 +12,7 @@ const graphql = require("babel-plugin-relay/macro");
 
 interface MapEntityLayerProps extends BaseLayerProps {
   entities: MapEntityLayer_scene$key;
+  sceneId: string;
 }
 
 export default function MapEntityLayer({
@@ -19,6 +20,7 @@ export default function MapEntityLayer({
   offsetX,
   offsetY,
   entities,
+  sceneId,
 }: MapEntityLayerProps) {
   const data = useFragment(
     graphql`
@@ -157,7 +159,7 @@ export default function MapEntityLayer({
               return <MapEntity key={data.id} scale={scale} {...data} />;
             })}
 
-          <EntitySelectBox scale={scale}>
+          <EntitySelectBox sceneId={sceneId} scale={scale}>
             {(offsetX, offsetY) =>
               data.entities
                 .filter((e) => isSelected(e.id))

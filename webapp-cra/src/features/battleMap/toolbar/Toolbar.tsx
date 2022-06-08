@@ -1,5 +1,4 @@
 import { useMapEntityAddMutation } from "features/mapEntity/MapEntity.graphql";
-import { CSSProperties } from "react";
 
 const testToken = {
   x: 500,
@@ -22,9 +21,14 @@ export default function Toolbar({ sceneId, className }: ToolbarProps) {
         <button
           type={"button"}
           className={"btn btn-primary rounded-full"}
-          onClick={() =>
-            addEntity({ sceneId, x: 100, y: 100, width: 100, height: 100 })
-          }
+          onClick={() => {
+            const input = {
+              sceneId,
+              entities: [{ x: 100, y: 100, width: 100, height: 100 }],
+            };
+
+            addEntity({ input });
+          }}
         >
           +
         </button>

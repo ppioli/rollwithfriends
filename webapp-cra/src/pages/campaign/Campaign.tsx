@@ -4,7 +4,6 @@ import { SceneSelector } from "pages/scene/SceneSelector";
 import { Chat } from "pages/Chat";
 import { useNavigation } from "yarr";
 import { SelectedScene } from "pages/scene/SelectedScene";
-import Toolbar from "features/battleMap/toolbar/Toolbar";
 
 const graphql = require("babel-plugin-relay/macro");
 

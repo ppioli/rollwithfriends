@@ -10,10 +10,9 @@ using Serilog;
 using Server.EFModels;
 using Server.Graphql.Mutations;
 using Server.Graphql.Query;
+using Server.Graphql.Subscriptions;
 using server.Infraestructure;
-using Server.Mutations;
 using Server.Services;
-using Server.Subscriptions;
 
 
 var builder = WebApplication
@@ -86,7 +85,7 @@ builder.Services.AddOpenIddict()
             // Note: call ReplaceDefaultEntities() to replace the default OpenIddict entities.
             options.UseEntityFrameworkCore()
                 .UseDbContext<RwfDbContext>();
-
+            
             // Enable Quartz.NET integration.
             options.UseQuartz();
         })
@@ -102,8 +101,8 @@ builder.Services.AddOpenIddict()
             options.AllowPasswordFlow()
                 .AllowRefreshTokenFlow()
                 .AllowCustomFlow(AuthConstants.OpenIdTokenGrant);
-            
-            
+
+            options.DisableAccessTokenEncryption();
             // Accept anonymous clients (i.e clients that don't send a client_id).
             options.AcceptAnonymousClients();
             
@@ -138,18 +137,20 @@ builder.Services.AddAuthentication(options =>
 builder.Services
     .AddGraphQLServer()
     .RegisterDbContext<RwfDbContext>()
-    .AddSubscriptionType<Subscription>()
+    .AddSubscriptionType( e => e.Name("Subscription"))
+    .AddTypeExtension<MapEntityChangeSubscription>()
     .AddQueryType<RootQuery>()
     .AddMutationType(e => e.Name("Mutation"))
     .AddTypeExtension<CampaignMutation>()
     .AddTypeExtension<EnrollmentMutation>()
     .AddTypeExtension<MapEntityMutation>()
     .AddTypeExtension<SceneMutations>()
+    .AddMutationConventions()
     .AddProjections()
     .AddFiltering()
     .AddGlobalObjectIdentification()
-    .AddMutationConventions()
-    .AddAuthorization();
+    .AddAuthorization()
+    .AddMutationConventions( applyToAllMutations: true);
 
 builder.Services.AddInMemorySubscriptions();
 

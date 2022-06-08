@@ -99,6 +99,12 @@ input CampaignFilterInput {
   participants: ListFilterInputTypeOfCampaignEnrollmentFilterInput
 }
 
+enum ChangeMessageType {
+  ADD
+  UPDATE
+  DELETE
+}
+
 input ComparableInt32OperationFilterInput {
   eq: Int
   neq: Int
@@ -130,7 +136,7 @@ input ComparableNullableOfInt32OperationFilterInput {
 }
 
 input EnrollmentAddInput {
-  campaignId: ID!
+  code: ID!
 }
 
 type EnrollmentAddPayload {
@@ -165,6 +171,16 @@ input ListFilterInputTypeOfSceneFilterInput {
   any: Boolean
 }
 
+input MapEntitiesAddInput {
+  sceneId: ID!
+  entities: [MapEntityAddInput!]!
+}
+
+input MapEntitiesUpdateInput {
+  sceneId: ID!
+  entities: [MapEntityUpdateInput!]!
+}
+
 type MapEntity implements Node {
   id: ID!
   x: Int!
@@ -176,7 +192,6 @@ type MapEntity implements Node {
 }
 
 input MapEntityAddInput {
-  sceneId: ID!
   x: Int!
   y: Int!
   width: Int!
@@ -184,25 +199,22 @@ input MapEntityAddInput {
 }
 
 type MapEntityAddPayload {
-  mapEntity: MapEntity
+  mapEntity: [MapEntity!]
 }
 
-type MapEntityChangeEvent {
-  type: MapEntityChangeEventType!
-}
-
-enum MapEntityChangeEventType {
-  ADDED
-  UPDATED
-  DELETED
+type MapEntityChangeMessage {
+  type: ChangeMessageType!
+  userId: String!
+  payload: [MapEntity!]!
 }
 
 input MapEntityDeleteInput {
-  id: ID!
+  sceneId: ID!
+  deleted: [ID!]!
 }
 
 type MapEntityDeletePayload {
-  mapEntity: MapEntity
+  mapEntity: [MapEntity!]
 }
 
 input MapEntityFilterInput {
@@ -232,8 +244,8 @@ type MapEntityUpdatePayload {
 type Mutation {
   campaignAdd(input: CampaignAddInput!): CampaignAddPayload!
   enrollmentAdd(input: EnrollmentAddInput!): EnrollmentAddPayload!
-  mapEntityUpdate(input: [MapEntityUpdateInput!]!): MapEntityUpdatePayload!
-  mapEntityAdd(input: MapEntityAddInput!): MapEntityAddPayload!
+  mapEntityUpdate(input: MapEntitiesUpdateInput!): MapEntityUpdatePayload!
+  mapEntityAdd(input: MapEntitiesAddInput!): MapEntityAddPayload!
   mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
   sceneAdd(input: SceneAddInput!): SceneAddPayload!
   sceneAddDelete(input: SceneAddDeleteInput!): SceneAddDeletePayload!
@@ -260,6 +272,7 @@ type RootQuery {
     ids: [ID!]!
   ): [Node]!
   campaigns(where: CampaignFilterInput): [Campaign!]!
+  enrollment(code: ID!, where: CampaignFilterInput): Campaign
 }
 
 type Scene implements Node {
@@ -322,6 +335,6 @@ input StringOperationFilterInput {
 }
 
 type Subscription {
-  mapEntitySubscription: MapEntityChangeEvent!
+  mapEntityChanged(sceneId: ID!): MapEntityChangeMessage!
 }
 

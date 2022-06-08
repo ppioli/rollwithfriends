@@ -6,6 +6,7 @@ namespace Server.Services
         {
             services.AddSingleton<GoogleTokenValidator>();
             
+
             return services;
         }
     }

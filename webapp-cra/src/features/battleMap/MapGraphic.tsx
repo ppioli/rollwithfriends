@@ -21,28 +21,12 @@ function Image({ x, y, width, height, scale, onClick }: MapGraphic) {
   };
 
   const bind = useGesture({
-    // onPointerUp: ({ event, shiftKey }) => {
-    //   event.stopPropagation();
-    //   onClick(event.shiftKey);
-    // },
     onClick: ({ event, down, shiftKey }) => {
       console.log("Evt ", event.shiftKey);
       onClick(event.shiftKey);
       event.nativeEvent.stopImmediatePropagation();
       event.stopPropagation();
     },
-    // onDragStart: ({ event }) => {
-    //   console.log("Evt");
-    //   event.stopPropagation();
-    // },
-    // onDrag: ({ event }) => {
-    //   console.log("Evt");
-    //   event.stopPropagation();
-    // },
-    // onDragEnd: ({ event }) => {
-    //   console.log("Evt");
-    //   event.stopPropagation();
-    // },
   });
 
   return (

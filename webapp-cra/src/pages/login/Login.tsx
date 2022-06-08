@@ -5,6 +5,8 @@ import * as yup from "yup";
 import { SchemaOf } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginWithGoogle } from "components/LoginWithGoogle";
+import { useSessionContext } from "components/LoginContext";
+import { fetchAccessTokenWithPassword } from "lib/useRefreshToken";
 
 interface LoginCredentials {
   username: string;
@@ -17,12 +19,16 @@ const loginCredentialsScheme: SchemaOf<LoginCredentials> = yup.object().shape({
 });
 
 export function Login() {
+  const { setResponse } = useSessionContext();
   const { register, handleSubmit } = useForm<LoginCredentials>({
     resolver: yupResolver(loginCredentialsScheme),
     defaultValues: { username: "", password: "" },
   });
 
-  const onSubmit = (credentials: LoginCredentials) => console.log(credentials);
+  const onSubmit = async (credentials: LoginCredentials) => {
+    const response = await fetchAccessTokenWithPassword(credentials);
+    setResponse(response);
+  };
 
   return (
     <div className={"w-screen h-screen flex justify-center content-center"}>
