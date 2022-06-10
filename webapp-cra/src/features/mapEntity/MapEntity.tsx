@@ -7,6 +7,7 @@ import { BoxProps } from "components/moveResizeHandler/BoxProps";
 
 export interface MapEntity extends BoxProps {
   id: string;
+  href: string;
 }
 
 export function MapEntity({ id, ...data }: MapEntity & { scale: number }) {

@@ -2,15 +2,19 @@ import {
   SelectedScene_scene$data,
   SelectedScene_scene$key,
 } from "pages/scene/__generated__/SelectedScene_scene.graphql";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useFragment } from "react-relay";
 import { useResizeDetector } from "react-resize-detector";
 import Grid from "features/battleMap/grid/Grid";
 import MapEntityLayer from "features/battleMap/mapEntityLayer/MapEntityLayer";
 import useMapControl from "features/battleMap/useMapControl";
 import Toolbar from "features/battleMap/toolbar/Toolbar";
-import { Point } from "utils/Point";
-import { useMapEntitySubscription } from "features/mapEntity/MapEntity.graphql";
+import {
+  useMapEntityAddMutation,
+  useMapEntitySubscription,
+} from "features/mapEntity/MapEntity.graphql";
+import classNames from "classnames";
+import { loadImages } from "utils/imageLoader";
 
 export interface SceneProps {
   id: string;
@@ -38,20 +42,32 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
 
   const { ref, width, height } = useResizeDetector();
   const containerRef = useRef<HTMLDivElement>(null);
-  const inputContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const { bind, offsetX, offsetY, scale } = useMapControl({
-    inputContainerRef,
+  const commit = useMapEntityAddMutation();
+  const { handlers, fileDragging, offsetX, offsetY, scale } = useMapControl({
     onChange: ([dx, dy], scale) => {
       if (containerRef.current) {
         containerRef.current.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
       }
     },
+    onFilesDropped: (files) => {
+      loadImages(files).then((imageList) => {
+        const entities = imageList.map((img, ix) => ({
+          x: 10,
+          y: 10,
+          width: img.width,
+          height: img.height,
+          fileType: files[ix].type,
+        }));
+
+        const input = { sceneId: id, entities };
+
+        commit({ input });
+      });
+    },
   });
 
   const cellSize = 60;
-
-  console.info(scale);
 
   const layerProps = {
     offsetX,
@@ -65,12 +81,16 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
   return (
     <div ref={ref} className={className}>
       <div
-        ref={inputContainerRef}
-        {...bind()}
-        className={"w-full h-full relative touch-none overflow-hidden"}
+        {...handlers}
+        className={classNames(
+          "w-full h-full relative touch-none overflow-hidden"
+        )}
       >
         {draw && (
-          <div className={"absolute"} ref={containerRef}>
+          <div
+            className={classNames("absolute", { blur: fileDragging })}
+            ref={containerRef}
+          >
             <Grid
               {...layerProps}
               width={width}
@@ -86,7 +106,18 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
           {`Canvas size (${width},${height})`} <br />
           {`Scale (${scale})`} <br />
         </div>
-
+        {fileDragging && (
+          <div
+            className={
+              "absolute inset-y-0 left-0 editor-width flex justify-center content-center flex-wrap"
+            }
+          >
+            <div className={"text-center"}>
+              <h3>Drag ICON</h3>
+              <h1>Drop to add</h1>
+            </div>
+          </div>
+        )}
         <Toolbar
           sceneId={id}
           className={

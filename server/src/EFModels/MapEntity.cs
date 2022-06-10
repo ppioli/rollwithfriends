@@ -20,6 +20,12 @@ public class MapEntity
     public virtual Scene Scene { get; set; } = null!;
     public int SceneId { get; set; }
     
+    [GraphQLIgnore]
+    public virtual AppFile Image { get; set; }
+    public int ImageId { get; set; }
+
+    public string Href => $"/images/token/{Id}"; 
+    
     public static MapEntity Get(int id)
     {
         throw new NotImplementedException();
@@ -30,12 +36,13 @@ public class MapEntity
         
     }
     
-    public MapEntity(int x, int y, int width, int height, int sceneId)
+    public MapEntity(int x, int y, int width, int height, int sceneId, AppFile image)
     {
         X = x;
         Y = y;
         Width = width;
         Height = height;
         SceneId = sceneId;
+        Image = image;
     }
 }

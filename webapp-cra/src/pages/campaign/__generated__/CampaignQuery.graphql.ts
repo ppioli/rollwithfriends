@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f9c4c7f2b305aa51fd99abbec4ddd6a0>>
+ * @generated SignedSource<<1457ab58e2af523b18cb80663ece4fdf>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -214,6 +214,13 @@ return {
                     "kind": "ScalarField",
                     "name": "height",
                     "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "href",
+                    "storageKey": null
                   }
                 ],
                 "storageKey": null
@@ -227,12 +234,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "66d79a067da64a5b1aec04445277b04c",
+    "cacheID": "effbf63e91eaea7e91d36fb205bc4f26",
     "id": null,
     "metadata": {},
     "name": "CampaignQuery",
     "operationKind": "query",
-    "text": "query CampaignQuery(\n  $id: ID!\n  $selectedScene: ID\n) {\n  campaigns(where: {id: {eq: $id}}) {\n    id\n    name\n    description\n    ...SceneSelector_campaign\n    selectedScene(sceneId: $selectedScene) {\n      id\n      ...SelectedScene_scene\n    }\n  }\n}\n\nfragment MapEntityLayer_scene on Scene {\n  entities {\n    id\n    x\n    y\n    width\n    height\n  }\n}\n\nfragment SceneSelector_campaign on Campaign {\n  scenes {\n    name\n    id\n  }\n}\n\nfragment SelectedScene_scene on Scene {\n  name\n  ...MapEntityLayer_scene\n}\n"
+    "text": "query CampaignQuery(\n  $id: ID!\n  $selectedScene: ID\n) {\n  campaigns(where: {id: {eq: $id}}) {\n    id\n    name\n    description\n    ...SceneSelector_campaign\n    selectedScene(sceneId: $selectedScene) {\n      id\n      ...SelectedScene_scene\n    }\n  }\n}\n\nfragment MapEntityLayer_scene on Scene {\n  entities {\n    id\n    x\n    y\n    width\n    height\n    href\n  }\n}\n\nfragment SceneSelector_campaign on Campaign {\n  scenes {\n    name\n    id\n  }\n}\n\nfragment SelectedScene_scene on Scene {\n  name\n  ...MapEntityLayer_scene\n}\n"
   }
 };
 })();

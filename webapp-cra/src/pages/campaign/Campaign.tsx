@@ -4,7 +4,7 @@ import { SceneSelector } from "pages/scene/SceneSelector";
 import { Chat } from "pages/Chat";
 import { useNavigation } from "yarr";
 import { SelectedScene } from "pages/scene/SelectedScene";
-
+import "./Campaing.css";
 const graphql = require("babel-plugin-relay/macro");
 
 export const CampaignQuery = graphql`
@@ -44,7 +44,7 @@ export const CampaignPage = ({ preloaded }: any) => {
         />
       )}
 
-      <div className={"absolute"}>
+      <div className={"absolute editor-width"}>
         <SceneSelector
           campaignId={campaign.id}
           campaign={campaign}

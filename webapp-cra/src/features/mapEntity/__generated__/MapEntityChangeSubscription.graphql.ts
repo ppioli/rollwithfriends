@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f62f7c2e454f81aed547626d549e5273>>
+ * @generated SignedSource<<d48d7ed512670b2074056be057e5d166>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type ChangeMessageType = "ADD" | "UPDATE" | "DELETE" | "%future added value";
 export type MapEntityChangeSubscription$variables = {
   sceneId: string;
@@ -19,10 +20,7 @@ export type MapEntityChangeSubscription$data = {
     readonly userId: string;
     readonly payload: ReadonlyArray<{
       readonly id: string;
-      readonly x: number;
-      readonly y: number;
-      readonly width: number;
-      readonly height: number;
+      readonly " $fragmentSpreads": FragmentRefs<"MapEntityFragment">;
     }>;
   };
 };
@@ -41,90 +39,70 @@ var v0 = [
 ],
 v1 = [
   {
-    "alias": null,
-    "args": [
-      {
-        "kind": "Variable",
-        "name": "sceneId",
-        "variableName": "sceneId"
-      }
-    ],
-    "concreteType": "MapEntityChangeMessage",
-    "kind": "LinkedField",
-    "name": "mapEntityChanged",
-    "plural": false,
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "type",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "userId",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "MapEntity",
-        "kind": "LinkedField",
-        "name": "payload",
-        "plural": true,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "x",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "y",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "width",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "height",
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      }
-    ],
-    "storageKey": null
+    "kind": "Variable",
+    "name": "sceneId",
+    "variableName": "sceneId"
   }
-];
+],
+v2 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "type",
+  "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "userId",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
 return {
   "fragment": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "MapEntityChangeSubscription",
-    "selections": (v1/*: any*/),
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "MapEntityChangeMessage",
+        "kind": "LinkedField",
+        "name": "mapEntityChanged",
+        "plural": false,
+        "selections": [
+          (v2/*: any*/),
+          (v3/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "MapEntity",
+            "kind": "LinkedField",
+            "name": "payload",
+            "plural": true,
+            "selections": [
+              (v4/*: any*/),
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "MapEntityFragment"
+              }
+            ],
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ],
     "type": "Subscription",
     "abstractKey": null
   },
@@ -133,19 +111,80 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "MapEntityChangeSubscription",
-    "selections": (v1/*: any*/)
+    "selections": [
+      {
+        "alias": null,
+        "args": (v1/*: any*/),
+        "concreteType": "MapEntityChangeMessage",
+        "kind": "LinkedField",
+        "name": "mapEntityChanged",
+        "plural": false,
+        "selections": [
+          (v2/*: any*/),
+          (v3/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "MapEntity",
+            "kind": "LinkedField",
+            "name": "payload",
+            "plural": true,
+            "selections": [
+              (v4/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "x",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "y",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "width",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "height",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "href",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ]
   },
   "params": {
-    "cacheID": "331913324ab964cd82a260db10d98ee0",
+    "cacheID": "50534d669c0b54b4aa90d8a0f17badba",
     "id": null,
     "metadata": {},
     "name": "MapEntityChangeSubscription",
     "operationKind": "subscription",
-    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      x\n      y\n      width\n      height\n    }\n  }\n}\n"
+    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n  href\n}\n"
   }
 };
 })();
 
-(node as any).hash = "27ab16f81148ad2371484bae3e3bfc84";
+(node as any).hash = "68b1789b40227aa4332578e8cc9c0090";
 
 export default node;

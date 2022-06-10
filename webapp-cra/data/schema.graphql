@@ -189,6 +189,8 @@ type MapEntity implements Node {
   height: Int!
   scene: Scene!
   sceneId: Int!
+  imageId: Int!
+  href: String!
 }
 
 input MapEntityAddInput {
@@ -196,6 +198,7 @@ input MapEntityAddInput {
   y: Int!
   width: Int!
   height: Int!
+  fileType: String!
 }
 
 type MapEntityAddPayload {
@@ -227,6 +230,8 @@ input MapEntityFilterInput {
   height: ComparableInt32OperationFilterInput
   scene: SceneFilterInput
   sceneId: ComparableInt32OperationFilterInput
+  imageId: ComparableInt32OperationFilterInput
+  href: StringOperationFilterInput
 }
 
 input MapEntityUpdateInput {

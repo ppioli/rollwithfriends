@@ -18,21 +18,20 @@ public class MapEntityMutation
         MapEntitiesUpdate input
     )
     {
-        
         if (!IsGameMaster(input.SceneId, user, db))
         {
             throw new EntityNotFound(input.SceneId);
         }
-        
+
         var result = new List<MapEntity>();
-        
+
         // TODO Should check payload size 
         var ids = input.Entities
             .Select(s => s.Id)
             .ToArray();
-        
+
         var updatedDict = db.MapEntities.Where(e => ids.Contains(e.Id) && e.SceneId == input.SceneId)
-            .ToDictionary( e => e.Id, e => e);
+            .ToDictionary(e => e.Id, e => e);
 
         foreach (var e in input.Entities)
         {
@@ -40,17 +39,20 @@ public class MapEntityMutation
             {
                 throw new EntityNotFound(e.Id);
             }
-            var updated = updatedDict[e.Id]; 
+
+            var updated = updatedDict[e.Id];
             updated.X = e.X;
             updated.Y = e.Y;
             updated.Width = e.Width;
             updated.Height = e.Height;
-            
+
             result.Add(updated);
         }
+
         await db.SaveChangesAsync();
-        await sender.SendAsync(MapEntityChangeSubscription.GetTopic(input.SceneId), new MapEntityChangeMessage(
-            ChangeMessageType.Update, user.GetId(), result));
+        await sender.SendAsync(
+            MapEntityChangeSubscription.GetTopic(input.SceneId),
+            new MapEntityChangeMessage(ChangeMessageType.Update, user.GetId(), result));
         return result;
     }
 
@@ -67,39 +69,47 @@ public class MapEntityMutation
             throw new EntityNotFound(input.SceneId);
         }
 
-        var created = input.Entities.Select(n => new MapEntity(n.X, n.Y, n.Width, n.Height, input.SceneId)).ToList();
-        
+
+        var created = input.Entities.Select(
+                n =>
+                {
+                    var image = new AppFile(user.GetId(), user.GetId(), n.FileType);
+                    return new MapEntity(n.X, n.Y, n.Width, n.Height, input.SceneId, image);
+                })
+            .ToList();
+
         await db.AddRangeAsync(created);
         await db.SaveChangesAsync();
-        
-        await sender.SendAsync(MapEntityChangeSubscription.GetTopic(input.SceneId), new MapEntityChangeMessage(
-            ChangeMessageType.Add, user.GetId(), created));
+
+        await sender.SendAsync(
+            MapEntityChangeSubscription.GetTopic(input.SceneId),
+            new MapEntityChangeMessage(ChangeMessageType.Add, user.GetId(), created));
         return created;
     }
-    
+
     [Authorize]
     public async Task<ICollection<MapEntity>> MapEntityDelete(
         ClaimsPrincipal user,
         RwfDbContext db,
         [Service] ITopicEventSender sender,
-        MapEntityDelete input)
+        [ID] int sceneId,
+        [ID] ICollection<int> deleted)
     {
-        if (!IsGameMaster(input.SceneId, user, db))
+        if (!IsGameMaster(sceneId, user, db))
         {
-            throw new EntityNotFound(input.SceneId);
+            throw new EntityNotFound(sceneId);
         }
-        
-        var result = new List<MapEntity>();
-        
+
         // TODO Should check payload size
-        var deletedList = db.MapEntities.Where(e => input.Deleted.Contains(e.Id) && e.SceneId == input.SceneId)
+        var deletedList = db.MapEntities.Where(e => deleted.Contains(e.Id) && e.SceneId == sceneId)
             .ToList();
-        
+
         db.RemoveRange(deletedList);
         await db.SaveChangesAsync();
-        await sender.SendAsync(MapEntityChangeSubscription.GetTopic(input.SceneId), new MapEntityChangeMessage(
-            ChangeMessageType.Delete, user.GetId(), result));
-        return result;
+        await sender.SendAsync(
+            MapEntityChangeSubscription.GetTopic(sceneId),
+            new MapEntityChangeMessage(ChangeMessageType.Delete, user.GetId(), deletedList));
+        return deletedList;
     }
 
     private bool IsGameMaster(int sceneId, ClaimsPrincipal user, RwfDbContext context)
@@ -114,14 +124,12 @@ public class MapEntityMutation
     }
 }
 
-
 public class MapEntitiesAdd
 {
-    [ID] 
+    [ID]
     public int SceneId { get; set; }
 
     public MapEntityAdd[] Entities { get; set; } = default!;
-
 }
 
 public class MapEntityAdd
@@ -130,26 +138,33 @@ public class MapEntityAdd
     public int Y { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
+    public string FileType { get; set; } = null!;
 }
 
-public class MapEntitiesUpdate 
+public class MapEntitiesUpdate
 {
-    [ID] 
+    [ID]
     public int SceneId { get; set; }
-    
+
     public MapEntityUpdate[] Entities { get; set; } = default!;
 }
 
-public class MapEntityUpdate : MapEntityAdd
+public class MapEntityUpdate
 {
     [ID]
     public int Id { get; set; }
+
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
 }
 
-public class MapEntityDelete
+public class MapEntitiesDelete
 {
-    [ID] 
-    public int SceneId { get; set; }
     [ID]
-    public ICollection<int> Deleted { get; set; }
+    public int SceneId { get; set; }
+
+    [ID]
+    public ICollection<int> Deleted { get; set; } = default!;
 }

@@ -15,6 +15,7 @@ public class RwfDbContext : IdentityDbContext<
     public DbSet<Scene> Scenes { get; set; } = null!;
     public DbSet<MapEntity> MapEntities { get; set; } = null!;
     public DbSet<CampaignEnrollment> CampaignEnrollments { get; set; } = null!;
+    public DbSet<AppFile> Files { get; set; } = null!;
 
     public RwfDbContext(DbContextOptions<RwfDbContext> options) : base(options)
     {

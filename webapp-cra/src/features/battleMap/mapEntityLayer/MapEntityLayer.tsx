@@ -4,9 +4,9 @@ import { MapEntity } from "features/mapEntity/MapEntity";
 import { useFragment } from "react-relay";
 import { MapEntityContext } from "features/battleMap/mapEntityLayer/MapEntityContext";
 import { EntitySelectBox } from "features/battleMap/mapEntityLayer/EntitySelectBox";
-import { SyntheticEvent, useCallback, useMemo, useRef, useState } from "react";
-import classNames from "classnames";
-import { useDrag, useGesture } from "@use-gesture/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useGesture } from "@use-gesture/react";
+import { useMapEntityDeleteMutation } from "features/mapEntity/MapEntity.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -31,6 +31,7 @@ export default function MapEntityLayer({
           y
           width
           height
+          href
         }
       }
     `,
@@ -38,7 +39,7 @@ export default function MapEntityLayer({
   );
 
   const [selected, setSelected] = useState<Set<string>>(new Set<string>());
-
+  const deleteEntities = useMapEntityDeleteMutation();
   const selectAdd = useCallback(
     (ids: string[]) => {
       const existing = new Set(selected);
@@ -79,7 +80,8 @@ export default function MapEntityLayer({
 
   const selectionBounds: [[number, number], [number, number]] | null =
     useMemo(() => {
-      if (selected.size === 0) {
+      const selectedEntities = getSelected();
+      if (selectedEntities.length === 0) {
         return null;
       }
       let minX = Infinity,
@@ -87,20 +89,18 @@ export default function MapEntityLayer({
         maxX = -Infinity,
         maxY = -Infinity;
 
-      data.entities
-        .filter((e) => selected.has(e.id))
-        .forEach((s) => {
-          minX = Math.min(s.x, minX);
-          minY = Math.min(s.y, minY);
-          maxX = Math.max(s.x + s.width, maxX);
-          maxY = Math.max(s.y + s.height, maxY);
-        });
+      selectedEntities.forEach((s) => {
+        minX = Math.min(s.x, minX);
+        minY = Math.min(s.y, minY);
+        maxX = Math.max(s.x + s.width, maxX);
+        maxY = Math.max(s.y + s.height, maxY);
+      });
 
       return [
         [minX, minY],
         [maxX, maxY],
       ];
-    }, [selected, data]);
+    }, [getSelected]);
 
   const isSelected = useCallback((id: string) => selected.has(id), [selected]);
   const selectBoxRef = useRef<HTMLDivElement>(null);
@@ -136,6 +136,35 @@ export default function MapEntityLayer({
     }
   );
 
+  const clickThing = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      if (event.target !== document.body) {
+        return;
+      }
+
+      if (event.key === "Delete") {
+        const selected = getSelected();
+        if (selected.length === 0) {
+          return;
+        }
+
+        const deleted = selected.map((s) => s.id);
+
+        deleteEntities({
+          input: {
+            deleted,
+            sceneId,
+          },
+        });
+      }
+    };
+
+    document.addEventListener("keyup", handler);
+
+    return () => document.removeEventListener("keyup", handler);
+  }, [getSelected]);
+
   const context = {
     selectionBounds,
     isSelected,
@@ -149,6 +178,7 @@ export default function MapEntityLayer({
     <MapEntityContext.Provider value={context}>
       <div
         id={"click-box"}
+        ref={clickThing}
         className={"absolute w-screen h-screen touch-none"}
         {...bindOuter()}
       >

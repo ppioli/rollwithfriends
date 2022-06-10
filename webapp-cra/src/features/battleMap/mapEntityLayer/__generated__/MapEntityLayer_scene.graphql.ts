@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<303ddcf99d6c997cc6f3b4c68ba9121c>>
+ * @generated SignedSource<<5a5c36726f1a03872d72187b14f5569e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -17,6 +17,7 @@ export type MapEntityLayer_scene$data = {
     readonly y: number;
     readonly width: number;
     readonly height: number;
+    readonly href: string;
   }>;
   readonly " $fragmentType": "MapEntityLayer_scene";
 };
@@ -73,6 +74,13 @@ const node: ReaderFragment = {
           "kind": "ScalarField",
           "name": "height",
           "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "href",
+          "storageKey": null
         }
       ],
       "storageKey": null
@@ -82,6 +90,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "111acbdfe6145ba9ac1c0bc54a05343c";
+(node as any).hash = "0038244177422329e61f8a4a9675a694";
 
 export default node;

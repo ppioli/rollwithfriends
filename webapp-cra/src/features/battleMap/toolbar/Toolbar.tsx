@@ -13,8 +13,6 @@ interface ToolbarProps {
 }
 
 export default function Toolbar({ sceneId, className }: ToolbarProps) {
-  const addEntity = useMapEntityAddMutation();
-
   return (
     <div className={className}>
       <div className={"d-flex flex-col"}>
@@ -27,7 +25,7 @@ export default function Toolbar({ sceneId, className }: ToolbarProps) {
               entities: [{ x: 100, y: 100, width: 100, height: 100 }],
             };
 
-            addEntity({ input });
+            // addEntity({ input });
           }}
         >
           +

@@ -33,7 +33,7 @@ export function SceneSelector({
   );
 
   return (
-    <div className={"flex flex-row"}>
+    <div className={"flex flex-row w-full justify-center"}>
       {data.scenes.map((s) => (
         <button
           className={"btn btn-primary"}

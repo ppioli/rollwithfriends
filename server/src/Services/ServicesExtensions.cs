@@ -5,7 +5,7 @@ namespace Server.Services
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddSingleton<GoogleTokenValidator>();
-            
+            services.AddSingleton<FileStorageService>();
 
             return services;
         }
