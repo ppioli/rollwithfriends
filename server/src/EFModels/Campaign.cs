@@ -1,11 +1,15 @@
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using Server.EFModels.Messages;
 using server.Infraestructure;
 
 namespace Server.EFModels;
 
+[Node]
 public class Campaign
 {
     [ID]
+    [IsProjected(true)]
     public int Id { get; set; }
 
     public string Name { get; set; }
@@ -13,8 +17,7 @@ public class Campaign
 
     [GraphQLIgnore]
     public virtual User DungeonMaster { get; set; } = default!;
-
-
+    
     [IsProjected(true)]
     public string DungeonMasterId { get; set; }
 
@@ -25,8 +28,32 @@ public class Campaign
 
     [IsProjected(true)]
     public int? SelectedSceneId { get; set; }
+    
+    
+    [GraphQLIgnore]
+    public virtual ICollection<Message> Messages { get; set; } = default!;
+    
+    // TODO This used to work as a projection
+    [UsePaging()]
+    public IQueryable<Message> GetMessages(RwfDbContext context) => context.Messages
+        .Where( m => m.CampaignId == Id)
+        .OrderByDescending( s => s.CreatedAt);
 
+    [GraphQLIgnore]
     public virtual ICollection<CampaignEnrollment> Participants { get; set; } = new List<CampaignEnrollment>();
+
+    public ICollection<Participant> GetParticipants([Service()] RwfDbContext db) => (db.Campaigns
+                .Include(c => c.Participants)
+                .ThenInclude(p => p.User)
+                .FirstOrDefault(c => c.Id == Id) ??
+            throw new Exception($"Could not find participants for campaign #{Id}"))
+        .Participants.Select(
+            p => new Participant(
+                p.Id,
+                p.UserId,
+                p.User.UserName,
+                p.UserId == DungeonMasterId ? CampaignRoll.DungeonMaster : CampaignRoll.Player))
+        .ToList();
 
     public Campaign(string name, string description, string dungeonMasterId)
     {
@@ -62,5 +89,28 @@ public class Campaign
 
         return context.Scenes.Where(s => (isDm && (s.Id == dmSceneId)) || (!isDm && (sceneId) == SelectedSceneId));
 
+    }
+}
+
+[Node]
+public class Participant
+{
+    [ID()]
+    public int Id { get; set; }
+    public string UserId { get; set; }
+    public string Name { get; set; }
+    public CampaignRoll CampaignRoll { get; set; }
+
+    public Participant(int id, string userId, string name, CampaignRoll campaignRoll)
+    {
+        Id = id;
+        UserId = userId;
+        Name = name;
+        CampaignRoll = campaignRoll;
+    }
+
+    public static Participant Get([ID] int id)
+    {
+        throw new NotImplementedException();
     }
 }

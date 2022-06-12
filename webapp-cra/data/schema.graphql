@@ -45,12 +45,39 @@ directive @stream(
   if: Boolean
 ) on FIELD
 
+"""
+The `@specifiedBy` directive is used within the type system definition language
+to provide a URL for specifying the behavior of custom scalar definitions.
+"""
+directive @specifiedBy(
+  """
+  The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types.
+  """
+  url: String!
+) on SCALAR
+
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
 }
 
-type Campaign {
+type Campaign implements Node {
+  messages(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+  ): MessagesConnection
+  participants: [Participant!]!
   isDungeonMaster: Boolean!
   selectedScene(sceneId: ID): Scene
   id: ID!
@@ -59,7 +86,6 @@ type Campaign {
   dungeonMasterId: String!
   scenes: [Scene!]!
   selectedSceneId: Int
-  participants: [CampaignEnrollment!]!
 }
 
 input CampaignAddInput {
@@ -71,22 +97,6 @@ type CampaignAddPayload {
   campaign: Campaign
 }
 
-type CampaignEnrollment implements Node {
-  id: ID!
-  userId: String!
-  campaign: Campaign!
-  campaignId: Int!
-}
-
-input CampaignEnrollmentFilterInput {
-  and: [CampaignEnrollmentFilterInput!]
-  or: [CampaignEnrollmentFilterInput!]
-  id: IdOperationFilterInput
-  userId: StringOperationFilterInput
-  campaign: CampaignFilterInput
-  campaignId: ComparableInt32OperationFilterInput
-}
-
 input CampaignFilterInput {
   and: [CampaignFilterInput!]
   or: [CampaignFilterInput!]
@@ -96,7 +106,11 @@ input CampaignFilterInput {
   dungeonMasterId: StringOperationFilterInput
   scenes: ListFilterInputTypeOfSceneFilterInput
   selectedSceneId: ComparableNullableOfInt32OperationFilterInput
-  participants: ListFilterInputTypeOfCampaignEnrollmentFilterInput
+}
+
+enum CampaignRoll {
+  DUNGEON_MASTER
+  PLAYER
 }
 
 enum ChangeMessageType {
@@ -135,12 +149,19 @@ input ComparableNullableOfInt32OperationFilterInput {
   nlte: Int
 }
 
+"""The `DateTime` scalar represents an ISO-8601 compliant date time type."""
+scalar DateTime
+
 input EnrollmentAddInput {
   code: ID!
 }
 
 type EnrollmentAddPayload {
   campaign: Campaign
+}
+
+type FileLoadingMessage {
+  progress: Int!
 }
 
 input IdOperationFilterInput {
@@ -150,11 +171,10 @@ input IdOperationFilterInput {
   nin: [ID]
 }
 
-input ListFilterInputTypeOfCampaignEnrollmentFilterInput {
-  all: CampaignEnrollmentFilterInput
-  none: CampaignEnrollmentFilterInput
-  some: CampaignEnrollmentFilterInput
-  any: Boolean
+enum ImageState {
+  LOADED
+  LOADING
+  MISSING
 }
 
 input ListFilterInputTypeOfMapEntityFilterInput {
@@ -182,6 +202,7 @@ input MapEntitiesUpdateInput {
 }
 
 type MapEntity implements Node {
+  imageState: ImageState!
   id: ID!
   x: Int!
   y: Int!
@@ -190,7 +211,6 @@ type MapEntity implements Node {
   scene: Scene!
   sceneId: Int!
   imageId: Int!
-  href: String!
 }
 
 input MapEntityAddInput {
@@ -231,7 +251,6 @@ input MapEntityFilterInput {
   scene: SceneFilterInput
   sceneId: ComparableInt32OperationFilterInput
   imageId: ComparableInt32OperationFilterInput
-  href: StringOperationFilterInput
 }
 
 input MapEntityUpdateInput {
@@ -246,6 +265,48 @@ type MapEntityUpdatePayload {
   mapEntity: [MapEntity!]
 }
 
+type Message implements Node {
+  content: MessageContent!
+  id: ID!
+  userId: String!
+  campaign: Campaign!
+  campaignId: Int!
+  createdAt: DateTime!
+  type: MessageType!
+}
+
+union MessageContent = TextMessageContent | RollMessageContent
+
+type MessageEvent {
+  messages: [Message!]!
+}
+
+"""A connection to a list of items."""
+type MessagesConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MessagesEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [Message!]
+}
+
+"""An edge in a connection."""
+type MessagesEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Message!
+}
+
+enum MessageType {
+  TEXT
+  ROLL
+}
+
 type Mutation {
   campaignAdd(input: CampaignAddInput!): CampaignAddPayload!
   enrollmentAdd(input: EnrollmentAddInput!): EnrollmentAddPayload!
@@ -255,6 +316,8 @@ type Mutation {
   sceneAdd(input: SceneAddInput!): SceneAddPayload!
   sceneAddDelete(input: SceneAddDeleteInput!): SceneAddDeletePayload!
   sceneAddUpdate(input: SceneAddUpdateInput!): SceneAddUpdatePayload!
+  textMessageAdd(input: TextMessagesAddInput!): TextMessageAddPayload!
+  rollMessageAdd(input: RollMessagesAddInput!): RollMessageAddPayload!
 }
 
 """
@@ -262,6 +325,60 @@ The node interface is implemented by entities that have a global unique identifi
 """
 interface Node {
   id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """
+  Indicates whether more edges exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+
+  """
+  Indicates whether more edges exist prior the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type Participant implements Node {
+  id: ID!
+  userId: String!
+  name: String!
+  campaignRoll: CampaignRoll!
+}
+
+type Roll {
+  faces: Int!
+  count: Int!
+  result: [Int!]
+}
+
+input RollInfoInput {
+  faces: Int!
+  count: Int!
+}
+
+input RollMessageAddInput {
+  content: [RollInfoInput!]!
+}
+
+type RollMessageAddPayload {
+  message: [Message!]
+}
+
+type RollMessageContent {
+  rolls: [Roll!]!
+}
+
+input RollMessagesAddInput {
+  campaignId: ID!
+  messages: [RollMessageAddInput!]!
 }
 
 type RootQuery {
@@ -341,5 +458,24 @@ input StringOperationFilterInput {
 
 type Subscription {
   mapEntityChanged(sceneId: ID!): MapEntityChangeMessage!
+  fileLoadingSub(fileId: Int!): FileLoadingMessage!
+  messageSub(campaignId: ID!): MessageEvent!
+}
+
+input TextMessageAddInput {
+  content: String!
+}
+
+type TextMessageAddPayload {
+  message: [Message!]
+}
+
+type TextMessageContent {
+  text: String!
+}
+
+input TextMessagesAddInput {
+  campaignId: ID!
+  messages: [TextMessageAddInput!]!
 }
 

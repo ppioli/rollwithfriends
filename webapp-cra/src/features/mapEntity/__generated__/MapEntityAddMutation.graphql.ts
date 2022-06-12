@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4780db292e348b162622e8a8afe69a80>>
+ * @generated SignedSource<<85c0262249375c753626f549977d4743>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,6 +10,7 @@
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
+export type ImageState = "LOADED" | "LOADING" | "MISSING" | "%future added value";
 export type MapEntitiesAddInput = {
   sceneId: string;
   entities: ReadonlyArray<MapEntityAddInput>;
@@ -28,6 +29,8 @@ export type MapEntityAddMutation$data = {
   readonly mapEntityAdd: {
     readonly mapEntity: ReadonlyArray<{
       readonly id: string;
+      readonly imageState: ImageState;
+      readonly imageId: number;
       readonly " $fragmentSpreads": FragmentRefs<"MapEntityFragment">;
     }> | null;
   };
@@ -58,6 +61,20 @@ v2 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
+},
+v3 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "imageState",
+  "storageKey": null
+},
+v4 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "imageId",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -87,7 +104,9 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "MapEntityFragment"
-              }
+              },
+              (v3/*: any*/),
+              (v4/*: any*/)
             ],
             "storageKey": null
           }
@@ -149,13 +168,8 @@ return {
                 "name": "height",
                 "storageKey": null
               },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "href",
-                "storageKey": null
-              }
+              (v3/*: any*/),
+              (v4/*: any*/)
             ],
             "storageKey": null
           }
@@ -165,16 +179,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f6593f03fbf79ab07634f2e436707520",
+    "cacheID": "dfab4c40cdf44be50e93c587ec0dedf8",
     "id": null,
     "metadata": {},
     "name": "MapEntityAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityAddMutation(\n  $input: MapEntitiesAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n  href\n}\n"
+    "text": "mutation MapEntityAddMutation(\n  $input: MapEntitiesAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      ...MapEntityFragment\n      imageState\n      imageId\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n}\n"
   }
 };
 })();
 
-(node as any).hash = "480bacaa80fcb51d8d37969d656112ba";
+(node as any).hash = "8354b4bc332ec59aff3cbbebe02ed598";
 
 export default node;

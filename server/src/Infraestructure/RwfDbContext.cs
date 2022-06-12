@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Server.EFModels;
+using Server.EFModels.Messages;
 using Server.Models;
 
 namespace server.Infraestructure;
@@ -16,6 +17,7 @@ public class RwfDbContext : IdentityDbContext<
     public DbSet<MapEntity> MapEntities { get; set; } = null!;
     public DbSet<CampaignEnrollment> CampaignEnrollments { get; set; } = null!;
     public DbSet<AppFile> Files { get; set; } = null!;
+    public DbSet<Message> Messages { get; set; } = null!;
 
     public RwfDbContext(DbContextOptions<RwfDbContext> options) : base(options)
     {
@@ -78,5 +80,7 @@ public class RwfDbContext : IdentityDbContext<
                     .HasForeignKey(ur => ur.RoleId)
                     .IsRequired();
             });
+
+        modelBuilder.Entity<MapEntity>().Navigation(e => e.Image).AutoInclude();
     }
 }

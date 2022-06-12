@@ -12,8 +12,6 @@ interface InputProps {
 
 export const Input = React.forwardRef(
   ({ label, input, layout, onBlur, onChange, name }: InputProps, ref: any) => {
-    const className =
-      "mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md";
     const {
       className: inputClassName,
       onChange: inputChange,
@@ -43,7 +41,7 @@ export const Input = React.forwardRef(
           onChange={onChange}
           name={name}
           {...inputRest}
-          className={classNames(className, inputClassName ?? "")}
+          className={classNames("input", inputClassName ?? "")}
         />
       </div>
     );

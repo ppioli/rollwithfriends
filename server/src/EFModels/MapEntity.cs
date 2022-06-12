@@ -1,3 +1,5 @@
+using server.Infraestructure;
+
 namespace Server.EFModels;
 
 using AutoMapper;
@@ -21,11 +23,22 @@ public class MapEntity
     public int SceneId { get; set; }
     
     [GraphQLIgnore]
+    [IsProjected(true)]
     public virtual AppFile Image { get; set; }
+    
+    [IsProjected(true)]
     public int ImageId { get; set; }
 
-    public string Href => $"/images/token/{Id}"; 
-    
+    public ImageState GetImageState(
+        RwfDbContext db,
+        [Service()]FileStorageService fileStorageService)
+    {
+        //TODO DataLoader this
+        var image = db.Files.Find(ImageId);
+        if (image.Loaded) return ImageState.Loaded;
+        return fileStorageService.IsLoading(ImageId) ? ImageState.Loading : ImageState.Missing;
+    }
+
     public static MapEntity Get(int id)
     {
         throw new NotImplementedException();
@@ -45,4 +58,11 @@ public class MapEntity
         SceneId = sceneId;
         Image = image;
     }
+}
+
+public enum ImageState
+{
+    Loaded,
+    Loading,
+    Missing
 }

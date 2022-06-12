@@ -50,7 +50,6 @@ const MapEntityFragment = graphql`
     y
     width
     height
-    href
   }
 `;
 
@@ -79,15 +78,14 @@ export function useMapEntityUpdateMutation() {
   );
 }
 
-export function useMapEntityAddMutation(
-  onComplete?: (result: MapEntityAddMutation$data) => void
-) {
+export function useMapEntityAddMutation() {
   const [_commit, inFlight] = useMutation<MapEntityAddMutation>(graphql`
     mutation MapEntityAddMutation($input: MapEntitiesAddInput!) {
       mapEntityAdd(input: $input) {
         mapEntity {
           id
           ...MapEntityFragment
+          imageState
           imageId
         }
       }
@@ -95,20 +93,24 @@ export function useMapEntityAddMutation(
   `);
 
   const commit = useCallback(
-    (variables: MapEntityAddMutation$variables) => {
+    (
+      variables: MapEntityAddMutation$variables,
+      onComplete?: (result: MapEntityAddMutation$data) => void
+    ) => {
       _commit({
         variables: variables,
         onCompleted: onComplete,
         updater: (store: RecordSourceSelectorProxy, data) => {
           const payload = store.getRootField("mapEntityAdd")!;
           const added = payload.getLinkedRecords("mapEntity")!;
+          // added.forEach((added, ix) => added.setValue(images[ix].src, "href"));
           const scene = store.get(variables.input.sceneId)!;
           const existing = scene.getLinkedRecords("entities") || [];
           scene.setLinkedRecords([...existing, ...added], "entities");
         },
       });
     },
-    [_commit, onComplete]
+    [_commit]
   );
 
   return commit;
@@ -161,6 +163,8 @@ export function useMapEntitySubscription(
             payload {
               id
               ...MapEntityFragment
+              imageState
+              imageId
             }
           }
         }

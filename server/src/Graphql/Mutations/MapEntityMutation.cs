@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Server.EFModels;
 using Server.Graphql.Subscriptions;
 using server.Infraestructure;
+using Server.Services;
 
 namespace Server.Graphql.Mutations;
 
@@ -62,6 +63,7 @@ public class MapEntityMutation
         ClaimsPrincipal user,
         RwfDbContext db,
         [Service] ITopicEventSender sender,
+        [Service] FileStorageService fileStorageService,
         MapEntitiesAdd input)
     {
         if (!IsGameMaster(input.SceneId, user, db))
@@ -80,6 +82,10 @@ public class MapEntityMutation
 
         await db.AddRangeAsync(created);
         await db.SaveChangesAsync();
+
+        var newImages = created.Select(c => c.Image).ToList();
+
+        fileStorageService.StartUpload(newImages);
 
         await sender.SendAsync(
             MapEntityChangeSubscription.GetTopic(input.SceneId),

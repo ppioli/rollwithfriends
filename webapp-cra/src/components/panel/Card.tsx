@@ -16,14 +16,14 @@ export function Card({ children, footer, layout, className }: CardProps) {
       }`}
     >
       <div
-        className={`flex-1 px-4 py-5 bg-white space-y-6 sm:p-6 h-auto h-full ${
+        className={`flex-1 px-4 py-5 bg-primary space-y-6 sm:p-6 h-auto h-full ${
           layout ?? ""
         }`}
       >
         {children}
       </div>
       {footer && (
-        <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">{footer}</div>
+        <div className="px-4 py-3 bg-dark text-right sm:px-6">{footer}</div>
       )}
     </div>
   );

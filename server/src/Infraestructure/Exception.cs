@@ -34,3 +34,11 @@ public class EntityNotFound : ClientException
     }
 
 }
+
+public class NotAuthorizedException : ClientException
+{
+    public NotAuthorizedException() : base($"The campaign does not exist or the user does not belong to it")
+    {
+    }
+
+}

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d48d7ed512670b2074056be057e5d166>>
+ * @generated SignedSource<<c0d9944640e495209b8192ab496665b2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,6 +11,7 @@
 import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type ChangeMessageType = "ADD" | "UPDATE" | "DELETE" | "%future added value";
+export type ImageState = "LOADED" | "LOADING" | "MISSING" | "%future added value";
 export type MapEntityChangeSubscription$variables = {
   sceneId: string;
 };
@@ -20,6 +21,8 @@ export type MapEntityChangeSubscription$data = {
     readonly userId: string;
     readonly payload: ReadonlyArray<{
       readonly id: string;
+      readonly imageState: ImageState;
+      readonly imageId: number;
       readonly " $fragmentSpreads": FragmentRefs<"MapEntityFragment">;
     }>;
   };
@@ -64,6 +67,20 @@ v4 = {
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "imageState",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "imageId",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -95,7 +112,9 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "MapEntityFragment"
-              }
+              },
+              (v5/*: any*/),
+              (v6/*: any*/)
             ],
             "storageKey": null
           }
@@ -159,13 +178,8 @@ return {
                 "name": "height",
                 "storageKey": null
               },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "href",
-                "storageKey": null
-              }
+              (v5/*: any*/),
+              (v6/*: any*/)
             ],
             "storageKey": null
           }
@@ -175,16 +189,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "50534d669c0b54b4aa90d8a0f17badba",
+    "cacheID": "d3d08294f47dac4846efbc1f89c8362a",
     "id": null,
     "metadata": {},
     "name": "MapEntityChangeSubscription",
     "operationKind": "subscription",
-    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n  href\n}\n"
+    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      ...MapEntityFragment\n      imageState\n      imageId\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n}\n"
   }
 };
 })();
 
-(node as any).hash = "68b1789b40227aa4332578e8cc9c0090";
+(node as any).hash = "c0101ca0c7ff63fee796e244bee7ffbd";
 
 export default node;

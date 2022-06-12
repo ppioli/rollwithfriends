@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<151c909fccd63ae18ec605ce56db72ec>>
+ * @generated SignedSource<<118c4f648627779048e39bc27599e06d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -148,13 +148,6 @@ return {
                 "kind": "ScalarField",
                 "name": "height",
                 "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "href",
-                "storageKey": null
               }
             ],
             "storageKey": null
@@ -165,12 +158,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2555a10652568bd61dd25b3d90ae7fdf",
+    "cacheID": "776619ca8f791849d35a3a7b5865e4de",
     "id": null,
     "metadata": {},
     "name": "MapEntityUpdateMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityUpdateMutation(\n  $input: MapEntitiesUpdateInput!\n) {\n  mapEntityUpdate(input: $input) {\n    mapEntity {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n  href\n}\n"
+    "text": "mutation MapEntityUpdateMutation(\n  $input: MapEntitiesUpdateInput!\n) {\n  mapEntityUpdate(input: $input) {\n    mapEntity {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n}\n"
   }
 };
 })();

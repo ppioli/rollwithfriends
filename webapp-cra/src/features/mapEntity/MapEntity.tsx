@@ -7,7 +7,8 @@ import { BoxProps } from "components/moveResizeHandler/BoxProps";
 
 export interface MapEntity extends BoxProps {
   id: string;
-  href: string;
+  imageState: string;
+  imageId: number;
 }
 
 export function MapEntity({ id, ...data }: MapEntity & { scale: number }) {
@@ -21,5 +22,5 @@ export function MapEntity({ id, ...data }: MapEntity & { scale: number }) {
     }
   };
 
-  return <MapGraphic {...data} onClick={handleClick} />;
+  return <MapGraphic {...data} onClick={handleClick} id={id} />;
 }

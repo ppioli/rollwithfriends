@@ -319,6 +319,12 @@ namespace Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("Loaded")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("OwnerId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -469,6 +475,40 @@ namespace Server.Migrations
                     b.HasIndex("SceneId");
 
                     b.ToTable("MapEntities");
+                });
+
+            modelBuilder.Entity("Server.EFModels.Messages.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CampaignId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CampaignId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Server.EFModels.Scene", b =>
@@ -711,6 +751,25 @@ namespace Server.Migrations
                     b.Navigation("Scene");
                 });
 
+            modelBuilder.Entity("Server.EFModels.Messages.Message", b =>
+                {
+                    b.HasOne("Server.EFModels.Campaign", "Campaign")
+                        .WithMany("Messages")
+                        .HasForeignKey("CampaignId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.EFModels.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Campaign");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Server.EFModels.Scene", b =>
                 {
                     b.HasOne("Server.EFModels.Campaign", "Campaign")
@@ -741,6 +800,8 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.EFModels.Campaign", b =>
                 {
+                    b.Navigation("Messages");
+
                     b.Navigation("Participants");
 
                     b.Navigation("Scenes");

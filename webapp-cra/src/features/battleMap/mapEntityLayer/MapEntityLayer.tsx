@@ -31,7 +31,8 @@ export default function MapEntityLayer({
           y
           width
           height
-          href
+          imageState
+          imageId
         }
       }
     `,

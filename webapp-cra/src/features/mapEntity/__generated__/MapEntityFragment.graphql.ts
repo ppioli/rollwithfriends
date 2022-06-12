@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<55c0e8ab714585a265042d2fbb014005>>
+ * @generated SignedSource<<b53cfb562e8ea629d9a0457a9e32a0c1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,6 @@ export type MapEntityFragment$data = {
   readonly y: number;
   readonly width: number;
   readonly height: number;
-  readonly href: string;
   readonly " $fragmentType": "MapEntityFragment";
 };
 export type MapEntityFragment$key = {
@@ -56,19 +55,12 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "height",
       "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "href",
-      "storageKey": null
     }
   ],
   "type": "MapEntity",
   "abstractKey": null
 };
 
-(node as any).hash = "122142348cf96a491905adc8e92f5324";
+(node as any).hash = "23fef0fa1304f4093c7d105dac65e495";
 
 export default node;

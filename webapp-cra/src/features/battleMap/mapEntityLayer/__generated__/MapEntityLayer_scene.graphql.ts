@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5a5c36726f1a03872d72187b14f5569e>>
+ * @generated SignedSource<<06059aa4643dd6ad0b3ece7dd96cedf6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,6 +9,7 @@
 // @ts-nocheck
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
+export type ImageState = "LOADED" | "LOADING" | "MISSING" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type MapEntityLayer_scene$data = {
   readonly entities: ReadonlyArray<{
@@ -17,7 +18,8 @@ export type MapEntityLayer_scene$data = {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly href: string;
+    readonly imageState: ImageState;
+    readonly imageId: number;
   }>;
   readonly " $fragmentType": "MapEntityLayer_scene";
 };
@@ -79,7 +81,14 @@ const node: ReaderFragment = {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "href",
+          "name": "imageState",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "imageId",
           "storageKey": null
         }
       ],
@@ -90,6 +99,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "0038244177422329e61f8a4a9675a694";
+(node as any).hash = "5aeac9e0994f139573e1b4d9adcd3516";
 
 export default node;

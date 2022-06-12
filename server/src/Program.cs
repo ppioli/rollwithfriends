@@ -1,13 +1,17 @@
 using AutoMapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
+using OpenIddict.Server;
 using OpenIddict.Server.AspNetCore;
+using OpenIddict.Validation;
 using OpenIddict.Validation.AspNetCore;
 using Quartz;
 using Serilog;
 using Server.EFModels;
+using Server.EFModels.Messages;
+using Server.Graphql;
 using Server.Graphql.Mutations;
 using Server.Graphql.Query;
 using Server.Graphql.Subscriptions;
@@ -95,7 +99,7 @@ builder.Services.AddOpenIddict()
         options =>
         {
             // Enable the token endpoint.
-            options.SetTokenEndpointUris( new []{ "/connect/token", "/connect/google-sign-in" });
+            options.SetTokenEndpointUris("/connect/token");
 
             // Enable the password and the refresh token flows.
             options.AllowPasswordFlow()
@@ -114,6 +118,15 @@ builder.Services.AddOpenIddict()
             options.UseAspNetCore()
                 .DisableTransportSecurityRequirement()
                 .EnableTokenEndpointPassthrough();
+            
+            // Register the event handler responsible for populating userinfo responses.
+            options.AddEventHandler<OpenIddictServerEvents.ProcessRequestContext>(
+                configuration =>
+                {
+                    configuration
+                        .UseSingletonHandler<OidcExtractTokenHandler>();
+                });
+
         })
 
     // Register the OpenIddict validation components.
@@ -134,23 +147,38 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
 });
 
+
 builder.Services
     .AddGraphQLServer()
     .RegisterDbContext<RwfDbContext>()
-    .AddSubscriptionType( e => e.Name("Subscription"))
+    .AddSubscriptionType(e => e.Name("Subscription"))
     .AddTypeExtension<MapEntityChangeSubscription>()
+    .AddTypeExtension<FileLoadingSubscription>()
+    .AddTypeExtension<MessageSubscription>()
     .AddQueryType<RootQuery>()
     .AddMutationType(e => e.Name("Mutation"))
     .AddTypeExtension<CampaignMutation>()
     .AddTypeExtension<EnrollmentMutation>()
     .AddTypeExtension<MapEntityMutation>()
     .AddTypeExtension<SceneMutations>()
+    .AddTypeExtension<MessageMutation>()
+    .AddType<TextMessageContent>()
+    .AddType<RollMessageContent>()
     .AddMutationConventions()
     .AddProjections()
     .AddFiltering()
+    .AddSorting()
     .AddGlobalObjectIdentification()
     .AddAuthorization()
-    .AddMutationConventions( applyToAllMutations: true);
+    .AddMutationConventions(applyToAllMutations: true)
+    .AddSocketSessionInterceptor<SocketSessionInterceptor>()
+    .AddErrorFilter(
+        error =>
+        {
+            System.Console.WriteLine(error);
+
+            return error;
+        });
 
 builder.Services.AddInMemorySubscriptions();
 

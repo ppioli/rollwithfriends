@@ -2,7 +2,7 @@ import {
   SelectedScene_scene$data,
   SelectedScene_scene$key,
 } from "pages/scene/__generated__/SelectedScene_scene.graphql";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { useFragment } from "react-relay";
 import { useResizeDetector } from "react-resize-detector";
 import Grid from "features/battleMap/grid/Grid";
@@ -15,6 +15,9 @@ import {
 } from "features/mapEntity/MapEntity.graphql";
 import classNames from "classnames";
 import { loadImages } from "utils/imageLoader";
+import { getFormData } from "utils/getFormData";
+import { UploadUrl } from "lib/getRelayClientEnvironment";
+import { ACCESS_TOKEN } from "lib/useRefreshToken";
 
 export interface SceneProps {
   id: string;
@@ -62,7 +65,25 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
 
         const input = { sceneId: id, entities };
 
-        commit({ input });
+        commit({ input }, (data) => {
+          const result = data.mapEntityAdd.mapEntity;
+          if (!result) {
+            return;
+          }
+
+          result.forEach(({ imageId }, ix) => {
+            const postData = new FormData();
+
+            postData.append("data", files[ix]);
+            fetch(`${UploadUrl}/${imageId}`, {
+              method: "POST",
+              body: postData,
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+              },
+            });
+          });
+        });
       });
     },
   });

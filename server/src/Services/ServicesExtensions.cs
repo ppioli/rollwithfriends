@@ -1,3 +1,5 @@
+using server.Infraestructure;
+
 namespace Server.Services
 {
     public static class ServicesExtensions
@@ -6,6 +8,8 @@ namespace Server.Services
         {
             services.AddSingleton<GoogleTokenValidator>();
             services.AddSingleton<FileStorageService>();
+            services.AddSingleton<OidcExtractTokenHandler>();
+            services.AddTransient<EnrollmentService>();
 
             return services;
         }

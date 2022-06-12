@@ -1,12 +1,6 @@
-import React, {
-  MutableRefObject,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Point } from "utils/Point";
-import { useGesture, useWheel } from "@use-gesture/react";
+import { useGesture } from "@use-gesture/react";
 import { localPoint } from "utils/localPoint";
 import { clamp } from "lodash";
 
@@ -58,6 +52,8 @@ export default function useMapControl({
   const [fileDragging, setFileDragging] = useState(false);
   const zoomRef = useRef(1);
   const dragStart = useRef<Point | null>(null);
+
+  const ref = useRef<HTMLDivElement>(null);
 
   const bind = useGesture(
     {
@@ -126,27 +122,43 @@ export default function useMapControl({
         console.log("Drop: ", event);
         event.preventDefault();
         event.stopPropagation();
+        enterCount.current = 0;
         setFileDragging(false);
         const files = handleDropEvent(event);
         if (files.length > 0) {
           onFilesDropped(files);
         }
+
         // onDragEnd({ confirmed: true, event: event });
       },
-      onWheel: (event: React.WheelEvent) => {
-        if (event.ctrlKey) {
-          event.preventDefault();
-          event.stopPropagation();
-          const zoomDelta = event.deltaY / 530;
-          // zoomRef.current += ;
-          // onChange([0, 0], zoomRef.current);
-          let newZoom = clamp(zoom - zoomDelta, MIN_ZOOM, MAX_ZOOM);
-          setZoom(newZoom);
-        }
-      },
+      // The ref for the wheel event. We need to register it manually in order to
+      // do it as an active event listener
+      ref,
     }),
     [bind, onFilesDropped, zoom]
   );
+
+  useEffect(() => {
+    if (ref.current == null) {
+      return;
+    }
+    const div = ref.current;
+
+    const handler = (event: WheelEvent) => {
+      if (event.ctrlKey) {
+        event.preventDefault();
+        event.stopPropagation();
+        const zoomDelta = event.deltaY < 0 ? -0.1 : 0.1;
+        // zoomRef.current += ;
+        // onChange([0, 0], zoomRef.current);
+        setZoom((old) => clamp(old - zoomDelta, MIN_ZOOM, MAX_ZOOM));
+      }
+    };
+
+    div.addEventListener("wheel", handler, { passive: false });
+
+    return () => div.removeEventListener("wheel", handler);
+  }, [ref]);
 
   const [x, y] = position;
   return {

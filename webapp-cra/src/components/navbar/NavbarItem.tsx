@@ -13,8 +13,8 @@ export function NavbarItem({ label, href }: NavbarItemProps) {
       to={href}
       className={(active: boolean) =>
         classNames("px-3 py-2 rounded-md text-sm font-medium", {
-          "text-gray-300 hover:bg-gray-700 hover:text-white": !active,
-          "bg-gray-900 text-white": active,
+          "hover:bg-darkest": !active,
+          "bg-darkest": active,
         })
       }
     >
@@ -29,8 +29,8 @@ export function NavbarItemMini({ href, label }: NavbarItemProps) {
       to={href}
       className={(active: boolean) =>
         classNames("block px-3 py-2 rounded-md text-base font-medium", {
-          "hover:text-white hover:bg-gray-700 text-gray-300": !active,
-          "bg-gray-900 text-white ": active,
+          "hover:bg-darkest": !active,
+          "bg-darkest": active,
         })
       }
     >

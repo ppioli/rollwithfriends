@@ -9,14 +9,20 @@
     -khtml-user-select: none; /* Konqueror HTML */
     -moz-user-select: none; /* Old versions of Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
-    user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
+    user-select: none;
+    /* Non-prefixed version, currently
+                                     supported by Chrome, Edge, Opera and Firefox */
 }
+
 
 @layer base {
 
+    body {
+        @apply text-foreground
+    }
+
     .h1 {
-        @apply text-3xl font-medium leading-6 text-gray-900
+        @apply text-3xl font-medium leading-6
     }
 
     h1 {
@@ -24,7 +30,7 @@
     }
 
     .h2 {
-        @apply text-2xl font-normal leading-6 text-gray-900
+        @apply text-2xl font-normal leading-6
     }
 
     h2 {
@@ -32,31 +38,19 @@
     }
 
     .h3 {
-        @apply text-xl font-medium leading-6 text-gray-900
+        @apply text-xl font-medium leading-6
     }
 
     .h4 {
-        @apply text-lg font-medium leading-6 text-gray-900
-    }
-
-    .bg-primary {
-        @apply bg-indigo-800
-    }
-
-    .border-primary {
-        @apply border-indigo-600
-    }
-
-    .hover-primary {
-        @apply hover:bg-indigo-700
+        @apply text-lg font-medium leading-6
     }
 
     .focus-primary {
-        @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+        @apply focus:outline-none focus:ring-2 focus:ring-offset-2
     }
 
     .navbar {
-        @apply h-20
+        @apply h-16
     }
 
     .content-area {
@@ -68,14 +62,18 @@
 @layer components {
 
     .btn {
-        @apply inline-flex justify-center py-2 px-4 border
-        border-transparent shadow-sm
+        @apply inline-flex justify-center py-2 px-4
+        shadow-sm
         text-sm font-medium rounded-md text-white
 
     }
 
     .btn-primary {
-        @apply bg-primary hover-primary focus-primary
+        @apply bg-primary focus-primary hover:bg-primary-dark
+    }
+
+    .input {
+        @apply mt-1 block w-full sm:text-sm rounded-md bg-darkest border-0
     }
 
     /* ... */

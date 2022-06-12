@@ -9,7 +9,7 @@ public class FileStorageService
     // Base dir where to store files
     private string BasePath { get; set; }
 
-    private readonly IDictionary<Guid, UploadHandle> _uploads;
+    private readonly IDictionary<int, UploadHandle> _uploads;
 
     public FileStorageService(IConfiguration configuration)
     {
@@ -20,60 +20,85 @@ public class FileStorageService
             Directory.CreateDirectory(BasePath);
         }
 
-        _uploads = new Dictionary<Guid, UploadHandle>();
+        _uploads = new Dictionary<int, UploadHandle>();
     }
 
-    public IEnumerable<UploadHandle> StartUpload(List<AppFile> files)
+    public void StartUpload(List<AppFile> files)
     {
-        var handles = files.Select(
-                f => new UploadHandle()
-                {
-                    Id = Guid.NewGuid(),
-                    File = f,
-                    TempFileName = Path.GetTempFileName(),
-                })
-            .ToList();
-
-        foreach (var fileHandle in handles)
+        foreach (var file in files)
         {
-            _uploads[fileHandle.Id] = fileHandle;
+            if (_uploads.ContainsKey(file.Id))
+            {
+                return;
+            }
+            _uploads[file.Id] = new UploadHandle()
+            {
+                File = file,
+                TempFileName = Path.GetTempFileName(),
+                Created = DateTime.UtcNow,
+                Progress = 0,
+            };
         }
-
-        return handles;
     }
 
-    public void SetProgress(Guid id, decimal progress)
+    public bool IsLoading(int fileId)
     {
-        if (!_uploads.ContainsKey(id))
-        {
-            throw new ClientException("The upload has been cancelled");
-        }
-
-        _uploads[id].Progress = progress;
+        return _uploads.ContainsKey(fileId);
     }
-
-    public void Complete(Guid id)
+    
+    public void SetProgress(int fileId, decimal progress)
     {
-        if (!_uploads.ContainsKey(id))
+        if (!_uploads.ContainsKey(fileId))
         {
             throw new ClientException("The upload has been cancelled");
         }
 
-        var handle = _uploads[id];
-        var dest = Path.Join(
+        _uploads[fileId].Progress = progress;
+    }
+
+    public void Complete(int fileId)
+    {
+        if (!_uploads.ContainsKey(fileId))
+        {
+            throw new ClientException("The upload has been cancelled");
+        }
+
+        var handle = _uploads[fileId];
+        var dir = Path.Join(
             BasePath,
-            handle.File.Subdirectory,
+            handle.File.Subdirectory);
+
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+
+        var dest = Path.Join(
+            dir,
             $"{handle.File.Id}.{KnownTypes.GetExtension(handle.File.Type)}");
         
         File.Copy(handle.TempFileName, dest);
+    }
+
+    public string GetFilePath(AppFile file)
+    {
+        return Path.Join(
+            BasePath,
+            file.Subdirectory,
+            $"{file.Id}.{KnownTypes.GetExtension(file.Type)}");
+    }
+    
+    public UploadHandle GetHandle(int fileId)
+    {
+        return _uploads[fileId];
     }
 }
 
 public class UploadHandle
 {
     public Guid Id { get; set; }
-    public AppFile File { get; set; }
-    public string TempFileName { get; set; }
+    public AppFile File { get; set; } = null!;
+    public string TempFileName { get; set; } = null!;
     public DateTime Created { get; set; }
     public decimal Progress { get; set; }
 }

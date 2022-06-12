@@ -17,10 +17,20 @@ export const ServerAddress = "localhost:5289";
 export const ServerUrl = `http://${ServerAddress}`;
 export const ServerWsUrl = `ws://${ServerAddress}`;
 export const TokenUrl = `http://${ServerAddress}/connect/token`;
+export const UploadUrl = `http://${ServerAddress}/upload`;
 
 function createSubscription(): SubscribeFunction {
   const wsClient = createClient({
     url: `${ServerWsUrl}/graphql`,
+
+    connectionParams: async () => {
+      const params: Record<string, string> = {};
+      const token = localStorage.getItem(ACCESS_TOKEN);
+      if (token !== null) {
+        params["access_token"] = token;
+      }
+      return params;
+    },
   });
 
   return (operation, variables) => {

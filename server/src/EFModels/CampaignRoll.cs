@@ -1,6 +1,6 @@
 namespace Server.EFModels;
 
-public enum Rol
+public enum CampaignRoll
 {
     DungeonMaster,
     Player,

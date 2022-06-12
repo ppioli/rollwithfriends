@@ -87,6 +87,14 @@ export const routes: RouteConfig[] = [
     path: "/",
   },
   {
+    component: async () => {
+      const module = await import("pages/theme/Theme");
+
+      return module.ThemePage;
+    },
+    path: "/theme",
+  },
+  {
     component: async () =>
       Promise.resolve((props: any) => <div>Not found</div>),
     path: "*",

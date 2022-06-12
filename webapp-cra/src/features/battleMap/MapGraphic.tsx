@@ -1,16 +1,31 @@
-import React, { CSSProperties, MouseEventHandler } from "react";
+import React, { CSSProperties, ReactNode } from "react";
 import { useGesture } from "@use-gesture/react";
+import { ImageLoader, ImageMissing } from "features/imageLoader/ImageLoader";
+import { ServerUrl } from "lib/getRelayClientEnvironment";
 
 export interface MapGraphic {
+  id: string;
   scale: number;
   x: number;
   y: number;
   width: number;
   height: number;
+  imageState: string;
+  imageId: number;
   onClick: (add: boolean) => void;
 }
 
-function Image({ x, y, width, height, scale, onClick }: MapGraphic) {
+function Image({
+  id,
+  x,
+  y,
+  width,
+  height,
+  scale,
+  onClick,
+  imageState,
+  imageId,
+}: MapGraphic) {
   const style: CSSProperties = {
     touchAction: "none",
     position: "absolute",
@@ -29,19 +44,47 @@ function Image({ x, y, width, height, scale, onClick }: MapGraphic) {
     },
   });
 
-  return (
-    <div style={style} {...bind()}>
+  let Content: ReactNode;
+
+  if (imageState === "LOADED") {
+    Content = (
       <img
         draggable={false}
         className={"touch-none"}
-        src={
-          "https://i.pinimg.com/originals/6c/12/e7/6c12e78a564a65f2c4d56556a1ff922c.png"
-        }
+        src={`${ServerUrl}/image/token/${imageId}`}
         width={width * scale}
         height={height * scale}
         style={{ width: width * scale, height: height * scale }}
         alt={`token`}
       />
+    );
+  }
+
+  if (imageState === "LOADING") {
+    Content = (
+      <ImageLoader
+        width={width}
+        height={height}
+        imageId={imageId}
+        entityId={id}
+      />
+    );
+  }
+
+  if (imageState === "MISSING") {
+    Content = (
+      <ImageMissing
+        width={width}
+        height={height}
+        imageId={imageId}
+        entityId={id}
+      />
+    );
+  }
+
+  return (
+    <div style={style} {...bind()}>
+      {Content}
     </div>
   );
 }
