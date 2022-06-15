@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>RollWithFriends.Models</RootNamespace>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Authors>Pablo Pioli</Authors>
+        <LangVersion>10</LangVersion>
+        <Description>Dungeon and Dragons 5e Models</Description>
+        <Copyright>(c) $([System.DateTime]::Now.Year) Pablo Pioli</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/ppioli/rollwithfriends</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ppioli/rollwithfriends</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>Roll with friends Data Models 5e Dungeon Dragon</PackageTags>
+
+        <VersionPrefix>$(VERSION_PREFIX)</VersionPrefix>
+        <VersionSuffix Condition="'$(RELEASE)'==''">1</VersionSuffix>
+    </PropertyGroup>
+
+</Project>
