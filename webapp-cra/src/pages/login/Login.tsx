@@ -31,21 +31,43 @@ export function Login() {
   };
 
   return (
-    <div className={"w-screen h-screen flex justify-center content-center"}>
+    <div className={"w-screen h-screen flex justify-center items-center"}>
       <div className={"max-w-screen-md h-fit"}>
-        <Card>
-          <h2>Log in</h2>
-          <form onSubmit={handleSubmit(onSubmit)} className={"mb-3"}>
-            <div className={"flex flex-col gap-2"}>
-              <Input label={"Username"} {...register("username")} />
-              <Input label={"Password"} {...register("password")} />
-              <button type={"submit"} className={"btn btn-primary"}>
-                Log in
-              </button>
+        <Card layout={"flex flex-col"}>
+          <div className={"p-4"}>
+            <div className={"p-4 mb-4"}>
+              <h1 className={"text-center mb-2"}>Welcome</h1>
+              <h4 className={"text-center"}>
+                Enter your credentials and let's get started!
+              </h4>
             </div>
-          </form>
-          <h2>Or Log in with google....</h2>
-          <LoginWithGoogle />
+            <div className={"flex"}>
+              <div className={"w-96"}>
+                <form onSubmit={handleSubmit(onSubmit)} className={"mb-3"}>
+                  <div className={"flex flex-col gap-2"}>
+                    <Input label={"Username"} {...register("username")} />
+                    <Input
+                      label={"Password"}
+                      input={{ type: "password" }}
+                      {...register("password")}
+                      layout={"mt-4"}
+                    />
+                    <button type={"submit"} className={"btn btn-primary mt-4"}>
+                      Login
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div
+                className={
+                  "w-64 ml-6 pl-6 border-l-2 border-light flex justify-center align-middle"
+                }
+              >
+                <LoginWithGoogle />
+              </div>
+            </div>
+          </div>
         </Card>
       </div>
     </div>

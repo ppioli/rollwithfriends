@@ -7,6 +7,7 @@ import { SelectedScene } from "pages/scene/SelectedScene";
 import "./Campaing.css";
 import { ParticipantsProvider } from "features/participant/ParticipantsContext";
 import { Participants } from "features/participant/Participants";
+
 const graphql = require("babel-plugin-relay/macro");
 
 export const CampaignQuery = graphql`
@@ -64,7 +65,7 @@ export const CampaignPage = ({ preloaded }: any) => {
           <Chat campaignId={campaign.id} messages={campaign} />
         </div>
 
-        <div className={"absolute bottom-1 left-1 editor-width"}>
+        <div className={"absolute bottom-4 left-4 editor-width"}>
           {/* eslint-disable-next-line react/jsx-no-undef */}
           <Participants />
         </div>

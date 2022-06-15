@@ -8,7 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
+import { ConcreteRequest } from "relay-runtime";
+
 export type ImageLoaderSubscription$variables = {
   fileId: number;
 };
@@ -22,66 +23,66 @@ export type ImageLoaderSubscription = {
   response: ImageLoaderSubscription$data;
 };
 
-const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "fileId"
-  }
-],
-v1 = [
-  {
-    "alias": null,
-    "args": [
+const node: ConcreteRequest = (function() {
+  var v0 = [
       {
-        "kind": "Variable",
-        "name": "fileId",
-        "variableName": "fileId"
+        "defaultValue": null,
+        "kind": "LocalArgument",
+        "name": "fileId"
       }
     ],
-    "concreteType": "FileLoadingMessage",
-    "kind": "LinkedField",
-    "name": "fileLoadingSub",
-    "plural": false,
-    "selections": [
+    v1 = [
       {
         "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "progress",
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "fileId",
+            "variableName": "fileId"
+          }
+        ],
+        "concreteType": "FileLoadingMessage",
+        "kind": "LinkedField",
+        "name": "fileLoadingSub",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "progress",
+            "storageKey": null
+          }
+        ],
         "storageKey": null
       }
-    ],
-    "storageKey": null
-  }
-];
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "ImageLoaderSubscription",
-    "selections": (v1/*: any*/),
-    "type": "Subscription",
-    "abstractKey": null
-  },
-  "kind": "Request",
-  "operation": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Operation",
-    "name": "ImageLoaderSubscription",
-    "selections": (v1/*: any*/)
-  },
-  "params": {
-    "cacheID": "451b902bc49614e99e68c76cd1ce4eaf",
-    "id": null,
-    "metadata": {},
-    "name": "ImageLoaderSubscription",
-    "operationKind": "subscription",
-    "text": "subscription ImageLoaderSubscription(\n  $fileId: Int!\n) {\n  fileLoadingSub(fileId: $fileId) {\n    progress\n  }\n}\n"
-  }
-};
+    ];
+  return {
+    "fragment": {
+      "argumentDefinitions": (v0/*: any*/),
+      "kind": "Fragment",
+      "metadata": null,
+      "name": "ImageLoaderSubscription",
+      "selections": (v1/*: any*/),
+      "type": "Subscription",
+      "abstractKey": null
+    },
+    "kind": "Request",
+    "operation": {
+      "argumentDefinitions": (v0/*: any*/),
+      "kind": "Operation",
+      "name": "ImageLoaderSubscription",
+      "selections": (v1/*: any*/)
+    },
+    "params": {
+      "cacheID": "451b902bc49614e99e68c76cd1ce4eaf",
+      "id": null,
+      "metadata": {},
+      "name": "ImageLoaderSubscription",
+      "operationKind": "subscription",
+      "text": "subscription ImageLoaderSubscription(\n  $fileId: Int!\n) {\n  fileLoadingSub(fileId: $fileId) {\n    progress\n  }\n}\n"
+    }
+  };
 })();
 
 (node as any).hash = "7705434984ee17155498b0c1af9ed929";

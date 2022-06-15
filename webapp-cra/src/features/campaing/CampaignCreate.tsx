@@ -51,19 +51,18 @@ export function CampaignCreate() {
       }
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Card
-          footer={
-            <button disabled={isInFlight} className={"btn btn-primary"}>
-              Submit
-            </button>
-          }
-        >
+        <Card>
           <Input {...register("name")} name={"name"} label={"Campaign name"} />
           <Input
             {...register("description")}
             name={"description"}
             label={"Description"}
           />
+          <div className={"w-full text-right"}>
+            <button disabled={isInFlight} className={"btn btn-primary"}>
+              Submit
+            </button>
+          </div>
         </Card>
       </form>
     </TitlePanel>

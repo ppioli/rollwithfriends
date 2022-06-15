@@ -2,7 +2,6 @@ import { PreloadedQuery, usePreloadedQuery } from "react-relay";
 import { CampaignSelectQuery } from "./__generated__/CampaignSelectQuery.graphql";
 import { Link, RouteProps } from "yarr";
 import { CampaignCreate } from "features/campaing/CampaignCreate";
-import { TitlePanel } from "components/panel/TitlePanel";
 import { Card } from "components/panel/Card";
 
 const graphql = require("babel-plugin-relay/macro");
@@ -30,23 +29,20 @@ export const CampaignSelectPage = ({ preloaded }: CampaignSelectPageProps) => {
   );
 
   return (
-    <div className={"mx-auto container"}>
+    <div className={"mx-auto container mt-4"}>
       {data.campaigns.length === 0 && <EmptyCampaignList />}
       {data.campaigns.length > 0 && (
-        <div>
-          <h1>Select a campaign</h1>
-          <h2>Jump right back to action</h2>
-          <div className={"d-flex flex-nowrap gap-2"}>
+        <div className={"rounded p-4 bg-dark mb-4"}>
+          <div className={"py-4"}>
+            <h1 className={"text-center"}>Adventure awaits!</h1>
+            <h4 className={"text-center"}>
+              Select a campaign and get right back at it
+            </h4>
+          </div>
+
+          <div className={"grid grid-cols-4 gap-4"}>
             {data.campaigns.map((c) => (
-              <div key={c.id} className={"flex-none max-w-sm"}>
-                <Card>
-                  Name: {c.name} <br />
-                  Description: {c.description} <br />
-                  <Link className="btn btn-primary" to={`/campaign/${c.id}`}>
-                    Go!
-                  </Link>
-                </Card>
-              </div>
+              <CampaignCard {...c} />
             ))}
           </div>
         </div>
@@ -56,6 +52,35 @@ export const CampaignSelectPage = ({ preloaded }: CampaignSelectPageProps) => {
     </div>
   );
 };
+
+interface CampaignCard {
+  id: string;
+  name: string;
+  description: string;
+}
+
+//TODO Add actual campaign cover art
+function CampaignCard({ id, name, description }: CampaignCard) {
+  return (
+    <div className={"col rounded-md overflow-hidden"}>
+      <div
+        className={"h-32 bg-cover bg-center"}
+        style={{
+          backgroundImage: "url(https://gepig.com/game_cover_460w/1107.jpg)",
+        }}
+      ></div>
+      <div className={"h-32 bg-darker p-4 flex flex-col"}>
+        <h4>{name}</h4>
+        <p className={"flex-grow"}>{description}</p>
+        <div className={"self-end"}>
+          <Link className="btn btn-primary" to={`/campaign/${id}`}>
+            Go!
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function EmptyCampaignList() {
   return (

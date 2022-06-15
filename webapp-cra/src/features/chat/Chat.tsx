@@ -1,4 +1,3 @@
-import { Card } from "components/panel/Card";
 import { ChatInput } from "features/chat/ChatInput";
 import { useFragment, usePaginationFragment } from "react-relay";
 import {
@@ -15,7 +14,6 @@ import { useParticipantContext } from "features/participant/ParticipantsContext"
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { Dice } from "components/dices/Dice";
 
-const graphql = require("babel-plugin-relay/macro");
 interface ChatProps {
   campaignId: string;
   messages: MessageList_campaign$key;
@@ -31,7 +29,7 @@ export function Chat({ campaignId, messages }: ChatProps) {
 
   return (
     <div className={"w-full h-full bg-dark flex flex-col"}>
-      <div className={"flex flex-col-reverse h-full gap-1 overflow-y-scroll"}>
+      <div className={"flex flex-col-reverse h-full gap-1 overflow-y-hidden"}>
         {(data.messages?.edges ?? []).map((edge) => {
           const { node: message } = edge;
 
@@ -68,7 +66,7 @@ function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div className={"px-3"}>
       <div className={"bg-darker rounded-md px-3 pb-3"}>
-        <p className={"font-bold text-sm mb-1"}>{user?.name ?? "-"}</p>
+        <p className={"font-bold text-sm mb-1 pt-1"}>{user?.name ?? "-"}</p>
         {content}
       </div>
       <div className={"w-100 text-right font-light text-sm"}>

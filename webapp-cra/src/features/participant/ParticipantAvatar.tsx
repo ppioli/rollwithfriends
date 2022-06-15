@@ -14,12 +14,16 @@ export function ParticipantAvatar({ id }: ParticipantAvatarProps) {
   }
 
   return (
-    <div className={"w-28 h-32 relative bg-dark rounded "}>
-      <img
-        className={"absolute inset-x-1 top-1"}
-        src={`https://avatars.dicebear.com/api/adventurer/${user?.userId}.svg`}
-      />
-      <div className={"absolute inset-x-1 bottom-1 text-center"}>
+    <div
+      className={"w-28 h-34 bg-dark rounded p-3 flex flex-col justify-between"}
+    >
+      <div>
+        <img
+          className={"rounded-full"}
+          src={`https://avatars.dicebear.com/api/pixel-art-neutral/${user?.userId}.svg`}
+        />
+      </div>
+      <div className={"text-center overflow-hidden text-ellipsis"}>
         {user?.name}
       </div>
     </div>

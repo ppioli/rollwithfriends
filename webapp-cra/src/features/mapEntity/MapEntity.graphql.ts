@@ -4,7 +4,6 @@ import { useMutation, useSubscription } from "react-relay";
 
 import {
   MapEntityUpdateMutation,
-  MapEntityUpdateMutation$data,
   MapEntityUpdateMutation$variables,
 } from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
 import { RecordSourceSelectorProxy } from "relay-runtime";
@@ -30,10 +29,10 @@ const CHANGE_EVENT_UPDATE = "UPDATE";
 const CHANGE_EVENT_ADD = "ADD";
 const CHANGE_EVENT_DELETE = "DELETE";
 
-interface Subscription {
-  variables: any;
-  response: any;
-}
+// interface Subscription {
+//   variables: any;
+//   response: any;
+// }
 
 // export const collectionUpdater = <TSubscription extends Subscription>() => ({
 //   update: () => {},
@@ -44,7 +43,7 @@ interface Subscription {
 //   delete: (store: RecordSourceSelectorProxy) => {},
 // });
 
-const MapEntityFragment = graphql`
+export const MapEntityFragment = graphql`
   fragment MapEntityFragment on MapEntity {
     x
     y
@@ -54,7 +53,7 @@ const MapEntityFragment = graphql`
 `;
 
 export function useMapEntityUpdateMutation() {
-  const [commit, isInFlight] = useMutation<MapEntityUpdateMutation>(graphql`
+  const [commit] = useMutation<MapEntityUpdateMutation>(graphql`
     mutation MapEntityUpdateMutation($input: MapEntitiesUpdateInput!) {
       mapEntityUpdate(input: $input) {
         mapEntity {
@@ -79,7 +78,7 @@ export function useMapEntityUpdateMutation() {
 }
 
 export function useMapEntityAddMutation() {
-  const [_commit, inFlight] = useMutation<MapEntityAddMutation>(graphql`
+  const [_commit] = useMutation<MapEntityAddMutation>(graphql`
     mutation MapEntityAddMutation($input: MapEntitiesAddInput!) {
       mapEntityAdd(input: $input) {
         mapEntity {
@@ -100,7 +99,7 @@ export function useMapEntityAddMutation() {
       _commit({
         variables: variables,
         onCompleted: onComplete,
-        updater: (store: RecordSourceSelectorProxy, data) => {
+        updater: (store: RecordSourceSelectorProxy) => {
           const payload = store.getRootField("mapEntityAdd")!;
           const added = payload.getLinkedRecords("mapEntity")!;
           // added.forEach((added, ix) => added.setValue(images[ix].src, "href"));
@@ -131,7 +130,7 @@ export function useMapEntityDeleteMutation() {
     (variables: MapEntityDeleteMutation$variables) => {
       commit({
         variables,
-        updater: (store: RecordSourceSelectorProxy, data) => {
+        updater: (store: RecordSourceSelectorProxy) => {
           const payload = store.getRootField("mapEntityDelete")!;
           const deletedIds = payload
             .getLinkedRecords("mapEntity")!
@@ -171,8 +170,8 @@ export function useMapEntitySubscription(
       `,
       variables: variables,
       onCompleted: () => console.log("Subscription established"),
-      onError: (error: any) => {} /* Subscription errored */,
-      onNext: (response: any) => {} /* Subscription payload received */,
+      // onError: (error: any) => {} /* Subscription errored */,
+      // onNext: (response: any) => {} /* Subscription payload received */,
       updater: (store: RecordSourceSelectorProxy) => {
         const result = store.getRootField("mapEntityChanged")!;
         const type = result.getValue("type");

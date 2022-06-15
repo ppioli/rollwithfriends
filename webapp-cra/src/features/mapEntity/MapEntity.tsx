@@ -1,17 +1,17 @@
 import { MapGraphic } from "features/battleMap/MapGraphic";
 
-import React, { MouseEventHandler } from "react";
+import React from "react";
 
 import { useMapEntityContext } from "features/battleMap/mapEntityLayer/MapEntityContext";
 import { BoxProps } from "components/moveResizeHandler/BoxProps";
 
-export interface MapEntity extends BoxProps {
+export interface MapEntityData extends BoxProps {
   id: string;
   imageState: string;
   imageId: number;
 }
 
-export function MapEntity({ id, ...data }: MapEntity & { scale: number }) {
+export function MapEntity({ id, ...data }: MapEntityData & { scale: number }) {
   const { selectToggle, selectSet } = useMapEntityContext();
 
   const handleClick = (add: boolean) => {

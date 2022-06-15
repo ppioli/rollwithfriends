@@ -7,7 +7,7 @@ interface InputProps {
   onBlur?: any;
   onChange?: any;
   layout?: string;
-  input?: HTMLProps<HTMLInputElement>;
+  input?: HTMLProps<HTMLInputElement> & { directory?: boolean };
 }
 
 export const Input = React.forwardRef(
@@ -16,9 +16,20 @@ export const Input = React.forwardRef(
       className: inputClassName,
       onChange: inputChange,
       onBlur: inputBlur,
+      directory,
       type,
       ...inputRest
     } = input || {};
+
+    const dirProps: any = {};
+    if (directory) {
+      if (type !== "file") {
+        console.warn("Defined a directory input without file type");
+      }
+      dirProps["webkitdirectory"] = "";
+      dirProps["mozdirectory"] = "";
+      dirProps["directory"] = "";
+    }
 
     if (inputBlur || inputChange) {
       throw new Error("Not implemented exception");
@@ -27,10 +38,7 @@ export const Input = React.forwardRef(
     return (
       <div className={layout ?? "w-full"}>
         {label && (
-          <label
-            htmlFor={name}
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor={name} className="block input-label">
             {label}
           </label>
         )}
@@ -41,6 +49,7 @@ export const Input = React.forwardRef(
           onChange={onChange}
           name={name}
           {...inputRest}
+          {...dirProps}
           className={classNames("input", inputClassName ?? "")}
         />
       </div>

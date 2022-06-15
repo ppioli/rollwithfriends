@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Fragment, ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import { FragmentRefs, ReaderFragment } from "relay-runtime";
+
 export type MessageBody_message$data = {
   readonly userId: string;
   readonly createdAt: any;

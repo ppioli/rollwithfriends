@@ -32,6 +32,7 @@ export default function Grid({
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
         ctx.clearRect(0, 0, width, height);
+        ctx.strokeStyle = "#ffffff0f";
         for (let i = startX; i < width; i += scaleCellSize) {
           for (let j = startY; j < height; j += scaleCellSize) {
             ctx.strokeRect(i, j, scaleCellSize, scaleCellSize);

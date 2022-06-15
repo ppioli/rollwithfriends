@@ -34,6 +34,7 @@ const shouldNavigate = (event: MouseEvent<HTMLAnchorElement>): boolean => {
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type LinkProps<S extends State = State> = Omit<
   ComponentPropsWithoutRef<"a">,
   "href" | "className"

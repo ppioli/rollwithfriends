@@ -9,14 +9,14 @@ interface TitleProps {
 export function TitlePanel({ title, description, children }: TitleProps) {
   return (
     <div>
-      <div className="md:grid md:grid-cols-3 md:gap-6 mb-3">
-        <div className="md:col-span-1">
+      <div className="flex bg-dark p-4 round rounded-md overflow-hidden shadow">
+        <div className="w-96 text-right px-6">
           <div className="px-4 sm:px-0">
-            <h2 className="h4">{title}</h2>
-            <p className="mt-1 text-sm text-gray-600">{description}</p>
+            <h2 className="h2">{title}</h2>
+            <p className="mt-1 text-sm">{description}</p>
           </div>
         </div>
-        <div className="mt-5 md:mt-0 md:col-span-2">{children}</div>
+        <div className="flex-grow">{children}</div>
       </div>
     </div>
   );

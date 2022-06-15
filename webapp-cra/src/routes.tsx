@@ -1,10 +1,9 @@
-import { RouteConfig, RouteParameters, RouteProps } from "yarr";
+import { RouteConfig } from "yarr";
 import { loadQuery, PreloadedQuery } from "react-relay";
 import { RelayEnvironment } from "lib/getRelayClientEnvironment";
 import { CampaignSelect } from "pages/campaign/CampaignSelect";
 import { OperationType } from "relay-runtime";
 import { CampaignQuery } from "pages/campaign/Campaign";
-import CampaignQueryGraphql from "pages/campaign/__generated__/CampaignQuery.graphql";
 import { EnrollQuery } from "pages/campaign/Enroll";
 
 export interface PreloadedProps<T> {
@@ -69,6 +68,22 @@ export const routes: RouteConfig[] = [
         }),
       };
     },
+  },
+  {
+    component: async () => {
+      const module = await import("pages/dataManager/DataManager");
+
+      return module.DataManagerPage;
+    },
+    path: "/dataManager",
+  },
+  {
+    component: async () => {
+      const module = await import("pages/tokenEditor/TokenEditor");
+
+      return module.TokenEditorPage;
+    },
+    path: "/tokenEditor",
   },
   {
     component: async () => {

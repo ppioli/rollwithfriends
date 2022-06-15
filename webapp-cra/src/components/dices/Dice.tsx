@@ -6,11 +6,13 @@ export enum DiceType {
   D6 = 6,
   D4 = 4,
 }
+
 export interface DiceProps {
   type: DiceType;
   fill?: string;
   size?: number;
 }
+
 export function Dice({ type, size = 50, fill = "#e2e3db" }: DiceProps) {
   return (
     <svg

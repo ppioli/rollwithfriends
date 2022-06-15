@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React from "react";
 
 const validFiles = ["image/png", "image/jpeg"];
 

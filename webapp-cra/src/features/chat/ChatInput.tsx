@@ -8,13 +8,7 @@ import {
   useTextMessageAddMutation,
 } from "features/chat/Message.graphql";
 import { TextMessagesAddInput } from "features/chat/__generated__/MessageAddMutation.graphql";
-import _ from "lodash";
-import {
-  MessageRollAddMutation$data,
-  RollInfoInput,
-  RollMessageAddInput,
-} from "features/chat/__generated__/MessageRollAddMutation.graphql";
-import { add } from "husky";
+import { RollInfoInput } from "features/chat/__generated__/MessageRollAddMutation.graphql";
 
 interface ChatInputForm {
   content: string;
@@ -77,22 +71,24 @@ export function ChatInput({ campaignId }: ChatInputProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className={"flex w-full p-3 bg-darkest"}>
-        <Input
-          {...register("content")}
-          layout={"flex-1"}
-          input={{ className: "border-0 focus:border-0" }}
-        />
-        <button
-          disabled={rollInFlight || textInFlight}
-          type={"submit"}
-          className={"btn btn-primary"}
-        >
-          Send
-        </button>
-      </div>
-    </form>
+    <div className={"p-2"}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className={"flex w-full p-3 bg-darkest rounded-md"}>
+          <Input
+            {...register("content")}
+            layout={"flex-1"}
+            input={{ className: "border-0 focus:border-0" }}
+          />
+          <button
+            disabled={rollInFlight || textInFlight}
+            type={"submit"}
+            className={"btn btn-primary"}
+          >
+            Send
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
 

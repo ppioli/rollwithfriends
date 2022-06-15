@@ -8,7 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest, Mutation } from 'relay-runtime';
+import { ConcreteRequest } from "relay-runtime";
+
 export type CampaignAddInput = {
   name: string;
   description: string;
@@ -28,77 +29,77 @@ export type CampaignCreateMutation = {
   response: CampaignCreateMutation$data;
 };
 
-const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "input"
-  }
-],
-v1 = [
-  {
-    "alias": null,
-    "args": [
+const node: ConcreteRequest = (function() {
+  var v0 = [
       {
-        "kind": "Variable",
-        "name": "input",
-        "variableName": "input"
+        "defaultValue": null,
+        "kind": "LocalArgument",
+        "name": "input"
       }
     ],
-    "concreteType": "CampaignAddPayload",
-    "kind": "LinkedField",
-    "name": "campaignAdd",
-    "plural": false,
-    "selections": [
+    v1 = [
       {
         "alias": null,
-        "args": null,
-        "concreteType": "Campaign",
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "input",
+            "variableName": "input"
+          }
+        ],
+        "concreteType": "CampaignAddPayload",
         "kind": "LinkedField",
-        "name": "campaign",
+        "name": "campaignAdd",
         "plural": false,
         "selections": [
           {
             "alias": null,
             "args": null,
-            "kind": "ScalarField",
-            "name": "id",
+            "concreteType": "Campaign",
+            "kind": "LinkedField",
+            "name": "campaign",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "id",
+                "storageKey": null
+              }
+            ],
             "storageKey": null
           }
         ],
         "storageKey": null
       }
-    ],
-    "storageKey": null
-  }
-];
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "CampaignCreateMutation",
-    "selections": (v1/*: any*/),
-    "type": "Mutation",
-    "abstractKey": null
-  },
-  "kind": "Request",
-  "operation": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Operation",
-    "name": "CampaignCreateMutation",
-    "selections": (v1/*: any*/)
-  },
-  "params": {
-    "cacheID": "4c91941b53a293178da467d258a471dd",
-    "id": null,
-    "metadata": {},
-    "name": "CampaignCreateMutation",
-    "operationKind": "mutation",
-    "text": "mutation CampaignCreateMutation(\n  $input: CampaignAddInput!\n) {\n  campaignAdd(input: $input) {\n    campaign {\n      id\n    }\n  }\n}\n"
-  }
-};
+    ];
+  return {
+    "fragment": {
+      "argumentDefinitions": (v0/*: any*/),
+      "kind": "Fragment",
+      "metadata": null,
+      "name": "CampaignCreateMutation",
+      "selections": (v1/*: any*/),
+      "type": "Mutation",
+      "abstractKey": null
+    },
+    "kind": "Request",
+    "operation": {
+      "argumentDefinitions": (v0/*: any*/),
+      "kind": "Operation",
+      "name": "CampaignCreateMutation",
+      "selections": (v1/*: any*/)
+    },
+    "params": {
+      "cacheID": "4c91941b53a293178da467d258a471dd",
+      "id": null,
+      "metadata": {},
+      "name": "CampaignCreateMutation",
+      "operationKind": "mutation",
+      "text": "mutation CampaignCreateMutation(\n  $input: CampaignAddInput!\n) {\n  campaignAdd(input: $input) {\n    campaign {\n      id\n    }\n  }\n}\n"
+    }
+  };
 })();
 
 (node as any).hash = "6a7375daa0668f6ad0cc4dbf58a30af6";

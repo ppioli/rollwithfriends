@@ -1,9 +1,4 @@
-import React, {
-  MutableRefObject,
-  ReactNode,
-  useCallback,
-  useContext,
-} from "react";
+import React, { ReactNode, useCallback, useContext } from "react";
 
 import { LoginResponse, useRefreshToken } from "lib/useRefreshToken";
 
@@ -32,12 +27,6 @@ export function SessionContextProvider({
   children,
 }: SessionContextProviderProps) {
   const { isLoggedIn, setResponse, isLoading } = useRefreshToken();
-
-  const login = useCallback((token: string) => {
-    // tokenRef.current = token;
-    // setLoggedIn(true);
-    // localStorage.setItem(ACCESS_TOKEN, token);
-  }, []);
 
   const logout = useCallback(() => {
     setResponse(null);

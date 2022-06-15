@@ -12,7 +12,6 @@ module.exports = {
           DEFAULT: "#5b21b6",
           dark: "#4c1d95",
         },
-        primarydark: "#5b21b6",
         // ...
       },
     },

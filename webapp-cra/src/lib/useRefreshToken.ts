@@ -1,6 +1,6 @@
 import { ServerUrl } from "lib/getRelayClientEnvironment";
 import { useLocalStorage } from "utils/hooks";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CredentialResponse } from "@react-oauth/google";
 
 const CREDENTIAL_GRANT = "credential";
@@ -87,7 +87,14 @@ export function useRefreshToken() {
 
       return () => clearTimeout(pid);
     }
-  }, [expires, nextRefresh, refresh_token, setLoginData, setResponse]);
+  }, [
+    expires,
+    isLoading,
+    nextRefresh,
+    refresh_token,
+    setLoginData,
+    setResponse,
+  ]);
 
   return {
     isLoading,

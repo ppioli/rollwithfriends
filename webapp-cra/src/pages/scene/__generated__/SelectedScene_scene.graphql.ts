@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Fragment, ReaderFragment } from 'relay-runtime';
-import { FragmentRefs } from "relay-runtime";
+import { FragmentRefs, ReaderFragment } from "relay-runtime";
+
 export type SelectedScene_scene$data = {
   readonly name: string;
   readonly " $fragmentSpreads": FragmentRefs<"MapEntityLayer_scene">;

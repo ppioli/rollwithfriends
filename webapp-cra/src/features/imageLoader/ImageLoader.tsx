@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { commitLocalUpdate, useSubscription } from "react-relay";
 import { ImageLoaderSubscription as ImageLoaderSubscriptionType } from "./__generated__/ImageLoaderSubscription.graphql";
 import { RelayEnvironment } from "lib/getRelayClientEnvironment";
+
 const graphql = require("babel-plugin-relay/macro");
+
 interface ImageLoaderProps {
   width: number;
   height: number;

@@ -1,7 +1,6 @@
-import React, { CSSProperties, ReactNode, useCallback, useState } from "react";
+import React, { useState } from "react";
 import { CornerData, CornersValues } from "utils/Corners";
 import { useDrag, useGesture } from "@use-gesture/react";
-import { Point } from "utils/Point";
 import { BoxProps } from "components/moveResizeHandler/BoxProps";
 
 const resizeHandlerSize = 10;

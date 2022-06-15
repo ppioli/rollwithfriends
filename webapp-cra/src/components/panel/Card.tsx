@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { Input } from "components/form/Input";
 
 export interface CardProps {
   children: ReactNode;
@@ -16,7 +15,7 @@ export function Card({ children, footer, layout, className }: CardProps) {
       }`}
     >
       <div
-        className={`flex-1 px-4 py-5 bg-primary space-y-6 sm:p-6 h-auto h-full ${
+        className={`flex-1 px-4 py-5 bg-darker space-y-6 sm:p-6 h-full ${
           layout ?? ""
         }`}
       >

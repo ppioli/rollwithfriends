@@ -8,7 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest, Query } from 'relay-runtime';
+import { ConcreteRequest } from "relay-runtime";
+
 export type EnrollQuery$variables = {
   code: string;
 };
@@ -24,80 +25,80 @@ export type EnrollQuery = {
   response: EnrollQuery$data;
 };
 
-const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "code"
-  }
-],
-v1 = [
-  {
-    "alias": null,
-    "args": [
+const node: ConcreteRequest = (function() {
+  var v0 = [
       {
-        "kind": "Variable",
-        "name": "code",
-        "variableName": "code"
+        "defaultValue": null,
+        "kind": "LocalArgument",
+        "name": "code"
       }
     ],
-    "concreteType": "Campaign",
-    "kind": "LinkedField",
-    "name": "enrollment",
-    "plural": false,
-    "selections": [
+    v1 = [
       {
         "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "id",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "name",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "description",
+        "args": [
+          {
+            "kind": "Variable",
+            "name": "code",
+            "variableName": "code"
+          }
+        ],
+        "concreteType": "Campaign",
+        "kind": "LinkedField",
+        "name": "enrollment",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "name",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "description",
+            "storageKey": null
+          }
+        ],
         "storageKey": null
       }
-    ],
-    "storageKey": null
-  }
-];
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "EnrollQuery",
-    "selections": (v1/*: any*/),
-    "type": "RootQuery",
-    "abstractKey": null
-  },
-  "kind": "Request",
-  "operation": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Operation",
-    "name": "EnrollQuery",
-    "selections": (v1/*: any*/)
-  },
-  "params": {
-    "cacheID": "8ddb2eb01df676f5ca926807d52fcae5",
-    "id": null,
-    "metadata": {},
-    "name": "EnrollQuery",
-    "operationKind": "query",
-    "text": "query EnrollQuery(\n  $code: ID!\n) {\n  enrollment(code: $code) {\n    id\n    name\n    description\n  }\n}\n"
-  }
-};
+    ];
+  return {
+    "fragment": {
+      "argumentDefinitions": (v0/*: any*/),
+      "kind": "Fragment",
+      "metadata": null,
+      "name": "EnrollQuery",
+      "selections": (v1/*: any*/),
+      "type": "RootQuery",
+      "abstractKey": null
+    },
+    "kind": "Request",
+    "operation": {
+      "argumentDefinitions": (v0/*: any*/),
+      "kind": "Operation",
+      "name": "EnrollQuery",
+      "selections": (v1/*: any*/)
+    },
+    "params": {
+      "cacheID": "8ddb2eb01df676f5ca926807d52fcae5",
+      "id": null,
+      "metadata": {},
+      "name": "EnrollQuery",
+      "operationKind": "query",
+      "text": "query EnrollQuery(\n  $code: ID!\n) {\n  enrollment(code: $code) {\n    id\n    name\n    description\n  }\n}\n"
+    }
+  };
 })();
 
 (node as any).hash = "314ebd977dac8ff7461e6f8673b4d845";

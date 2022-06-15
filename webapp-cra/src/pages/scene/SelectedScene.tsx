@@ -15,7 +15,6 @@ import {
 } from "features/mapEntity/MapEntity.graphql";
 import classNames from "classnames";
 import { loadImages } from "utils/imageLoader";
-import { getFormData } from "utils/getFormData";
 import { UploadUrl } from "lib/getRelayClientEnvironment";
 import { ACCESS_TOKEN } from "lib/useRefreshToken";
 

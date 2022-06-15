@@ -72,7 +72,7 @@ export function UserMenu() {
         <div
           className={classNames(
             { hidden: !show },
-            "origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+            "origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-darkest ring-1 ring-black ring-opacity-5 focus:outline-none"
           )}
           role="menu"
           aria-orientation="vertical"
@@ -81,7 +81,7 @@ export function UserMenu() {
         >
           <a
             href="components/navbar/Navbar#"
-            className="block px-4 py-2 text-sm text-gray-700"
+            className="block px-4 py-2 text-sm"
             role="menuitem"
             tabIndex={-1}
             id="user-menu-item-0"
@@ -90,7 +90,7 @@ export function UserMenu() {
           </a>
           <a
             href="components/navbar/Navbar#"
-            className="block px-4 py-2 text-sm text-gray-700"
+            className="block px-4 py-2 text-sm "
             role="menuitem"
             tabIndex={-1}
             id="user-menu-item-1"
@@ -99,7 +99,7 @@ export function UserMenu() {
           </a>
           <a
             href="components/navbar/Navbar#"
-            className="block px-4 py-2 text-sm text-gray-700"
+            className="block px-4 py-2 text-sm"
             role="menuitem"
             tabIndex={-1}
             onClick={logout}
