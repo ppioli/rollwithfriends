@@ -79,7 +79,7 @@ export const routes: RouteConfig[] = [
   },
   {
     component: async () => {
-      const module = await import("pages/tokenEditor/TokenEditor");
+      const module = await import("features/tokenEditor/TokenEditor");
 
       return module.TokenEditorPage;
     },

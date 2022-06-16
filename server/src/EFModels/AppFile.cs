@@ -22,12 +22,12 @@ public class AppFile
         Type = "";
     }
 
-    public AppFile(string ownerId, string subdirectory, string type)
+    public AppFile(string ownerId, string subdirectory)
     {
         OwnerId = ownerId;
         Subdirectory = subdirectory;
-        Type = type;
         Created = DateTime.UtcNow;
+        Type = "";
         Loaded = false;
     }
 }

@@ -57,7 +57,7 @@
     "sdl": "npx get-graphql-schema \"http://localhost:5289/graphql?sdl\" > data/schema.graphql"
   },
   "eslintConfig": {
-
+    "ignorePatterns": ["node_modules/**"],
     "extends": [
       "react-app",
       "react-app/jest",

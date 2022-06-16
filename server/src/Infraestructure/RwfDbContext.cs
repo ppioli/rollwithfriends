@@ -1,9 +1,13 @@
+using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Newtonsoft.Json;
+using RollWithFriends.Models.Characters;
 using Server.EFModels;
+using Server.EFModels.Character5E;
 using Server.EFModels.Messages;
-using Server.Models;
 
 namespace server.Infraestructure;
 
@@ -18,6 +22,9 @@ public class RwfDbContext : IdentityDbContext<
     public DbSet<CampaignEnrollment> CampaignEnrollments { get; set; } = null!;
     public DbSet<AppFile> Files { get; set; } = null!;
     public DbSet<Message> Messages { get; set; } = null!;
+    
+    public DbSet<NonPlayerCharacter5E> NonPlayerCharacters5E { get; set; } = null!;
+    public DbSet<Source> Sources { get; set; } = null!;
 
     public RwfDbContext(DbContextOptions<RwfDbContext> options) : base(options)
     {
@@ -26,6 +33,9 @@ public class RwfDbContext : IdentityDbContext<
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
+        
+        
         modelBuilder.Entity<User>(
             b =>
             {
@@ -69,8 +79,44 @@ public class RwfDbContext : IdentityDbContext<
                     .HasForeignKey<Campaign>(c => c.SelectedSceneId)
                     .IsRequired(false);
             });
-        
-        
+
+        modelBuilder.Entity<NonPlayerCharacter5E>(
+            b =>
+            {
+                b.Property(npc => npc.Skills)
+                    .HasConversion( new JsonValueConverter<IDictionary<Skill, int>>());
+                
+                b.Property(npc => npc.Sizes)
+                    .HasConversion(
+                        s => JsonConvert.SerializeObject(s),
+                        dbValue => JsonConvert.DeserializeObject<Size[]>(dbValue));
+                        
+                b.Property(npc => npc.SavingThrows)
+                    .HasConversion(new JsonValueConverter<IDictionary<Ability, int>>());
+                
+                b.Property(npc => npc.Alignments)
+                    .HasConversion(new JsonValueConverter<Alignment[]>());
+                
+                b.Property(npc => npc.ArmorClasses)
+                    .HasConversion( new JsonValueConverter<ArmorClassOption[]>());
+                
+                b.Property(npc => npc.Type)
+                    .HasConversion( new JsonValueConverter<NpcType>());
+                
+                b.Property(npc => npc.Languages)
+                    .HasConversion( new JsonValueConverter<Language[]>());
+                
+                b.Property(npc => npc.Senses)
+                    .HasConversion( new JsonValueConverter<Sense[]>());
+                
+                b.Property(npc => npc.Resistances)
+                    .HasConversion( new JsonValueConverter<Resistance[]>());
+                
+                b.Property(npc => npc.Speeds)
+                    .HasConversion( new JsonValueConverter<Speed>());
+            });
+
+
         modelBuilder.Entity<ApplicationRole>(
             b =>
             {
@@ -83,4 +129,15 @@ public class RwfDbContext : IdentityDbContext<
 
         modelBuilder.Entity<MapEntity>().Navigation(e => e.Image).AutoInclude();
     }
+}
+
+public class JsonValueConverter<T> : ValueConverter<T, string>
+{
+    public JsonValueConverter() : base( v => JsonConvert.SerializeObject(v),
+        v => JsonConvert.DeserializeObject<T>(v))
+    {
+        
+        
+    }
+
 }

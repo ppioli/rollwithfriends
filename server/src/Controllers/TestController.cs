@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Server.AspNetCore;
 using OpenIddict.Validation.AspNetCore;
+using Server.Graphql.Mutations;
 using server.Infraestructure;
 
 namespace server.Controllers;
@@ -28,5 +29,14 @@ public class TestController : Controller
             Id = User.GetId(),
             Claims = User.Claims.Select( c => new Tuple<string, string>(c.Type, c.Value)).ToList()
         };
+    }
+    
+    [HttpPost]
+    [Route("/test")]
+    public Npcs5EAdd Test([FromBody] Npcs5EAdd input )
+    {
+
+
+        return input;
     }
 }

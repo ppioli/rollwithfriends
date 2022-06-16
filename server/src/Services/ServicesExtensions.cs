@@ -10,6 +10,7 @@ namespace Server.Services
             services.AddSingleton<FileStorageService>();
             services.AddSingleton<OidcExtractTokenHandler>();
             services.AddTransient<EnrollmentService>();
+            services.AddTransient<CharacterService>();
 
             return services;
         }

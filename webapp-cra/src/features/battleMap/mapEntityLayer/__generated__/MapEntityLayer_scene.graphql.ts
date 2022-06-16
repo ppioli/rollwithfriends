@@ -11,7 +11,6 @@
 import { FragmentRefs, ReaderFragment } from "relay-runtime";
 
 export type ImageState = "LOADED" | "LOADING" | "MISSING" | "%future added value";
-
 export type MapEntityLayer_scene$data = {
   readonly entities: ReadonlyArray<{
     readonly id: string;

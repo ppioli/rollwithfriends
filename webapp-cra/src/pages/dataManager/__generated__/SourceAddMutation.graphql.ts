@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<067d217887b03961ba4e0963972df489>>
+ * @generated SignedSource<<7ee0fc3dabebc6560f51b7731eaa9e52>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,24 +10,26 @@
 
 import { ConcreteRequest } from "relay-runtime";
 
-export type SceneAddInput = {
-  campaignId: string;
+export type SourceAddInput = {
   name: string;
+  description: string;
+  shortName?: string | null;
 };
-export type SceneAddMutation$variables = {
-  input: SceneAddInput;
+export type SourceAddMutation$variables = {
+  input: SourceAddInput;
 };
-export type SceneAddMutation$data = {
-  readonly sceneAdd: {
-    readonly scene: {
+export type SourceAddMutation$data = {
+  readonly sourceAdd: {
+    readonly source: {
       readonly id: string;
-      readonly name: string;
+      readonly shortName: string;
+      readonly description: string;
     } | null;
   };
 };
-export type SceneAddMutation = {
-  variables: SceneAddMutation$variables;
-  response: SceneAddMutation$data;
+export type SourceAddMutation = {
+  variables: SourceAddMutation$variables;
+  response: SourceAddMutation$data;
 };
 
 const node: ConcreteRequest = (function(){
@@ -48,17 +50,17 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "SceneAddPayload",
+    "concreteType": "SourceAddPayload",
     "kind": "LinkedField",
-    "name": "sceneAdd",
+    "name": "sourceAdd",
     "plural": false,
     "selections": [
       {
         "alias": null,
         "args": null,
-        "concreteType": "Scene",
+        "concreteType": "Source",
         "kind": "LinkedField",
-        "name": "scene",
+        "name": "source",
         "plural": false,
         "selections": [
           {
@@ -72,7 +74,14 @@ v1 = [
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "name",
+            "name": "shortName",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "description",
             "storageKey": null
           }
         ],
@@ -87,7 +96,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "SceneAddMutation",
+    "name": "SourceAddMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -96,20 +105,20 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "SceneAddMutation",
+    "name": "SourceAddMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "8c00acb58c4965bb3502fe3b5e8055aa",
+    "cacheID": "4b7fef47129aa56b9e92ef65a4659f6a",
     "id": null,
     "metadata": {},
-    "name": "SceneAddMutation",
+    "name": "SourceAddMutation",
     "operationKind": "mutation",
-    "text": "mutation SceneAddMutation(\n  $input: SceneAddInput!\n) {\n  sceneAdd(input: $input) {\n    scene {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "mutation SourceAddMutation(\n  $input: SourceAddInput!\n) {\n  sourceAdd(input: $input) {\n    source {\n      id\n      shortName\n      description\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "ebdce05be6079b52f1cdec4bb507d0da";
+(node as any).hash = "383713f49b0a210cf1fc09b873e17c85";
 
 export default node;

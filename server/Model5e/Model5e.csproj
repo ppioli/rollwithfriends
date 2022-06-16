@@ -17,7 +17,7 @@
         <PackageTags>Roll with friends Data Models 5e Dungeon Dragon</PackageTags>
 
         <VersionPrefix>$(VERSION_PREFIX)</VersionPrefix>
-        <VersionSuffix Condition="'$(RELEASE)'==''">1</VersionSuffix>
+        <VersionSuffix Condition="'$(RELEASE)'==''">3</VersionSuffix>
     </PropertyGroup>
 
 </Project>

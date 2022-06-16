@@ -4,7 +4,7 @@ namespace Models.Import;
 
 public class Import
 {
-    public Source? Source { get; set; } 
+    public SourceAdd Source { get; set; } = null!;
 
-    public ICollection<NonPlayerCharacter> NonPlayerCharacters { get; set; } = default!;
+    public ICollection<NpcAdd> NonPlayerCharacters { get; set; } = default!;
 }

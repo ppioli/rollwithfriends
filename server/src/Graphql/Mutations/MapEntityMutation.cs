@@ -75,7 +75,7 @@ public class MapEntityMutation
         var created = input.Entities.Select(
                 n =>
                 {
-                    var image = new AppFile(user.GetId(), user.GetId(), n.FileType);
+                    var image = new AppFile(user.GetId(), user.GetId());
                     return new MapEntity(n.X, n.Y, n.Width, n.Height, input.SceneId, image);
                 })
             .ToList();
@@ -144,7 +144,6 @@ public class MapEntityAdd
     public int Y { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
-    public string FileType { get; set; } = null!;
 }
 
 public class MapEntitiesUpdate

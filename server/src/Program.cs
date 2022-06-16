@@ -1,11 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using OpenIddict.Abstractions;
 using OpenIddict.Server;
-using OpenIddict.Server.AspNetCore;
-using OpenIddict.Validation;
 using OpenIddict.Validation.AspNetCore;
 using Quartz;
 using Serilog;
@@ -162,6 +159,8 @@ builder.Services
     .AddTypeExtension<MapEntityMutation>()
     .AddTypeExtension<SceneMutations>()
     .AddTypeExtension<MessageMutation>()
+    .AddTypeExtension<SourceMutation>()
+    .AddTypeExtension<NonPlayerCharacterMutation>()
     .AddType<TextMessageContent>()
     .AddType<RollMessageContent>()
     .AddMutationConventions()

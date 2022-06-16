@@ -52,4 +52,8 @@
     <Folder Include="Graphql\Directives" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Model5e\Model5e.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,8 +1,7 @@
 namespace RollWithFriends.Models.Characters;
 
-public class NonPlayerCharacter : CharacterBase
+public class NpcAdd : CharacterBase
 {
-    public Source? Source { get; set; }
     public int Page { get; set; }
     public NpcType Type { get; set; } = null!;
 
@@ -18,6 +17,6 @@ public class NonPlayerCharacter : CharacterBase
     
     public Size[] Sizes { get; set; } = null!;
 
-    public IDictionary<Ability, int> SavingThrows { get; set; } = null!;
-    public IDictionary<Skill, int> Skills { get; set; } = null!;
+    public ICollection<KeyValuePair<Ability, int>> SavingThrows { get; set; } = null!;
+    public ICollection<KeyValuePair<Skill, int>> Skills { get; set; } = null!;
 }

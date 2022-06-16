@@ -56,9 +56,50 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
+enum Ability {
+  STRENGTH
+  DEXTERITY
+  CONSTITUTION
+  INTELLIGENCE
+  WISDOM
+  CHARISMA
+}
+
+enum Alignment {
+  UNALIGNED
+  CHAOTIC_GOOD
+  NEUTRAL_GOOD
+  LAWFUL_GOOD
+  CHAOTIC_NEUTRAL
+  TRUE_NEUTRAL
+  LAWFUL_NEUTRAL
+  CHAOTIC_EVIL
+  NEUTRAL_EVIL
+  LAWFUL_EVIL
+}
+
+type AppFile {
+  id: Int!
+  ownerId: String!
+  subdirectory: String!
+  type: String!
+  loaded: Boolean!
+  created: DateTime!
+}
+
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
+}
+
+type ArmorClassOption {
+  armorClass: Int!
+  description: String!
+}
+
+input ArmorClassOptionInput {
+  armorClass: Int!
+  description: String!
 }
 
 type Campaign implements Node {
@@ -149,6 +190,13 @@ input ComparableNullableOfInt32OperationFilterInput {
   nlte: Int
 }
 
+enum DamageType {
+  BLUDGEONING
+  PIERCING
+  SLASHING
+  ACID
+}
+
 """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
 scalar DateTime
 
@@ -175,6 +223,34 @@ enum ImageState {
   LOADED
   LOADING
   MISSING
+}
+
+type KeyValuePairOfAbilityAndInt32 {
+  key: Ability!
+  value: Int!
+}
+
+input KeyValuePairOfAbilityAndInt32Input {
+  key: Ability!
+  value: Int!
+}
+
+type KeyValuePairOfSkillAndInt32 {
+  key: Skill!
+  value: Int!
+}
+
+input KeyValuePairOfSkillAndInt32Input {
+  key: Skill!
+  value: Int!
+}
+
+type Language {
+  name: String!
+}
+
+input LanguageInput {
+  name: String!
 }
 
 input ListFilterInputTypeOfMapEntityFilterInput {
@@ -218,7 +294,6 @@ input MapEntityAddInput {
   y: Int!
   width: Int!
   height: Int!
-  fileType: String!
 }
 
 type MapEntityAddPayload {
@@ -318,6 +393,8 @@ type Mutation {
   sceneAddUpdate(input: SceneAddUpdateInput!): SceneAddUpdatePayload!
   textMessageAdd(input: TextMessagesAddInput!): TextMessageAddPayload!
   rollMessageAdd(input: RollMessagesAddInput!): RollMessageAddPayload!
+  sourceAdd(input: SourceAddInput!): SourceAddPayload!
+  npcs5EAdd(input: Npcs5EAddInput!): Npcs5EAddPayload!
 }
 
 """
@@ -325,6 +402,80 @@ The node interface is implemented by entities that have a global unique identifi
 """
 interface Node {
   id: ID!
+}
+
+type NonPlayerCharacter5E implements Node {
+  page: Int!
+  sourceId: Int!
+  source: Source
+  type: NpcType!
+  hitPointsFormula: String!
+  hitPointsAverage: Int!
+  armorClasses: [ArmorClassOption!]!
+  challangeRating: Float!
+  alignments: [Alignment!]!
+  sizes: [Size!]!
+  savingThrows: [KeyValuePairOfAbilityAndInt32!]!
+  skills: [KeyValuePairOfSkillAndInt32!]!
+  id: ID!
+  name: String!
+  avatarId: Int!
+  avatar: AppFile!
+  languages: [Language!]!
+  senses: [Sense!]!
+  passivePerception: Int!
+  resistances: [Resistance!]!
+  speeds: Speed!
+  strength: Int!
+  dexterity: Int!
+  constitution: Int!
+  intelligence: Int!
+  wisdom: Int!
+  charisma: Int!
+}
+
+input NpcAddInput {
+  page: Int!
+  type: NpcTypeInput!
+  hitPointsFormula: String!
+  hitPointsAverage: Int!
+  armorClasses: [ArmorClassOptionInput!]!
+  challangeRating: Float!
+  alignments: [Alignment!]!
+  sizes: [Size!]!
+  savingThrows: [KeyValuePairOfAbilityAndInt32Input!]!
+  skills: [KeyValuePairOfSkillAndInt32Input!]!
+  name: String!
+  languages: [LanguageInput!]!
+  senses: [SenseInput!]!
+  passivePerception: Int!
+  resistances: [ResistanceInput!]!
+  speeds: SpeedInput!
+  strength: Int!
+  dexterity: Int!
+  constitution: Int!
+  intelligence: Int!
+  wisdom: Int!
+  charisma: Int!
+}
+
+input Npcs5EAddInput {
+  sourceId: ID!
+  characters: [NpcAddInput!]!
+}
+
+type Npcs5EAddPayload {
+  nonPlayerCharacter5E: [NonPlayerCharacter5E!]
+}
+
+type NpcType {
+  label: String!
+  tags: [String!]
+}
+
+input NpcTypeInput {
+  label: String!
+  tags: [String!]
 }
 
 """Information about pagination in a connection."""
@@ -351,6 +502,16 @@ type Participant implements Node {
   userId: String!
   name: String!
   campaignRoll: CampaignRoll!
+}
+
+type Resistance {
+  types: [DamageType!]!
+  condition: String
+}
+
+input ResistanceInput {
+  types: [DamageType!]!
+  condition: String
 }
 
 type Roll {
@@ -439,6 +600,77 @@ input SceneFilterInput {
   campaign: CampaignFilterInput
   campaignId: ComparableInt32OperationFilterInput
   entities: ListFilterInputTypeOfMapEntityFilterInput
+}
+
+type Sense {
+  description: String!
+  range: Int!
+}
+
+input SenseInput {
+  description: String!
+  range: Int!
+}
+
+enum Size {
+  TINY
+  SMALL
+  MEDIUM
+  LARGE
+  HUGE
+  GARGANTUAN
+}
+
+enum Skill {
+  ACROBATICS
+  ANIMAL_HANDLING
+  ARCANA
+  ATHLETICS
+  DECEPTION
+  HISTORY
+  INSIGHT
+  INTIMIDATION
+  INVESTIGATION
+  MEDICINE
+  NATURE
+  PERCEPTION
+  PERFORMANCE
+  PERSUASION
+  RELIGION
+  SLEIGHT_OF_HAND
+  STEALTH
+  SURVIVAL
+}
+
+type Source implements Node {
+  subdirectory: String!
+  id: ID!
+  name: String!
+  description: String!
+  shortName: String!
+  ownerId: String!
+}
+
+input SourceAddInput {
+  name: String!
+  description: String!
+  shortName: String
+}
+
+type SourceAddPayload {
+  source: Source
+}
+
+type Speed {
+  walk: Int
+  swim: Int
+  fly: Int
+}
+
+input SpeedInput {
+  walk: Int
+  swim: Int
+  fly: Int
 }
 
 input StringOperationFilterInput {

@@ -31,7 +31,7 @@ export const Input = React.forwardRef(
       dirProps["directory"] = "";
     }
 
-    if (inputBlur || inputChange) {
+    if ((inputChange && onChange) || (inputBlur && onBlur)) {
       throw new Error("Not implemented exception");
     }
 
@@ -46,7 +46,7 @@ export const Input = React.forwardRef(
           ref={ref}
           type={type ?? "text"}
           onBlur={onBlur}
-          onChange={onChange}
+          onChange={onChange ?? inputChange}
           name={name}
           {...inputRest}
           {...dirProps}
