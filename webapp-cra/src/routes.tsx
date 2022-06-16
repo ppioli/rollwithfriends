@@ -5,6 +5,7 @@ import { CampaignSelect } from "pages/campaign/CampaignSelect";
 import { OperationType } from "relay-runtime";
 import { CampaignQuery } from "pages/campaign/Campaign";
 import { EnrollQuery } from "pages/campaign/Enroll";
+import { NpcViewer } from "pages/npc/NpcViewer";
 
 export interface PreloadedProps<T> {
   preloaded: T;
@@ -61,7 +62,6 @@ export const routes: RouteConfig[] = [
     },
     path: "/enroll/:code",
     preload: ({ code }: any, query: any) => {
-      debugger;
       return {
         query: loadQuery(RelayEnvironment, EnrollQuery, {
           code,
@@ -79,11 +79,16 @@ export const routes: RouteConfig[] = [
   },
   {
     component: async () => {
-      const module = await import("features/tokenEditor/TokenEditor");
+      const module = await import("pages/npc/NpcViewer");
 
-      return module.TokenEditorPage;
+      return module.NpcViewerPage;
     },
-    path: "/tokenEditor",
+    path: "/npcs",
+    preload: () => {
+      return {
+        query: loadQuery(RelayEnvironment, NpcViewer, {}),
+      };
+    },
   },
   {
     component: async () => {

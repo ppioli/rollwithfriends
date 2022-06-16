@@ -1,14 +1,6 @@
-export function TokenEditorPage() {
-  return (
-    <div className={"p-4"}>
-      <TokenCard />
-    </div>
-  );
-}
-
 export function TokenCard() {
   return (
-    <div className={"rounded rounded-md bg-darkest flex-col"}>
+    <div className={"rounded rounded-md bg-darkest flex-col max-w-screen-md "}>
       <div className={"flex flex-col relative"}>
         <div className={"h-20 relative"}>
           <div
@@ -21,8 +13,8 @@ export function TokenCard() {
             </div>
           </div>
         </div>
-        <div className={"bg-dark h-20 relative"}>
-          <div className={"absolute left-40 h-full flex gap-x-4 py-3"}>
+        <div className={"bg-dark min-h-20 relative"}>
+          <div className={"ml-40 h-full flex gap-x-4 py-3 px-4 flex-wrap"}>
             <MiscCard value={20} label={"AC"} />
             <MiscCard value={12} label={"AC"} />
             <MiscCard value={12} label={"AC"} />
@@ -35,7 +27,7 @@ export function TokenCard() {
           ></div>
         </div>
       </div>
-      <div className={"bg-dark flex gap-x-4 justify-center"}>
+      <div className={"bg-dark flex gap-x-4 justify-center flex-wrap"}>
         <AbilityCard label={"STR"} value={15} />
         <AbilityCard label={"CON"} value={16} />
         <AbilityCard label={"DEX"} value={16} />

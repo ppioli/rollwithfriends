@@ -8,8 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
-
+import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
 export type ImageLoaderSubscription$variables = {
   fileId: number;
 };

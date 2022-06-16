@@ -65,6 +65,13 @@ enum Ability {
   CHARISMA
 }
 
+input AbilityOperationFilterInput {
+  eq: Ability
+  neq: Ability
+  in: [Ability!]
+  nin: [Ability!]
+}
+
 enum Alignment {
   UNALIGNED
   CHAOTIC_GOOD
@@ -78,13 +85,35 @@ enum Alignment {
   LAWFUL_EVIL
 }
 
+input AlignmentOperationFilterInput {
+  eq: Alignment
+  neq: Alignment
+  in: [Alignment!]
+  nin: [Alignment!]
+}
+
 type AppFile {
   id: Int!
   ownerId: String!
   subdirectory: String!
-  type: String!
+  accepts: String!
+  extension: String
+  contentType: String
   loaded: Boolean!
   created: DateTime!
+}
+
+input AppFileFilterInput {
+  and: [AppFileFilterInput!]
+  or: [AppFileFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  ownerId: StringOperationFilterInput
+  subdirectory: StringOperationFilterInput
+  accepts: StringOperationFilterInput
+  extension: StringOperationFilterInput
+  contentType: StringOperationFilterInput
+  loaded: BooleanOperationFilterInput
+  created: ComparableDateTimeOperationFilterInput
 }
 
 enum ApplyPolicy {
@@ -97,9 +126,21 @@ type ArmorClassOption {
   description: String!
 }
 
+input ArmorClassOptionFilterInput {
+  and: [ArmorClassOptionFilterInput!]
+  or: [ArmorClassOptionFilterInput!]
+  armorClass: ComparableInt32OperationFilterInput
+  description: StringOperationFilterInput
+}
+
 input ArmorClassOptionInput {
   armorClass: Int!
   description: String!
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
 }
 
 type Campaign implements Node {
@@ -160,6 +201,36 @@ enum ChangeMessageType {
   DELETE
 }
 
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableDoubleOperationFilterInput {
+  eq: Float
+  neq: Float
+  in: [Float!]
+  nin: [Float!]
+  gt: Float
+  ngt: Float
+  gte: Float
+  ngte: Float
+  lt: Float
+  nlt: Float
+  lte: Float
+  nlte: Float
+}
+
 input ComparableInt32OperationFilterInput {
   eq: Int
   neq: Int
@@ -197,6 +268,13 @@ enum DamageType {
   ACID
 }
 
+input DamageTypeOperationFilterInput {
+  eq: DamageType
+  neq: DamageType
+  in: [DamageType!]
+  nin: [DamageType!]
+}
+
 """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
 scalar DateTime
 
@@ -210,6 +288,20 @@ type EnrollmentAddPayload {
 
 type FileLoadingMessage {
   progress: Int!
+}
+
+input IDictionaryOfAbilityAndInt32FilterInput {
+  and: [IDictionaryOfAbilityAndInt32FilterInput!]
+  or: [IDictionaryOfAbilityAndInt32FilterInput!]
+  keys: ListAbilityOperationFilterInput
+  values: ListComparableInt32OperationFilterInput
+}
+
+input IDictionaryOfSkillAndInt32FilterInput {
+  and: [IDictionaryOfSkillAndInt32FilterInput!]
+  or: [IDictionaryOfSkillAndInt32FilterInput!]
+  keys: ListSkillOperationFilterInput
+  values: ListComparableInt32OperationFilterInput
 }
 
 input IdOperationFilterInput {
@@ -249,8 +341,56 @@ type Language {
   name: String!
 }
 
+input LanguageFilterInput {
+  and: [LanguageFilterInput!]
+  or: [LanguageFilterInput!]
+  name: StringOperationFilterInput
+}
+
 input LanguageInput {
   name: String!
+}
+
+input ListAbilityOperationFilterInput {
+  all: AbilityOperationFilterInput
+  none: AbilityOperationFilterInput
+  some: AbilityOperationFilterInput
+  any: Boolean
+}
+
+input ListAlignmentOperationFilterInput {
+  all: AlignmentOperationFilterInput
+  none: AlignmentOperationFilterInput
+  some: AlignmentOperationFilterInput
+  any: Boolean
+}
+
+input ListComparableInt32OperationFilterInput {
+  all: ComparableInt32OperationFilterInput
+  none: ComparableInt32OperationFilterInput
+  some: ComparableInt32OperationFilterInput
+  any: Boolean
+}
+
+input ListDamageTypeOperationFilterInput {
+  all: DamageTypeOperationFilterInput
+  none: DamageTypeOperationFilterInput
+  some: DamageTypeOperationFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfArmorClassOptionFilterInput {
+  all: ArmorClassOptionFilterInput
+  none: ArmorClassOptionFilterInput
+  some: ArmorClassOptionFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfLanguageFilterInput {
+  all: LanguageFilterInput
+  none: LanguageFilterInput
+  some: LanguageFilterInput
+  any: Boolean
 }
 
 input ListFilterInputTypeOfMapEntityFilterInput {
@@ -260,10 +400,45 @@ input ListFilterInputTypeOfMapEntityFilterInput {
   any: Boolean
 }
 
+input ListFilterInputTypeOfResistanceFilterInput {
+  all: ResistanceFilterInput
+  none: ResistanceFilterInput
+  some: ResistanceFilterInput
+  any: Boolean
+}
+
 input ListFilterInputTypeOfSceneFilterInput {
   all: SceneFilterInput
   none: SceneFilterInput
   some: SceneFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfSenseFilterInput {
+  all: SenseFilterInput
+  none: SenseFilterInput
+  some: SenseFilterInput
+  any: Boolean
+}
+
+input ListSizeOperationFilterInput {
+  all: SizeOperationFilterInput
+  none: SizeOperationFilterInput
+  some: SizeOperationFilterInput
+  any: Boolean
+}
+
+input ListSkillOperationFilterInput {
+  all: SkillOperationFilterInput
+  none: SkillOperationFilterInput
+  some: SkillOperationFilterInput
+  any: Boolean
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
   any: Boolean
 }
 
@@ -407,7 +582,7 @@ interface Node {
 type NonPlayerCharacter5E implements Node {
   page: Int!
   sourceId: Int!
-  source: Source
+  source: Source!
   type: NpcType!
   hitPointsFormula: String!
   hitPointsAverage: Int!
@@ -432,6 +607,38 @@ type NonPlayerCharacter5E implements Node {
   intelligence: Int!
   wisdom: Int!
   charisma: Int!
+}
+
+input NonPlayerCharacter5EFilterInput {
+  and: [NonPlayerCharacter5EFilterInput!]
+  or: [NonPlayerCharacter5EFilterInput!]
+  page: ComparableInt32OperationFilterInput
+  sourceId: ComparableInt32OperationFilterInput
+  source: SourceFilterInput
+  type: NpcTypeFilterInput
+  hitPointsFormula: StringOperationFilterInput
+  hitPointsAverage: ComparableInt32OperationFilterInput
+  armorClasses: ListFilterInputTypeOfArmorClassOptionFilterInput
+  challangeRating: ComparableDoubleOperationFilterInput
+  alignments: ListAlignmentOperationFilterInput
+  sizes: ListSizeOperationFilterInput
+  savingThrows: IDictionaryOfAbilityAndInt32FilterInput
+  skills: IDictionaryOfSkillAndInt32FilterInput
+  id: ComparableInt32OperationFilterInput
+  name: StringOperationFilterInput
+  avatarId: ComparableInt32OperationFilterInput
+  avatar: AppFileFilterInput
+  languages: ListFilterInputTypeOfLanguageFilterInput
+  senses: ListFilterInputTypeOfSenseFilterInput
+  passivePerception: ComparableInt32OperationFilterInput
+  resistances: ListFilterInputTypeOfResistanceFilterInput
+  speeds: SpeedFilterInput
+  strength: ComparableInt32OperationFilterInput
+  dexterity: ComparableInt32OperationFilterInput
+  constitution: ComparableInt32OperationFilterInput
+  intelligence: ComparableInt32OperationFilterInput
+  wisdom: ComparableInt32OperationFilterInput
+  charisma: ComparableInt32OperationFilterInput
 }
 
 input NpcAddInput {
@@ -468,9 +675,37 @@ type Npcs5EAddPayload {
   nonPlayerCharacter5E: [NonPlayerCharacter5E!]
 }
 
+"""A connection to a list of items."""
+type NpcsConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [NpcsEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [NonPlayerCharacter5E!]
+}
+
+"""An edge in a connection."""
+type NpcsEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: NonPlayerCharacter5E!
+}
+
 type NpcType {
   label: String!
   tags: [String!]
+}
+
+input NpcTypeFilterInput {
+  and: [NpcTypeFilterInput!]
+  or: [NpcTypeFilterInput!]
+  label: StringOperationFilterInput
+  tags: ListStringOperationFilterInput
 }
 
 input NpcTypeInput {
@@ -507,6 +742,13 @@ type Participant implements Node {
 type Resistance {
   types: [DamageType!]!
   condition: String
+}
+
+input ResistanceFilterInput {
+  and: [ResistanceFilterInput!]
+  or: [ResistanceFilterInput!]
+  types: ListDamageTypeOperationFilterInput
+  condition: StringOperationFilterInput
 }
 
 input ResistanceInput {
@@ -555,6 +797,22 @@ type RootQuery {
     ids: [ID!]!
   ): [Node]!
   campaigns(where: CampaignFilterInput): [Campaign!]!
+  npcs(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: NonPlayerCharacter5EFilterInput
+  ): NpcsConnection
   enrollment(code: ID!, where: CampaignFilterInput): Campaign
 }
 
@@ -607,6 +865,13 @@ type Sense {
   range: Int!
 }
 
+input SenseFilterInput {
+  and: [SenseFilterInput!]
+  or: [SenseFilterInput!]
+  description: StringOperationFilterInput
+  range: ComparableInt32OperationFilterInput
+}
+
 input SenseInput {
   description: String!
   range: Int!
@@ -619,6 +884,13 @@ enum Size {
   LARGE
   HUGE
   GARGANTUAN
+}
+
+input SizeOperationFilterInput {
+  eq: Size
+  neq: Size
+  in: [Size!]
+  nin: [Size!]
 }
 
 enum Skill {
@@ -642,6 +914,13 @@ enum Skill {
   SURVIVAL
 }
 
+input SkillOperationFilterInput {
+  eq: Skill
+  neq: Skill
+  in: [Skill!]
+  nin: [Skill!]
+}
+
 type Source implements Node {
   subdirectory: String!
   id: ID!
@@ -661,10 +940,28 @@ type SourceAddPayload {
   source: Source
 }
 
+input SourceFilterInput {
+  and: [SourceFilterInput!]
+  or: [SourceFilterInput!]
+  id: IdOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  shortName: StringOperationFilterInput
+  ownerId: StringOperationFilterInput
+}
+
 type Speed {
   walk: Int
   swim: Int
   fly: Int
+}
+
+input SpeedFilterInput {
+  and: [SpeedFilterInput!]
+  or: [SpeedFilterInput!]
+  walk: ComparableNullableOfInt32OperationFilterInput
+  swim: ComparableNullableOfInt32OperationFilterInput
+  fly: ComparableNullableOfInt32OperationFilterInput
 }
 
 input SpeedInput {

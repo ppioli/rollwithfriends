@@ -8,8 +8,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest } from "relay-runtime";
-
+import { ConcreteRequest, Query } from 'relay-runtime';
 export type CampaignSelectQuery$variables = {};
 export type CampaignSelectQuery$data = {
   readonly campaigns: ReadonlyArray<{

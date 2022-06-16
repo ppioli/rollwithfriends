@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { FragmentRefs, ReaderFragment } from "relay-runtime";
-
+import { Fragment, ReaderFragment } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type SceneSelector_campaign$data = {
   readonly scenes: ReadonlyArray<{
     readonly name: string;

@@ -3,6 +3,7 @@ using AutoMapper;
 using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Resolvers;
 using Server.EFModels;
+using Server.EFModels.Character5E;
 using server.Infraestructure;
 using IConfigurationProvider = AutoMapper.IConfigurationProvider;
 
@@ -30,6 +31,19 @@ public class RootQuery
         var id = user.GetId();
 
         return db.Campaigns.Where( c => c.Participants.Any( p => p.UserId == id));
+    }
+    
+    [UsePaging()]
+    [UseFiltering()]
+    [Authorize()]
+    public IQueryable<NonPlayerCharacter5E> Npcs(
+        RwfDbContext db,
+        ClaimsPrincipal user
+    )
+    {
+        var ret =  db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId()).ToList();
+
+        return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId());
     }
     
     

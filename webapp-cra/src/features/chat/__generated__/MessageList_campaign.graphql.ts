@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { FragmentRefs, ReaderFragment } from "relay-runtime";
-
+import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type MessageList_campaign$data = {
   readonly messages: {
     readonly edges: ReadonlyArray<{

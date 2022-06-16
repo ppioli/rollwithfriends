@@ -8,9 +8,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { FragmentRefs, ReaderFragment } from "relay-runtime";
-
+import { Fragment, ReaderFragment } from 'relay-runtime';
 export type ImageState = "LOADED" | "LOADING" | "MISSING" | "%future added value";
+import { FragmentRefs } from "relay-runtime";
 export type MapEntityLayer_scene$data = {
   readonly entities: ReadonlyArray<{
     readonly id: string;

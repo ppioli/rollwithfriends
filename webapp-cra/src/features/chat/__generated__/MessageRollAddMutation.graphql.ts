@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest, FragmentRefs } from "relay-runtime";
-
+import { ConcreteRequest, Mutation } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type RollMessagesAddInput = {
   campaignId: string;
   messages: ReadonlyArray<RollMessageAddInput>;

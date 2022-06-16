@@ -8,8 +8,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ConcreteRequest, FragmentRefs } from "relay-runtime";
-
+import { ConcreteRequest, GraphQLSubscription } from 'relay-runtime';
+import { FragmentRefs } from "relay-runtime";
 export type MessageSubscription$variables = {
   campaignId: string;
   connections: ReadonlyArray<string>;

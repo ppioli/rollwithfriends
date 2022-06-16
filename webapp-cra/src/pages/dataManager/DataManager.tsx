@@ -4,7 +4,11 @@ import { useMemo, useState } from "react";
 import { NpcAddInput } from "features/tokenEditor/__generated__/Npc5eAddMutation.graphql";
 import { SourceAddInput } from "pages/dataManager/__generated__/SourceAddMutation.graphql";
 import { useSourceAddMutation } from "pages/dataManager/Source.graphql";
-import { useNpc5EAddPromise } from "features/tokenEditor/Npc5e.graphql";
+import {
+  findImage,
+  useNpc5EAddPromise,
+} from "features/tokenEditor/Npc5e.graphql";
+import { FileUploadDefinition, uploadBatch } from "utils/HttpHelpers";
 
 export function DataManagerPage() {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>();
@@ -15,7 +19,7 @@ export function DataManagerPage() {
 
   return (
     <div className={"flex content-area"}>
-      <div className={"w-96 h-full bg-dark flex flex-col p-1 gap-1"}>
+      <div className={"side-menu"}>
         <button className={"btn btn-menu"}>Import</button>
         <button className={"btn btn-menu"}>Export</button>
       </div>
@@ -54,22 +58,57 @@ function UploadDataList({ files }: UploadDataListProps) {
   const commitSource = useSourceAddMutation();
   const commitNpcs = useNpc5EAddPromise();
 
-  const parsedFiles = useMemo<File[]>(() => {
-    let entries: any[] = [];
+  const [parsedFiles, images] = useMemo<
+    [File[], Record<string, File[]>]
+  >(() => {
+    let entries: File[] = [];
+    let images: Record<string, File[]> = {};
     for (let i = 0; i < files.length; i++) {
-      entries.push(files[i]);
+      const file = files[i];
+      const path = file.webkitRelativePath.split("/");
+
+      if (files[i].type === "application/json" && path.length === 2) {
+        entries.push(files[i]);
+      } else if (path.length === 4) {
+        // root, img, source
+        const [, p1, p2] = path;
+        if (p1 !== "img") {
+          continue;
+        }
+        if (images[p2] === undefined) {
+          images[p2] = [];
+        }
+
+        images[p2].push(file);
+      }
     }
     console.log(entries);
-    return entries;
+    return [entries, images];
   }, [files]);
 
   const onUpload = async () => {
     for (const file of parsedFiles) {
+      const fileName = file.name.replace(/\.[^/.]+$/, "");
+
       const bundle = await loadJson(file);
 
       const sourceId = await commitSource(bundle.source);
       //
-      const addedNpcs = await commitNpcs(sourceId, bundle.npcs);
+      const result = await commitNpcs(sourceId, bundle.npcs);
+
+      if (result.npcs5EAdd.nonPlayerCharacter5E === null) {
+        continue;
+      }
+
+      const avatars: FileUploadDefinition[] = [];
+      result.npcs5EAdd.nonPlayerCharacter5E.forEach((npc) => {
+        const upload = findImage(npc, images[fileName]);
+        if (upload !== null) {
+          avatars.push(upload);
+        }
+      });
+
+      await uploadBatch(avatars, 1);
     }
   };
 

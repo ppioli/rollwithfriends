@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using server.Infraestructure;
@@ -11,9 +12,10 @@ using server.Infraestructure;
 namespace Server.Migrations
 {
     [DbContext(typeof(RwfDbContext))]
-    partial class RwfDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220616145510_FileStuff")]
+    partial class FileStuff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -344,7 +346,7 @@ namespace Server.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Server.EFModels.ApplicationRole", b =>
@@ -418,7 +420,7 @@ namespace Server.Migrations
                     b.HasIndex("SelectedSceneId")
                         .IsUnique();
 
-                    b.ToTable("Campaigns", (string)null);
+                    b.ToTable("Campaigns");
                 });
 
             modelBuilder.Entity("Server.EFModels.CampaignEnrollment", b =>
@@ -442,7 +444,7 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CampaignEnrollments", (string)null);
+                    b.ToTable("CampaignEnrollments");
                 });
 
             modelBuilder.Entity("Server.EFModels.Character5E.NonPlayerCharacter5E", b =>
@@ -543,7 +545,7 @@ namespace Server.Migrations
 
                     b.HasIndex("SourceId");
 
-                    b.ToTable("NonPlayerCharacters5E", (string)null);
+                    b.ToTable("NonPlayerCharacters5E");
                 });
 
             modelBuilder.Entity("Server.EFModels.MapEntity", b =>
@@ -578,7 +580,7 @@ namespace Server.Migrations
 
                     b.HasIndex("SceneId");
 
-                    b.ToTable("MapEntities", (string)null);
+                    b.ToTable("MapEntities");
                 });
 
             modelBuilder.Entity("Server.EFModels.Messages.Message", b =>
@@ -612,7 +614,7 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Server.EFModels.Scene", b =>
@@ -634,7 +636,7 @@ namespace Server.Migrations
 
                     b.HasIndex("CampaignId");
 
-                    b.ToTable("Scenes", (string)null);
+                    b.ToTable("Scenes");
                 });
 
             modelBuilder.Entity("Server.EFModels.Source", b =>
@@ -665,7 +667,7 @@ namespace Server.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Sources", (string)null);
+                    b.ToTable("Sources");
                 });
 
             modelBuilder.Entity("Server.EFModels.User", b =>

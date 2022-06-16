@@ -18,13 +18,13 @@ public class CharacterService
         Source source,
         IEnumerable<NpcAdd> payload)
     {
-        var avatar = new AppFile(source.OwnerId, source.GetSubdirectory());
+        
 
         
         var createdNpcs = payload.Select(
             input => new NonPlayerCharacter5E(
                 input.Name,
-                avatar,
+                new AppFile(source.OwnerId, source.GetSubdirectory(), "image/*"),
                 input.PassivePerception,
                 input.Strength,
                 input.Dexterity,
@@ -41,6 +41,10 @@ public class CharacterService
                 new Dictionary<Ability, int>(input.SavingThrows),
                 input.Sizes,
                 input.Alignments,
+                input.Languages,
+                input.Speeds,
+                input.Senses,
+                input.Resistances,
                 input.ArmorClasses,
                 input.Type))
             .ToList();

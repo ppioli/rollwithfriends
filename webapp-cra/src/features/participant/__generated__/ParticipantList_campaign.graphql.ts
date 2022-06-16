@@ -8,9 +8,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { FragmentRefs, ReaderFragment } from "relay-runtime";
-
+import { Fragment, ReaderFragment } from 'relay-runtime';
 export type CampaignRoll = "DUNGEON_MASTER" | "PLAYER" | "%future added value";
+import { FragmentRefs } from "relay-runtime";
 export type ParticipantList_campaign$data = {
   readonly participants: ReadonlyArray<{
     readonly id: string;

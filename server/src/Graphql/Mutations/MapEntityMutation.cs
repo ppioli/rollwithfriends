@@ -75,7 +75,7 @@ public class MapEntityMutation
         var created = input.Entities.Select(
                 n =>
                 {
-                    var image = new AppFile(user.GetId(), user.GetId());
+                    var image = new AppFile(user.GetId(), user.GetId(), "image/*");
                     return new MapEntity(n.X, n.Y, n.Width, n.Height, input.SceneId, image);
                 })
             .ToList();
@@ -83,13 +83,10 @@ public class MapEntityMutation
         await db.AddRangeAsync(created);
         await db.SaveChangesAsync();
 
-        var newImages = created.Select(c => c.Image).ToList();
-
-        fileStorageService.StartUpload(newImages);
-
         await sender.SendAsync(
             MapEntityChangeSubscription.GetTopic(input.SceneId),
             new MapEntityChangeMessage(ChangeMessageType.Add, user.GetId(), created));
+        
         return created;
     }
 
@@ -120,7 +117,7 @@ public class MapEntityMutation
 
     private bool IsGameMaster(int sceneId, ClaimsPrincipal user, RwfDbContext context)
     {
-        var userId = user?.GetId();
+        var userId = user.GetId();
         var dmId = context.Scenes
             .Where(s => s.Id == sceneId)
             .Select(s => s.Campaign.DungeonMasterId)

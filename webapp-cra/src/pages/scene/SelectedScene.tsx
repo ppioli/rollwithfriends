@@ -15,8 +15,6 @@ import {
 } from "features/mapEntity/MapEntity.graphql";
 import classNames from "classnames";
 import { loadImages } from "utils/imageLoader";
-import { UploadUrl } from "lib/getRelayClientEnvironment";
-import { ACCESS_TOKEN } from "lib/useRefreshToken";
 
 export interface SceneProps {
   id: string;
@@ -70,18 +68,7 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
             return;
           }
 
-          result.forEach(({ imageId }, ix) => {
-            const postData = new FormData();
-
-            postData.append("data", files[ix]);
-            fetch(`${UploadUrl}/${imageId}`, {
-              method: "POST",
-              body: postData,
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
-              },
-            });
-          });
+          result.forEach(({ imageId }, ix) => {});
         });
       });
     },

@@ -8,7 +8,7 @@ public class NonPlayerCharacter5E : CharacterBase5E
     public int Page { get; set; }
 
     public int SourceId { get; set; }
-    public virtual Source? Source { get; set; } = null!;
+    public virtual Source Source { get; set; } = null!;
 
     public NpcType Type { get; set; } = null!;
 
@@ -48,6 +48,10 @@ public class NonPlayerCharacter5E : CharacterBase5E
         IDictionary<Ability, int> savingThrows,
         Size[] sizes,
         Alignment[] alignments,
+        Language[] languages,
+        Speed speed,
+        Sense[] senses,
+        Resistance[] resistances,
         ArmorClassOption[] armorClasses,
         NpcType type) : base(
         name,
@@ -58,7 +62,11 @@ public class NonPlayerCharacter5E : CharacterBase5E
         constitution,
         intelligence,
         wisdom,
-        charisma)
+        charisma,
+        languages,
+        speed,
+        senses,
+        resistances)
     {
         Page = page;
         HitPointsFormula = hitPointsFormula;

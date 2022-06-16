@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 using Server.EFModels;
 using server.Infraestructure;
 using Path = System.IO.Path;
@@ -11,8 +13,12 @@ public class FileStorageService
 
     private readonly IDictionary<int, UploadHandle> _uploads;
 
-    public FileStorageService(IConfiguration configuration)
+    private readonly IServiceProvider _serviceProvider;
+
+    public FileStorageService(IConfiguration configuration, IServiceProvider serviceProvider)
     {
+        // TODO should clean uploads
+        _serviceProvider = serviceProvider;
         BasePath = configuration["FileStorage:BasePath"] ??
                    throw new Exception("The configuration FileStorage:BasePath is required");
         if (!Directory.Exists(BasePath))
@@ -23,22 +29,52 @@ public class FileStorageService
         _uploads = new Dictionary<int, UploadHandle>();
     }
 
-    public void StartUpload(List<AppFile> files)
+    public string StartUpload(string userId, int fileId, IFormFile formFile)
     {
-        foreach (var file in files)
+        if (_uploads.ContainsKey(fileId))
         {
-            if (_uploads.ContainsKey(file.Id))
-            {
-                return;
-            }
-            _uploads[file.Id] = new UploadHandle()
-            {
-                File = file,
-                TempFileName = Path.GetTempFileName(),
-                Created = DateTime.UtcNow,
-                Progress = 0,
-            };
+            return _uploads[fileId].TempFileName;
         }
+        
+        var file = LoadFile(fileId);
+        
+        if (file == null || file.OwnerId != userId)
+        {
+            throw new ClientException("You don't have permission to modify these files");
+        }
+
+        var fileExtension = Path.GetExtension(formFile.FileName);
+        
+        var expectedExtensionRegEx = new Regex(file.Accepts);
+
+        if (!expectedExtensionRegEx.IsMatch(formFile.ContentType))
+        {
+            throw new ClientException($"The provided file does not match the expected file type {file.Accepts}");
+        }
+            
+        var handle = new UploadHandle()
+        {
+            FileId = fileId,
+            TempFileName = Path.GetTempFileName(),
+            Extension = fileExtension,
+            ContentType = formFile.ContentType,
+            Created = DateTime.UtcNow,
+            Progress = 0,
+        };
+            
+        _uploads.Add(file.Id, handle);
+
+        return handle.TempFileName;
+
+    }
+
+    public AppFile LoadFile(int fileId)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var db = scope.ServiceProvider.GetService<RwfDbContext>();
+
+        Debug.Assert(db != null, nameof(db) + " != null");
+        return db.Files.Find(fileId) ?? throw new EntityNotFound(fileId);
     }
 
     public bool IsLoading(int fileId)
@@ -56,62 +92,75 @@ public class FileStorageService
         _uploads[fileId].Progress = progress;
     }
 
-    public void Complete(int fileId)
+    public async Task Complete(int fileId)
     {
         if (!_uploads.ContainsKey(fileId))
         {
             throw new ClientException("The upload has been cancelled");
         }
+        
+        using var scope = _serviceProvider.CreateScope();
+        var db = scope.ServiceProvider.GetService<RwfDbContext>();
 
+        Debug.Assert(db != null, nameof(db) + " != null");
+        
         var handle = _uploads[fileId];
-        var dir = Path.Join(
-            BasePath,
-            handle.File.Subdirectory);
 
+        var file = await db.Files.FindAsync(fileId) ?? throw new EntityNotFound(fileId);
+        var dir = GetFileDirectory(file);
         if (!Directory.Exists(dir))
         {
             Directory.CreateDirectory(dir);
         }
-
-        var dest = Path.Join(
-            dir,
-            $"{handle.File.Id}.{KnownTypes.GetExtension(handle.File.Type)}");
         
-        File.Copy(handle.TempFileName, dest);
+        File.Copy(handle.TempFileName, GetFilePath(file));
+        
+        file.SetLoaded(handle.Extension, handle.ContentType);
+
+        
+        
+
+        
+        
+        
+
+        _uploads.Remove(fileId);
+
+        await db.SaveChangesAsync();
+    }
+
+    public string GetFileDirectory(AppFile file)
+    {
+        return Path.Join(
+            BasePath,
+            file.Subdirectory);
     }
 
     public string GetFilePath(AppFile file)
     {
-        return Path.Join(
-            BasePath,
-            file.Subdirectory,
-            $"{file.Id}.{KnownTypes.GetExtension(file.Type)}");
+        return Path.Join(GetFileDirectory(file), $"{file.Id}.{file.Extension}");
     }
-    
-    public UploadHandle GetHandle(int fileId)
+
+    public Stream ReadStream(AppFile file)
     {
-        return _uploads[fileId];
+        var path = GetFilePath(file);
+        return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
     }
+}
+
+public class FileResult
+{
+    public FileStream Stream { get; set; } = null!;
+    public string ContentType { get; set; } = null!;
 }
 
 public class UploadHandle
 {
     public Guid Id { get; set; }
-    public AppFile File { get; set; } = null!;
+    public int FileId { get; set; }
     public string TempFileName { get; set; } = null!;
     public DateTime Created { get; set; }
     public decimal Progress { get; set; }
-}
-
-public static class KnownTypes
-{
-    private static readonly Dictionary<string, string> Dict = new Dictionary<string, string>()
-    {
-        { "image/png", "png" },
-        { "image/jpeg", "jpg" },
-        { "image/jpg", "jpg" },
-    };
-
-    public static bool IsKnownType(string val) => Dict.ContainsKey(val);
-    public static string GetExtension(string val) => Dict[val];
+    public string Extension { get; set; } = null!;
+    public string ContentType { get; set; } = null!;
 }

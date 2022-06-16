@@ -1,4 +1,3 @@
-
 using Newtonsoft.Json;
 using RollWithFriends.Models.Characters;
 
@@ -10,34 +9,23 @@ public class CharacterBase5E
     public string Name { get; set; } = null!;
 
     public int AvatarId { get; set; }
+
+    [GraphQLIgnore]
     public virtual AppFile Avatar { get; set; } = null!;
 
-    private string _languages = "[]";
-    public virtual Language[] Languages { 
-        get => JsonConvert.DeserializeObject<Language[]>(_languages);
-        set => _languages = JsonConvert.SerializeObject(value);
-    }
 
-    private string _senses = "[]";
-    public virtual Sense[] Senses { 
-        get => JsonConvert.DeserializeObject<Sense[]>(_senses);
-        set => _senses = JsonConvert.SerializeObject(value);
-    }
+    public Language[] Languages { get; set; }
+
+
+    public Sense[] Senses { get; set; }
 
     public int PassivePerception { get; set; }
 
-    private string _resistances = "[]";
-    public virtual Resistance[] Resistances { 
-        get => JsonConvert.DeserializeObject<Resistance[]>(_resistances);
-        set => _resistances = JsonConvert.SerializeObject(value);
-    }
 
-    private string _speeds = "{}";
-    public virtual Speed Speeds { 
-        get => JsonConvert.DeserializeObject<Speed>(_speeds);
-        set => _speeds = JsonConvert.SerializeObject(value);
-    }
-    
+    public Resistance[] Resistances { get; set; }
+
+    public Speed Speeds { get; set; }
+
     public int Strength { get; set; }
     public int Dexterity { get; set; }
     public int Constitution { get; set; }
@@ -47,10 +35,22 @@ public class CharacterBase5E
 
     protected CharacterBase5E()
     {
-        
     }
-    
-    public CharacterBase5E(string name, AppFile file, int passivePerception, int strength, int dexterity, int constitution, int intelligence, int wisdom, int charisma)
+
+    public CharacterBase5E(
+        string name,
+        AppFile file,
+        int passivePerception,
+        int strength,
+        int dexterity,
+        int constitution,
+        int intelligence,
+        int wisdom,
+        int charisma,
+        Language[] languages,
+        Speed speed,
+        Sense[] senses,
+        Resistance[] resistances)
     {
         Name = name;
         Avatar = file;
@@ -60,6 +60,10 @@ public class CharacterBase5E
         Constitution = constitution;
         Intelligence = intelligence;
         Wisdom = wisdom;
+        Languages = languages;
         Charisma = charisma;
+        Resistances = resistances;
+        Speeds = speed;
+        Senses = senses;
     }
 }
