@@ -33,17 +33,28 @@ public class RootQuery
         return db.Campaigns.Where( c => c.Participants.Any( p => p.UserId == id));
     }
     
-    [UsePaging()]
+    [UsePaging(IncludeTotalCount = true)]
     [UseFiltering()]
     [Authorize()]
-    public IQueryable<NonPlayerCharacter5E> Npcs(
+    public async Task<IQueryable<NonPlayerCharacter5E>> Entries(
         RwfDbContext db,
         ClaimsPrincipal user
     )
     {
-        var ret =  db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId()).ToList();
-
+        await Task.Delay(1000);
         return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId());
+    }
+    
+    [Authorize()]
+    [UseFirstOrDefault()]
+    public async Task<IQueryable<NonPlayerCharacter5E>> Entry(
+        RwfDbContext db,
+        ClaimsPrincipal user,
+        [ID]int? id
+    )
+    {
+        await Task.Delay(1000);
+        return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId() && c.Id == id);
     }
     
     

@@ -344,7 +344,7 @@ namespace Server.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Server.EFModels.ApplicationRole", b =>
@@ -418,7 +418,7 @@ namespace Server.Migrations
                     b.HasIndex("SelectedSceneId")
                         .IsUnique();
 
-                    b.ToTable("Campaigns", (string)null);
+                    b.ToTable("Campaigns");
                 });
 
             modelBuilder.Entity("Server.EFModels.CampaignEnrollment", b =>
@@ -442,7 +442,7 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CampaignEnrollments", (string)null);
+                    b.ToTable("CampaignEnrollments");
                 });
 
             modelBuilder.Entity("Server.EFModels.Character5E.NonPlayerCharacter5E", b =>
@@ -543,7 +543,7 @@ namespace Server.Migrations
 
                     b.HasIndex("SourceId");
 
-                    b.ToTable("NonPlayerCharacters5E", (string)null);
+                    b.ToTable("NonPlayerCharacters5E");
                 });
 
             modelBuilder.Entity("Server.EFModels.MapEntity", b =>
@@ -554,16 +554,18 @@ namespace Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Height")
-                        .HasColumnType("integer");
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("ImageId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("SceneId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Width")
+                    b.Property<int>("Type")
                         .HasColumnType("integer");
 
                     b.Property<int>("X")
@@ -574,11 +576,9 @@ namespace Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ImageId");
-
                     b.HasIndex("SceneId");
 
-                    b.ToTable("MapEntities", (string)null);
+                    b.ToTable("MapEntities");
                 });
 
             modelBuilder.Entity("Server.EFModels.Messages.Message", b =>
@@ -612,7 +612,7 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages", (string)null);
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Server.EFModels.Scene", b =>
@@ -634,7 +634,7 @@ namespace Server.Migrations
 
                     b.HasIndex("CampaignId");
 
-                    b.ToTable("Scenes", (string)null);
+                    b.ToTable("Scenes");
                 });
 
             modelBuilder.Entity("Server.EFModels.Source", b =>
@@ -665,7 +665,7 @@ namespace Server.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Sources", (string)null);
+                    b.ToTable("Sources");
                 });
 
             modelBuilder.Entity("Server.EFModels.User", b =>
@@ -888,19 +888,11 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Server.EFModels.MapEntity", b =>
                 {
-                    b.HasOne("Server.EFModels.AppFile", "Image")
-                        .WithMany()
-                        .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Server.EFModels.Scene", "Scene")
                         .WithMany("Entities")
                         .HasForeignKey("SceneId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Image");
 
                     b.Navigation("Scene");
                 });

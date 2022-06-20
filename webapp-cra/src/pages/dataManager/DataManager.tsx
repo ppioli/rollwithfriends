@@ -1,14 +1,14 @@
 import { Input } from "components/form/Input";
 import { TitlePanel } from "components/panel/TitlePanel";
 import { useMemo, useState } from "react";
-import { NpcAddInput } from "features/tokenEditor/__generated__/Npc5eAddMutation.graphql";
 import { SourceAddInput } from "pages/dataManager/__generated__/SourceAddMutation.graphql";
 import { useSourceAddMutation } from "pages/dataManager/Source.graphql";
 import {
   findImage,
   useNpc5EAddPromise,
-} from "features/tokenEditor/Npc5e.graphql";
+} from "components/fiveEdition/Npc5e.graphql";
 import { FileUploadDefinition, uploadBatch } from "utils/HttpHelpers";
+import { NpcAddInput } from "components/fiveEdition/__generated__/Npc5eAddMutation.graphql";
 
 export function DataManagerPage() {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>();
@@ -102,7 +102,7 @@ function UploadDataList({ files }: UploadDataListProps) {
 
       const avatars: FileUploadDefinition[] = [];
       result.npcs5EAdd.nonPlayerCharacter5E.forEach((npc) => {
-        const upload = findImage(npc, images[fileName]);
+        const upload = findImage(npc.avatarId, npc.name, images[fileName]);
         if (upload !== null) {
           avatars.push(upload);
         }

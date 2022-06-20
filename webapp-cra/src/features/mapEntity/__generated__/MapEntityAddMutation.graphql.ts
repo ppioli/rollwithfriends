@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6f26648e9302982c44ca38e9007abd40>>
+ * @generated SignedSource<<eba9826d564dc3802be3ae174d52ed1a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,12 +10,12 @@
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type ImageState = "LOADED" | "LOADING" | "MISSING" | "%future added value";
 export type MapEntitiesAddInput = {
   sceneId: string;
   entities: ReadonlyArray<MapEntityAddInput>;
 };
 export type MapEntityAddInput = {
+  name: string;
   x: number;
   y: number;
   width: number;
@@ -28,8 +28,10 @@ export type MapEntityAddMutation$data = {
   readonly mapEntityAdd: {
     readonly mapEntity: ReadonlyArray<{
       readonly id: string;
-      readonly imageState: ImageState;
-      readonly imageId: number;
+      readonly name: string;
+      readonly content: {
+        readonly fileId?: number;
+      };
       readonly " $fragmentSpreads": FragmentRefs<"MapEntityFragment">;
     }> | null;
   };
@@ -65,15 +67,22 @@ v3 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "imageState",
+  "name": "name",
   "storageKey": null
 },
 v4 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "imageId",
-  "storageKey": null
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "fileId",
+      "storageKey": null
+    }
+  ],
+  "type": "ImageContent",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -99,13 +108,24 @@ return {
             "plural": true,
             "selections": [
               (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "MapEntityFragment"
               },
-              (v3/*: any*/),
-              (v4/*: any*/)
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": null,
+                "kind": "LinkedField",
+                "name": "content",
+                "plural": false,
+                "selections": [
+                  (v4/*: any*/)
+                ],
+                "storageKey": null
+              }
             ],
             "storageKey": null
           }
@@ -139,6 +159,7 @@ return {
             "plural": true,
             "selections": [
               (v2/*: any*/),
+              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -167,8 +188,39 @@ return {
                 "name": "height",
                 "storageKey": null
               },
-              (v3/*: any*/),
-              (v4/*: any*/)
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": null,
+                "kind": "LinkedField",
+                "name": "content",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "__typename",
+                    "storageKey": null
+                  },
+                  (v4/*: any*/),
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "npcId",
+                        "storageKey": null
+                      }
+                    ],
+                    "type": "Npc5EContent",
+                    "abstractKey": null
+                  }
+                ],
+                "storageKey": null
+              }
             ],
             "storageKey": null
           }
@@ -178,16 +230,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "dfab4c40cdf44be50e93c587ec0dedf8",
+    "cacheID": "07ec6e3048974de11b02cf5462c74dd5",
     "id": null,
     "metadata": {},
     "name": "MapEntityAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityAddMutation(\n  $input: MapEntitiesAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      ...MapEntityFragment\n      imageState\n      imageId\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n}\n"
+    "text": "mutation MapEntityAddMutation(\n  $input: MapEntitiesAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      name\n      ...MapEntityFragment\n      content {\n        __typename\n        ... on ImageContent {\n          fileId\n        }\n      }\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "8354b4bc332ec59aff3cbbebe02ed598";
+(node as any).hash = "cf411b9895f40550a02d9ea8cd763e98";
 
 export default node;

@@ -6,6 +6,7 @@ import { useMapEntityContext } from "features/battleMap/mapEntityLayer/MapEntity
 import { ReactNode, useRef } from "react";
 import { useMapEntityUpdateMutation } from "features/mapEntity/MapEntity.graphql";
 import { MapEntityUpdateInput } from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
+import { getEntitySize } from "features/battleMap/mapEntityLayer/MapEntityHelpers";
 
 interface EntitySelectBoxProps {
   scale: number;
@@ -43,13 +44,16 @@ export function EntitySelectBox({
     const ssy = sy + dy;
     console.info("delta mov ", dx, dy);
 
-    const entities: MapEntityUpdateInput[] = getSelected().map((e) => ({
-      id: e.id,
-      x: Math.round(ssx + (e.x - ssx + dx) * rw),
-      y: Math.round(ssy + (e.y - ssy + dy) * rh),
-      width: Math.round(e.width * rw),
-      height: Math.round(e.height * rh),
-    }));
+    const entities: MapEntityUpdateInput[] = getSelected().map((e) => {
+      const [width, height] = getEntitySize(e);
+      return {
+        id: e.id,
+        x: Math.round(ssx + (e.x - ssx + dx) * rw),
+        y: Math.round(ssy + (e.y - ssy + dy) * rh),
+        width: Math.round(width * rw),
+        height: Math.round(height * rh),
+      };
+    });
 
     update({
       input: {

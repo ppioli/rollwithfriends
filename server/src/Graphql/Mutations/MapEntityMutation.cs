@@ -2,9 +2,11 @@ using System.Security.Claims;
 using HotChocolate.Subscriptions;
 using Microsoft.AspNetCore.Authorization;
 using Server.EFModels;
+using Server.EFModels.Map;
 using Server.Graphql.Subscriptions;
 using server.Infraestructure;
 using Server.Services;
+using Path = System.IO.Path;
 
 namespace Server.Graphql.Mutations;
 
@@ -44,8 +46,12 @@ public class MapEntityMutation
             var updated = updatedDict[e.Id];
             updated.X = e.X;
             updated.Y = e.Y;
-            updated.Width = e.Width;
-            updated.Height = e.Height;
+
+            var content = updated.GetImageContent();
+            content.Width = e.Width;
+            content.Height = e.Height;
+
+            updated.SetContent(content);
 
             result.Add(updated);
         }
@@ -63,7 +69,6 @@ public class MapEntityMutation
         ClaimsPrincipal user,
         RwfDbContext db,
         [Service] ITopicEventSender sender,
-        [Service] FileStorageService fileStorageService,
         MapEntitiesAdd input)
     {
         if (!IsGameMaster(input.SceneId, user, db))
@@ -71,13 +76,29 @@ public class MapEntityMutation
             throw new EntityNotFound(input.SceneId);
         }
 
+        var files = input.Entities.Select(
+            s => new KeyValuePair<MapEntityAdd, AppFile>(
+                s,
+                new AppFile(user.GetId(), Path.Join(user.GetId(), $"{input.SceneId}"), "image/*")));
+
+        var filesDict = new Dictionary<MapEntityAdd, AppFile>(files);
+
+        await db.AddRangeAsync(filesDict.Values);
+
+        await db.SaveChangesAsync();
 
         var created = input.Entities.Select(
-                n =>
-                {
-                    var image = new AppFile(user.GetId(), user.GetId(), "image/*");
-                    return new MapEntity(n.X, n.Y, n.Width, n.Height, input.SceneId, image);
-                })
+                n => MapEntity.CreateImageContent(
+                    n.X,
+                    n.Y,
+                    n.Name,
+                    input.SceneId,
+                    new ImageContent()
+                    {
+                        Height = n.Height,
+                        Width = n.Width,
+                        FileId = filesDict[n].Id
+                    }))
             .ToList();
 
         await db.AddRangeAsync(created);
@@ -86,7 +107,42 @@ public class MapEntityMutation
         await sender.SendAsync(
             MapEntityChangeSubscription.GetTopic(input.SceneId),
             new MapEntityChangeMessage(ChangeMessageType.Add, user.GetId(), created));
-        
+
+        return created;
+    }
+    
+    [Authorize]
+    public async Task<ICollection<MapEntity>> MapEntityNpcAdd(
+        ClaimsPrincipal user,
+        RwfDbContext db,
+        [Service] ITopicEventSender sender,
+        MapEntitiesNpcAdd input)
+    {
+        if (!IsGameMaster(input.SceneId, user, db))
+        {
+            throw new EntityNotFound(input.SceneId);
+        }
+
+
+        var created = input.Entities.Select(
+                n => MapEntity.CreateNpcContent(
+                    n.X,
+                    n.Y,
+                    n.Name,
+                    input.SceneId,
+                    new Npc5EContent()
+                    {
+                        NpcId = n.NpcId
+                    }))
+            .ToList();
+
+        await db.AddRangeAsync(created);
+        await db.SaveChangesAsync();
+
+        await sender.SendAsync(
+            MapEntityChangeSubscription.GetTopic(input.SceneId),
+            new MapEntityChangeMessage(ChangeMessageType.Add, user.GetId(), created));
+
         return created;
     }
 
@@ -137,6 +193,7 @@ public class MapEntitiesAdd
 
 public class MapEntityAdd
 {
+    public string Name { get; set; } = null!;
     public int X { get; set; }
     public int Y { get; set; }
     public int Width { get; set; }
@@ -169,4 +226,21 @@ public class MapEntitiesDelete
 
     [ID]
     public ICollection<int> Deleted { get; set; } = default!;
+}
+
+public class MapEntitiesNpcAdd
+{
+    [ID]
+    public int SceneId { get; set; }
+
+    public MapEntityNpcAdd[] Entities { get; set; } = default!;
+}
+
+public class MapEntityNpcAdd
+{
+    public string Name { get; set; } = null!;
+    public int X { get; set; }
+    public int Y { get; set; }
+    [ID]
+    public int NpcId { get; set; } 
 }

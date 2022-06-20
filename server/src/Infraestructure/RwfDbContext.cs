@@ -80,6 +80,7 @@ public class RwfDbContext : IdentityDbContext<
                     .IsRequired(false);
             });
 
+        // TODO Add entity comparator
         modelBuilder.Entity<NonPlayerCharacter5E>(
             b =>
             {
@@ -115,7 +116,7 @@ public class RwfDbContext : IdentityDbContext<
                 b.Property(npc => npc.Speeds)
                     .HasConversion( new JsonValueConverter<Speed>());
             });
-
+        
 
         modelBuilder.Entity<ApplicationRole>(
             b =>
@@ -126,8 +127,7 @@ public class RwfDbContext : IdentityDbContext<
                     .HasForeignKey(ur => ur.RoleId)
                     .IsRequired();
             });
-
-        modelBuilder.Entity<MapEntity>().Navigation(e => e.Image).AutoInclude();
+        
     }
 }
 

@@ -113,15 +113,8 @@ public class FileStorageService
             Directory.CreateDirectory(dir);
         }
         
-        File.Copy(handle.TempFileName, GetFilePath(file));
-        
         file.SetLoaded(handle.Extension, handle.ContentType);
-
-        
-        
-
-        
-        
+        File.Copy(handle.TempFileName, GetFilePath(file));
         
 
         _uploads.Remove(fileId);
@@ -138,7 +131,7 @@ public class FileStorageService
 
     public string GetFilePath(AppFile file)
     {
-        return Path.Join(GetFileDirectory(file), $"{file.Id}.{file.Extension}");
+        return Path.Join(GetFileDirectory(file), $"{file.Id}{file.Extension}");
     }
 
     public Stream ReadStream(AppFile file)

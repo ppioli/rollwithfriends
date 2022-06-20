@@ -72,7 +72,7 @@ export function UserMenu() {
         <div
           className={classNames(
             { hidden: !show },
-            "origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-darkest ring-1 ring-black ring-opacity-5 focus:outline-none"
+            "origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-darkest ring-1 ring-black ring-opacity-5 focus:outline-none z-[99999]"
           )}
           role="menu"
           aria-orientation="vertical"

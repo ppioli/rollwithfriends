@@ -1,31 +1,18 @@
 import React, { CSSProperties, ReactNode } from "react";
 import { useGesture } from "@use-gesture/react";
-import { ImageLoader, ImageMissing } from "features/imageLoader/ImageLoader";
 import { ServerUrl } from "lib/getRelayClientEnvironment";
 
-export interface MapGraphic {
+export interface MapGraphicProps {
   id: string;
   scale: number;
   x: number;
   y: number;
   width: number;
   height: number;
-  imageState: string;
-  imageId: number;
   onClick: (add: boolean) => void;
 }
 
-function Image({
-  id,
-  x,
-  y,
-  width,
-  height,
-  scale,
-  onClick,
-  imageState,
-  imageId,
-}: MapGraphic) {
+function Image({ id, x, y, width, height, scale, onClick }: MapGraphicProps) {
   const style: CSSProperties = {
     touchAction: "none",
     position: "absolute",
@@ -46,41 +33,41 @@ function Image({
 
   let Content: ReactNode;
 
-  if (imageState === "LOADED") {
-    Content = (
-      <img
-        draggable={false}
-        className={"touch-none"}
-        src={`${ServerUrl}/image/token/${imageId}`}
-        width={width * scale}
-        height={height * scale}
-        style={{ width: width * scale, height: height * scale }}
-        alt={`token`}
-      />
-    );
-  }
+  // if (imageState === "LOADED") {
+  Content = (
+    <img
+      draggable={false}
+      className={"touch-none"}
+      src={`${ServerUrl}/image/token/${id}`}
+      width={width * scale}
+      height={height * scale}
+      style={{ width: width * scale, height: height * scale }}
+      alt={`token`}
+    />
+  );
+  // }
 
-  if (imageState === "LOADING") {
-    Content = (
-      <ImageLoader
-        width={width}
-        height={height}
-        imageId={imageId}
-        entityId={id}
-      />
-    );
-  }
-
-  if (imageState === "MISSING") {
-    Content = (
-      <ImageMissing
-        width={width}
-        height={height}
-        imageId={imageId}
-        entityId={id}
-      />
-    );
-  }
+  // if (imageState === "LOADING") {
+  //   Content = (
+  //     <ImageLoader
+  //       width={width}
+  //       height={height}
+  //       imageId={imageId}
+  //       entityId={id}
+  //     />
+  //   );
+  // }
+  //
+  // if (imageState === "MISSING") {
+  //   Content = (
+  //     <ImageMissing
+  //       width={width}
+  //       height={height}
+  //       imageId={imageId}
+  //       entityId={id}
+  //     />
+  //   );
+  // }
 
   return (
     <div style={style} {...bind()}>

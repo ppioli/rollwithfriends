@@ -22,6 +22,10 @@ import {
   MapEntityDeleteMutation,
   MapEntityDeleteMutation$variables,
 } from "features/mapEntity/__generated__/MapEntityDeleteMutation.graphql";
+import {
+  MapEntityNpcAddMutation,
+  MapEntityNpcAddMutation$variables,
+} from "features/mapEntity/__generated__/MapEntityNpcAddMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -29,19 +33,14 @@ const CHANGE_EVENT_UPDATE = "UPDATE";
 const CHANGE_EVENT_ADD = "ADD";
 const CHANGE_EVENT_DELETE = "DELETE";
 
-// interface Subscription {
-//   variables: any;
-//   response: any;
-// }
-
-// export const collectionUpdater = <TSubscription extends Subscription>() => ({
-//   update: () => {},
-//   add: (store: RecordSourceSelectorProxy) => {
-//     const response = Fields<TSubscription>;
-//     console.log(response)
-//   },
-//   delete: (store: RecordSourceSelectorProxy) => {},
-// });
+export const MapEntityPositionFragment = graphql`
+  fragment MapEntityPositionFragment on MapEntity {
+    x
+    y
+    width
+    height
+  }
+`;
 
 export const MapEntityFragment = graphql`
   fragment MapEntityFragment on MapEntity {
@@ -49,6 +48,15 @@ export const MapEntityFragment = graphql`
     y
     width
     height
+    content {
+      __typename
+      ... on ImageContent {
+        fileId
+      }
+      ... on Npc5EContent {
+        npcId
+      }
+    }
   }
 `;
 
@@ -58,7 +66,7 @@ export function useMapEntityUpdateMutation() {
       mapEntityUpdate(input: $input) {
         mapEntity {
           id
-          ...MapEntityFragment
+          ...MapEntityPositionFragment
         }
       }
     }
@@ -83,9 +91,13 @@ export function useMapEntityAddMutation() {
       mapEntityAdd(input: $input) {
         mapEntity {
           id
+          name
           ...MapEntityFragment
-          imageState
-          imageId
+          content {
+            ... on ImageContent {
+              fileId
+            }
+          }
         }
       }
     }
@@ -112,6 +124,42 @@ export function useMapEntityAddMutation() {
     [_commit]
   );
 
+  return commit;
+}
+
+export function useMapEntityNpcAddMutation() {
+  const [_commit] = useMutation<MapEntityNpcAddMutation>(graphql`
+    mutation MapEntityNpcAddMutation($input: MapEntitiesNpcAddInput!) {
+      mapEntityNpcAdd(input: $input) {
+        mapEntity {
+          id
+          name
+          ...MapEntityFragment
+          content {
+            ... on Npc5EContent {
+              npcId
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  const commit = useCallback(
+    (variables: MapEntityNpcAddMutation$variables) =>
+      _commit({
+        variables: variables,
+        updater: (store: RecordSourceSelectorProxy) => {
+          const payload = store.getRootField("mapEntityAdd")!;
+          const added = payload.getLinkedRecords("mapEntity")!;
+          // added.forEach((added, ix) => added.setValue(images[ix].src, "href"));
+          const scene = store.get(variables.input.sceneId)!;
+          const existing = scene.getLinkedRecords("entities") || [];
+          scene.setLinkedRecords([...existing, ...added], "entities");
+        },
+      }),
+    [_commit]
+  );
   return commit;
 }
 
@@ -162,8 +210,6 @@ export function useMapEntitySubscription(
             payload {
               id
               ...MapEntityFragment
-              imageState
-              imageId
             }
           }
         }

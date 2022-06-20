@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b53cfb562e8ea629d9a0457a9e32a0c1>>
+ * @generated SignedSource<<3a95caf219a1bf8fbfb7060434cb515a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,6 +15,17 @@ export type MapEntityFragment$data = {
   readonly y: number;
   readonly width: number;
   readonly height: number;
+  readonly content: {
+    readonly __typename: "ImageContent";
+    readonly fileId: number;
+  } | {
+    readonly __typename: "Npc5EContent";
+    readonly npcId: number;
+  } | {
+    // This will never be '%other', but we need some
+    // value in case none of the concrete values match.
+    readonly __typename: "%other";
+  };
   readonly " $fragmentType": "MapEntityFragment";
 };
 export type MapEntityFragment$key = {
@@ -55,12 +66,58 @@ const node: ReaderFragment = {
       "kind": "ScalarField",
       "name": "height",
       "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": null,
+      "kind": "LinkedField",
+      "name": "content",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "__typename",
+          "storageKey": null
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "fileId",
+              "storageKey": null
+            }
+          ],
+          "type": "ImageContent",
+          "abstractKey": null
+        },
+        {
+          "kind": "InlineFragment",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "npcId",
+              "storageKey": null
+            }
+          ],
+          "type": "Npc5EContent",
+          "abstractKey": null
+        }
+      ],
+      "storageKey": null
     }
   ],
   "type": "MapEntity",
   "abstractKey": null
 };
 
-(node as any).hash = "23fef0fa1304f4093c7d105dac65e495";
+(node as any).hash = "eb28ed5737f5300b758fbba00100b337";
 
 export default node;

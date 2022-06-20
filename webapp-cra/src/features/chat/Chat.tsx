@@ -7,19 +7,26 @@ import {
 } from "features/chat/Message.graphql";
 import { CampaignQuery as CampaignQueryType } from "pages/campaign/__generated__/CampaignQuery.graphql";
 import { MessageList_campaign$key } from "./__generated__/MessageList_campaign.graphql";
-import { MessageBody_message$key } from "features/chat/__generated__/MessageBody_message.graphql";
-import { ReactNode } from "react";
+import { HTMLProps, ReactNode, useCallback, useRef } from "react";
 import _ from "lodash";
 import { useParticipantContext } from "features/participant/ParticipantsContext";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { Dice } from "components/dices/Dice";
+import { useResizeDetector } from "react-resize-detector";
+import { useBatchLoader } from "utils/hooks/useBatchLoader";
+import InfiniteLoader from "react-window-infinite-loader";
+import {
+  ListChildComponentProps,
+  VariableSizeList as List,
+} from "react-window";
 
-interface ChatProps {
+interface ChatProps extends HTMLProps<HTMLDivElement> {
   campaignId: string;
   messages: MessageList_campaign$key;
 }
 
-export function Chat({ campaignId, messages }: ChatProps) {
+export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
+  //TODO Invert list, handle message added count, item size
   const { data, loadNext } = usePaginationFragment<
     CampaignQueryType,
     MessageList_campaign$key
@@ -27,50 +34,89 @@ export function Chat({ campaignId, messages }: ChatProps) {
 
   useMessageSubscription(campaignId);
 
+  const { ref, width, height } = useResizeDetector();
+
+  const items = data.messages?.edges ?? [];
+  const rowCount = data.messages?.totalCount ?? 0;
+
+  console.log("total count ", items.length, rowCount);
+
+  const isItemLoaded = (index: number) => {
+    return index < (items?.length ?? 0);
+  };
+  const sizeMap = useRef<number[]>([]);
+  const getSize = useCallback(
+    (index: number) => sizeMap.current[index] || 84,
+    []
+  );
+
+  const setRequested = useBatchLoader({ loadNext, loadedCount: items.length });
+
+  const render = width && height;
   return (
-    <div className={"w-full h-full bg-dark flex flex-col"}>
-      <div className={"flex flex-col-reverse h-full gap-1 overflow-y-hidden"}>
-        {(data.messages?.edges ?? []).map((edge) => {
-          const { node: message } = edge;
+    <div {...divProps}>
+      <div className={"h-full w-full flex flex-col bg-dark"}>
+        <div ref={ref} className={"w-full grow flex flex-col"}>
+          {render && (
+            <InfiniteLoader
+              isItemLoaded={isItemLoaded}
+              itemCount={rowCount}
+              loadMoreItems={(from, to) => setRequested(to)}
+            >
+              {({ onItemsRendered, ref }) => (
+                <List
+                  className="List"
+                  height={height}
+                  width={width}
+                  itemCount={rowCount}
+                  itemSize={getSize}
+                  onItemsRendered={onItemsRendered}
+                  ref={ref}
+                  itemData={items}
+                >
+                  {(props) => <ChatMessage {...props} />}
+                </List>
+              )}
+            </InfiniteLoader>
+          )}
+        </div>
 
-          return <ChatMessage key={message.id} message={message} />;
-        })}
+        <ChatInput campaignId={campaignId} />
       </div>
-
-      <ChatInput campaignId={campaignId} />
     </div>
   );
 }
 
-interface ChatMessageProps {
-  message: MessageBody_message$key;
-}
-
-function ChatMessage({ message }: ChatMessageProps) {
+function ChatMessage({ data, style, index }: ListChildComponentProps) {
   // TODO update ago
-  const data = useFragment(MessageBodyFragment, message);
+  const node = data[index]?.node;
+  const message = useFragment(MessageBodyFragment, node);
 
   const { getById } = useParticipantContext();
 
-  const user = getById(data.userId);
-  let content: ReactNode;
-
-  if (data.content.__typename === "TextMessageContent") {
-    content = <div className={"text-white"}>{data.content.text}</div>;
+  if (!message) {
+    return null;
   }
 
-  if (data.content.__typename === "RollMessageContent") {
-    content = <RollMessageContent {...data.content} />;
+  const user = getById(message.userId);
+  let content: ReactNode;
+
+  if (message.content.__typename === "TextMessageContent") {
+    content = <div className={"text-white"}>{message.content.text}</div>;
+  }
+
+  if (message.content.__typename === "RollMessageContent") {
+    content = <RollMessageContent {...message.content} />;
   }
 
   return (
-    <div className={"px-3"}>
+    <div className={"px-3"} style={style}>
       <div className={"bg-darker rounded-md px-3 pb-3"}>
         <p className={"font-bold text-sm mb-1 pt-1"}>{user?.name ?? "-"}</p>
         {content}
       </div>
       <div className={"w-100 text-right font-light text-sm"}>
-        {formatDistanceToNow(parseISO(data.createdAt))}
+        {formatDistanceToNow(parseISO(message.createdAt))}
       </div>
     </div>
   );

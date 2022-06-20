@@ -4,9 +4,17 @@ import { useGesture } from "@use-gesture/react";
 import { localPoint } from "utils/localPoint";
 import { clamp } from "lodash";
 
+export interface AddedEntry {
+  type: string;
+  entryId: string;
+  x: number;
+  y: number;
+}
+
 interface MapControlProps {
   onChange: (deltaPos: Point, scale: number) => void;
   onFilesDropped: (files: File[]) => void;
+  onEntryDropped: (entry: AddedEntry) => void;
 }
 
 const acceptedFiles = ["image/jpeg", "image/png"];
@@ -44,6 +52,7 @@ const MIN_ZOOM = 0.2;
 export default function useMapControl({
   onChange,
   onFilesDropped,
+  onEntryDropped,
 }: MapControlProps) {
   // const [selectDragStart, setSelectDragStart] = useState<Point | null>(null);
   // const [scale, setScale] = useState(1);
@@ -127,6 +136,15 @@ export default function useMapControl({
         const files = handleDropEvent(event);
         if (files.length > 0) {
           onFilesDropped(files);
+        } else if (event.dataTransfer.getData("type")) {
+          // TODO local point this
+          const addedEntry: AddedEntry = {
+            entryId: event.dataTransfer.getData("entryId"),
+            type: event.dataTransfer.getData("type"),
+            x: event.screenX,
+            y: event.screenY,
+          };
+          onEntryDropped(addedEntry);
         }
 
         // onDragEnd({ confirmed: true, event: event });

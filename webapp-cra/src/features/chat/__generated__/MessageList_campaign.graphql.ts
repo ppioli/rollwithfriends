@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<661ace5b776c244e58bf1f746443f9fe>>
+ * @generated SignedSource<<9107bda8ac78af09bff24774cac88448>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,6 +12,7 @@ import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type MessageList_campaign$data = {
   readonly messages: {
+    readonly totalCount: number;
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly id: string;
@@ -41,7 +42,7 @@ v1 = {
 return {
   "argumentDefinitions": [
     {
-      "defaultValue": 10,
+      "defaultValue": 30,
       "kind": "LocalArgument",
       "name": "count"
     },
@@ -87,6 +88,13 @@ return {
       "name": "__CampaignFragment_messages_connection",
       "plural": false,
       "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "totalCount",
+          "storageKey": null
+        },
         {
           "alias": null,
           "args": null,
@@ -164,6 +172,6 @@ return {
 };
 })();
 
-(node as any).hash = "380729b6bad4a0fdf20d2095fcd4b150";
+(node as any).hash = "3efd3bef64ae81dcbe9cd0bddedc2b51";
 
 export default node;

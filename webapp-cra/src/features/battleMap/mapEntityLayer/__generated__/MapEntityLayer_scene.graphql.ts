@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<06059aa4643dd6ad0b3ece7dd96cedf6>>
+ * @generated SignedSource<<57d54d04dab8c1e616841639c84dfbd4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 // @ts-nocheck
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
-export type ImageState = "LOADED" | "LOADING" | "MISSING" | "%future added value";
+export type MapEntityType = "IMAGE" | "NPC5_E" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type MapEntityLayer_scene$data = {
   readonly entities: ReadonlyArray<{
@@ -18,8 +18,8 @@ export type MapEntityLayer_scene$data = {
     readonly y: number;
     readonly width: number;
     readonly height: number;
-    readonly imageState: ImageState;
-    readonly imageId: number;
+    readonly type: MapEntityType;
+    readonly " $fragmentSpreads": FragmentRefs<"MapEntityFragment">;
   }>;
   readonly " $fragmentType": "MapEntityLayer_scene";
 };
@@ -81,15 +81,13 @@ const node: ReaderFragment = {
           "alias": null,
           "args": null,
           "kind": "ScalarField",
-          "name": "imageState",
+          "name": "type",
           "storageKey": null
         },
         {
-          "alias": null,
           "args": null,
-          "kind": "ScalarField",
-          "name": "imageId",
-          "storageKey": null
+          "kind": "FragmentSpread",
+          "name": "MapEntityFragment"
         }
       ],
       "storageKey": null
@@ -99,6 +97,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "5aeac9e0994f139573e1b4d9adcd3516";
+(node as any).hash = "1be9f581075a0f9ef064e9ac2a82e281";
 
 export default node;

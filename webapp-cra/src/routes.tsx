@@ -5,7 +5,7 @@ import { CampaignSelect } from "pages/campaign/CampaignSelect";
 import { OperationType } from "relay-runtime";
 import { CampaignQuery } from "pages/campaign/Campaign";
 import { EnrollQuery } from "pages/campaign/Enroll";
-import { NpcViewer } from "pages/npc/NpcViewer";
+import { EntryViewerPageQuery } from "pages/entry/EntryViewer";
 
 export interface PreloadedProps<T> {
   preloaded: T;
@@ -79,14 +79,14 @@ export const routes: RouteConfig[] = [
   },
   {
     component: async () => {
-      const module = await import("pages/npc/NpcViewer");
+      const module = await import("pages/entry/EntryViewer");
 
-      return module.NpcViewerPage;
+      return module.EntryViewerPage;
     },
-    path: "/npcs",
-    preload: () => {
+    path: "/entries",
+    preload: (route: any, query) => {
       return {
-        query: loadQuery(RelayEnvironment, NpcViewer, {}),
+        listQuery: loadQuery(RelayEnvironment, EntryViewerPageQuery, {}),
       };
     },
   },

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<118c4f648627779048e39bc27599e06d>>
+ * @generated SignedSource<<7fe293ce2115aaa89eba4b02d8ce5541>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,7 +28,7 @@ export type MapEntityUpdateMutation$data = {
   readonly mapEntityUpdate: {
     readonly mapEntity: ReadonlyArray<{
       readonly id: string;
-      readonly " $fragmentSpreads": FragmentRefs<"MapEntityFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"MapEntityPositionFragment">;
     }> | null;
   };
 };
@@ -86,7 +86,7 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "MapEntityFragment"
+                "name": "MapEntityPositionFragment"
               }
             ],
             "storageKey": null
@@ -158,16 +158,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "776619ca8f791849d35a3a7b5865e4de",
+    "cacheID": "fd801710fb49ae388285c60e138a6c84",
     "id": null,
     "metadata": {},
     "name": "MapEntityUpdateMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityUpdateMutation(\n  $input: MapEntitiesUpdateInput!\n) {\n  mapEntityUpdate(input: $input) {\n    mapEntity {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n}\n"
+    "text": "mutation MapEntityUpdateMutation(\n  $input: MapEntitiesUpdateInput!\n) {\n  mapEntityUpdate(input: $input) {\n    mapEntity {\n      id\n      ...MapEntityPositionFragment\n    }\n  }\n}\n\nfragment MapEntityPositionFragment on MapEntity {\n  x\n  y\n  width\n  height\n}\n"
   }
 };
 })();
 
-(node as any).hash = "7cde9183a4324363bde004cf260c6f20";
+(node as any).hash = "5585224908dc75756de63ee75bb974d8";
 
 export default node;

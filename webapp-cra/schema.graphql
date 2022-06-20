@@ -92,30 +92,6 @@ input AlignmentOperationFilterInput {
   nin: [Alignment!]
 }
 
-type AppFile {
-  id: Int!
-  ownerId: String!
-  subdirectory: String!
-  accepts: String!
-  extension: String
-  contentType: String
-  loaded: Boolean!
-  created: DateTime!
-}
-
-input AppFileFilterInput {
-  and: [AppFileFilterInput!]
-  or: [AppFileFilterInput!]
-  id: ComparableInt32OperationFilterInput
-  ownerId: StringOperationFilterInput
-  subdirectory: StringOperationFilterInput
-  accepts: StringOperationFilterInput
-  extension: StringOperationFilterInput
-  contentType: StringOperationFilterInput
-  loaded: BooleanOperationFilterInput
-  created: ComparableDateTimeOperationFilterInput
-}
-
 enum ApplyPolicy {
   BEFORE_RESOLVER
   AFTER_RESOLVER
@@ -136,11 +112,6 @@ input ArmorClassOptionFilterInput {
 input ArmorClassOptionInput {
   armorClass: Int!
   description: String!
-}
-
-input BooleanOperationFilterInput {
-  eq: Boolean
-  neq: Boolean
 }
 
 type Campaign implements Node {
@@ -199,21 +170,6 @@ enum ChangeMessageType {
   ADD
   UPDATE
   DELETE
-}
-
-input ComparableDateTimeOperationFilterInput {
-  eq: DateTime
-  neq: DateTime
-  in: [DateTime!]
-  nin: [DateTime!]
-  gt: DateTime
-  ngt: DateTime
-  gte: DateTime
-  ngte: DateTime
-  lt: DateTime
-  nlt: DateTime
-  lte: DateTime
-  nlte: DateTime
 }
 
 input ComparableDoubleOperationFilterInput {
@@ -286,6 +242,28 @@ type EnrollmentAddPayload {
   campaign: Campaign
 }
 
+"""A connection to a list of items."""
+type EntriesConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [EntriesEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [NonPlayerCharacter5E!]
+  totalCount: Int!
+}
+
+"""An edge in a connection."""
+type EntriesEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: NonPlayerCharacter5E!
+}
+
 type FileLoadingMessage {
   progress: Int!
 }
@@ -311,10 +289,10 @@ input IdOperationFilterInput {
   nin: [ID]
 }
 
-enum ImageState {
-  LOADED
-  LOADING
-  MISSING
+type ImageContent {
+  fileId: Int!
+  width: Int!
+  height: Int!
 }
 
 type KeyValuePairOfAbilityAndInt32 {
@@ -447,24 +425,30 @@ input MapEntitiesAddInput {
   entities: [MapEntityAddInput!]!
 }
 
+input MapEntitiesNpcAddInput {
+  sceneId: ID!
+  entities: [MapEntityNpcAddInput!]!
+}
+
 input MapEntitiesUpdateInput {
   sceneId: ID!
   entities: [MapEntityUpdateInput!]!
 }
 
 type MapEntity implements Node {
-  imageState: ImageState!
+  content: MapEntityContent!
   id: ID!
+  name: String!
   x: Int!
   y: Int!
   width: Int!
   height: Int!
-  scene: Scene!
   sceneId: Int!
-  imageId: Int!
+  type: MapEntityType!
 }
 
 input MapEntityAddInput {
+  name: String!
   x: Int!
   y: Int!
   width: Int!
@@ -481,6 +465,8 @@ type MapEntityChangeMessage {
   payload: [MapEntity!]!
 }
 
+union MapEntityContent = ImageContent | Npc5EContent
+
 input MapEntityDeleteInput {
   sceneId: ID!
   deleted: [ID!]!
@@ -494,13 +480,36 @@ input MapEntityFilterInput {
   and: [MapEntityFilterInput!]
   or: [MapEntityFilterInput!]
   id: IdOperationFilterInput
+  name: StringOperationFilterInput
   x: ComparableInt32OperationFilterInput
   y: ComparableInt32OperationFilterInput
   width: ComparableInt32OperationFilterInput
   height: ComparableInt32OperationFilterInput
-  scene: SceneFilterInput
   sceneId: ComparableInt32OperationFilterInput
-  imageId: ComparableInt32OperationFilterInput
+  type: MapEntityTypeOperationFilterInput
+}
+
+input MapEntityNpcAddInput {
+  name: String!
+  x: Int!
+  y: Int!
+  npcId: ID!
+}
+
+type MapEntityNpcAddPayload {
+  mapEntity: [MapEntity!]
+}
+
+enum MapEntityType {
+  IMAGE
+  NPC5_E
+}
+
+input MapEntityTypeOperationFilterInput {
+  eq: MapEntityType
+  neq: MapEntityType
+  in: [MapEntityType!]
+  nin: [MapEntityType!]
 }
 
 input MapEntityUpdateInput {
@@ -541,6 +550,7 @@ type MessagesConnection {
 
   """A flattened list of the nodes."""
   nodes: [Message!]
+  totalCount: Int!
 }
 
 """An edge in a connection."""
@@ -562,6 +572,7 @@ type Mutation {
   enrollmentAdd(input: EnrollmentAddInput!): EnrollmentAddPayload!
   mapEntityUpdate(input: MapEntitiesUpdateInput!): MapEntityUpdatePayload!
   mapEntityAdd(input: MapEntitiesAddInput!): MapEntityAddPayload!
+  mapEntityNpcAdd(input: MapEntitiesNpcAddInput!): MapEntityNpcAddPayload!
   mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
   sceneAdd(input: SceneAddInput!): SceneAddPayload!
   sceneAddDelete(input: SceneAddDeleteInput!): SceneAddDeletePayload!
@@ -595,7 +606,6 @@ type NonPlayerCharacter5E implements Node {
   id: ID!
   name: String!
   avatarId: Int!
-  avatar: AppFile!
   languages: [Language!]!
   senses: [Sense!]!
   passivePerception: Int!
@@ -627,7 +637,6 @@ input NonPlayerCharacter5EFilterInput {
   id: ComparableInt32OperationFilterInput
   name: StringOperationFilterInput
   avatarId: ComparableInt32OperationFilterInput
-  avatar: AppFileFilterInput
   languages: ListFilterInputTypeOfLanguageFilterInput
   senses: ListFilterInputTypeOfSenseFilterInput
   passivePerception: ComparableInt32OperationFilterInput
@@ -639,6 +648,12 @@ input NonPlayerCharacter5EFilterInput {
   intelligence: ComparableInt32OperationFilterInput
   wisdom: ComparableInt32OperationFilterInput
   charisma: ComparableInt32OperationFilterInput
+}
+
+type Npc5EContent {
+  npcId: Int!
+  width: Int!
+  height: Int!
 }
 
 input NpcAddInput {
@@ -673,27 +688,6 @@ input Npcs5EAddInput {
 
 type Npcs5EAddPayload {
   nonPlayerCharacter5E: [NonPlayerCharacter5E!]
-}
-
-"""A connection to a list of items."""
-type NpcsConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [NpcsEdge!]
-
-  """A flattened list of the nodes."""
-  nodes: [NonPlayerCharacter5E!]
-}
-
-"""An edge in a connection."""
-type NpcsEdge {
-  """A cursor for use in pagination."""
-  cursor: String!
-
-  """The item at the end of the edge."""
-  node: NonPlayerCharacter5E!
 }
 
 type NpcType {
@@ -797,7 +791,7 @@ type RootQuery {
     ids: [ID!]!
   ): [Node]!
   campaigns(where: CampaignFilterInput): [Campaign!]!
-  npcs(
+  entries(
     """Returns the first _n_ elements from the list."""
     first: Int
 
@@ -812,7 +806,8 @@ type RootQuery {
     """
     before: String
     where: NonPlayerCharacter5EFilterInput
-  ): NpcsConnection
+  ): EntriesConnection
+  entry(id: ID): NonPlayerCharacter5E
   enrollment(code: ID!, where: CampaignFilterInput): Campaign
 }
 

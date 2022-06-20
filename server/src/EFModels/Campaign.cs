@@ -1,5 +1,7 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Server.EFModels.Character5E;
 using Server.EFModels.Messages;
 using server.Infraestructure;
 
@@ -17,7 +19,7 @@ public class Campaign
 
     [GraphQLIgnore]
     public virtual User DungeonMaster { get; set; } = default!;
-    
+
     [IsProjected(true)]
     public string DungeonMasterId { get; set; }
 
@@ -28,16 +30,16 @@ public class Campaign
 
     [IsProjected(true)]
     public int? SelectedSceneId { get; set; }
-    
-    
+
+
     [GraphQLIgnore]
     public virtual ICollection<Message> Messages { get; set; } = default!;
-    
+
     // TODO This used to work as a projection
-    [UsePaging()]
+    [UsePaging(IncludeTotalCount = true)]
     public IQueryable<Message> GetMessages(RwfDbContext context) => context.Messages
-        .Where( m => m.CampaignId == Id)
-        .OrderByDescending( s => s.CreatedAt);
+        .Where(m => m.CampaignId == Id)
+        .OrderByDescending(s => s.CreatedAt);
 
     [GraphQLIgnore]
     public virtual ICollection<CampaignEnrollment> Participants { get; set; } = new List<CampaignEnrollment>();
@@ -66,9 +68,19 @@ public class Campaign
     {
     }
 
-    public static Campaign Get(int id)
+
+    public static Campaign Get(int id, RwfDbContext context)
     {
-        throw new NotImplementedException();
+        var item = context.Campaigns.FirstOrDefault(c => c.Id == id) ?? throw new EntityNotFound(id);
+        //TODO HACK
+        var serialized = JsonConvert.SerializeObject(
+            item,
+            new JsonSerializerSettings()
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
+
+        return JsonConvert.DeserializeObject<Campaign>(serialized);
     }
 
     public bool IsDungeonMaster(ClaimsPrincipal user)
@@ -78,7 +90,6 @@ public class Campaign
 
     [GraphQLName("selectedScene")]
     [UseFirstOrDefault()]
-    [UseProjection()]
     public IQueryable<Scene> GetSelectedScene(
         RwfDbContext context,
         [ID] int? sceneId,
@@ -88,7 +99,6 @@ public class Campaign
         var dmSceneId = sceneId ?? SelectedSceneId;
 
         return context.Scenes.Where(s => (isDm && (s.Id == dmSceneId)) || (!isDm && (sceneId) == SelectedSceneId));
-
     }
 }
 
@@ -97,6 +107,7 @@ public class Participant
 {
     [ID()]
     public int Id { get; set; }
+
     public string UserId { get; set; }
     public string Name { get; set; }
     public CampaignRoll CampaignRoll { get; set; }

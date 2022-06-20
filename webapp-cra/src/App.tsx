@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { useSessionContext } from "components/LoginContext";
 import { RouteRenderer } from "yarr";
 import { RelayEnvironmentProvider } from "react-relay";
@@ -18,12 +18,8 @@ export default function App() {
     <div>
       <RelayEnvironmentProvider environment={RelayEnvironment}>
         <Navbar />
-        <Suspense>
-          <RouteRenderer
-            pendingIndicator={<p>...pending loading </p>}
-            routeWrapper={({ Route }) => Route}
-          />
-        </Suspense>
+
+        <RouteRenderer routeWrapper={({ Route }) => Route} />
       </RelayEnvironmentProvider>
     </div>
   );

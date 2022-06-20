@@ -11,10 +11,12 @@ import useMapControl from "features/battleMap/useMapControl";
 import Toolbar from "features/battleMap/toolbar/Toolbar";
 import {
   useMapEntityAddMutation,
+  useMapEntityNpcAddMutation,
   useMapEntitySubscription,
 } from "features/mapEntity/MapEntity.graphql";
 import classNames from "classnames";
 import { loadImages } from "utils/imageLoader";
+import { FileUploadDefinition, uploadBatch } from "utils/HttpHelpers";
 
 export interface SceneProps {
   id: string;
@@ -44,6 +46,7 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const commit = useMapEntityAddMutation();
+  const commitNpc = useMapEntityNpcAddMutation();
   const { handlers, fileDragging, offsetX, offsetY, scale } = useMapControl({
     onChange: ([dx, dy], scale) => {
       if (containerRef.current) {
@@ -57,9 +60,10 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
           y: 10,
           width: img.width,
           height: img.height,
-          fileType: files[ix].type,
+          name: files[ix].name,
         }));
 
+        debugger;
         const input = { sceneId: id, entities };
 
         commit({ input }, (data) => {
@@ -68,9 +72,32 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
             return;
           }
 
-          result.forEach(({ imageId }, ix) => {});
+          const uploads: FileUploadDefinition[] = result.map((added) => {
+            return {
+              file: files.find((f) => f.name === added.name)!,
+              id: added.content.fileId!,
+            };
+          });
+
+          uploadBatch(uploads);
         });
       });
+    },
+    onEntryDropped: (entry) => {
+      commitNpc({
+        input: {
+          sceneId: id,
+          entities: [
+            {
+              x: entry.x,
+              y: entry.y,
+              npcId: entry.entryId,
+              name: "added thingy",
+            },
+          ],
+        },
+      });
+      console.log(entry);
     },
   });
 

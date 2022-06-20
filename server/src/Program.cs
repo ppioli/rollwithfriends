@@ -7,6 +7,7 @@ using OpenIddict.Validation.AspNetCore;
 using Quartz;
 using Serilog;
 using Server.EFModels;
+using Server.EFModels.Map;
 using Server.EFModels.Messages;
 using Server.Graphql;
 using Server.Graphql.Mutations;
@@ -163,6 +164,8 @@ builder.Services
     .AddTypeExtension<NonPlayerCharacterMutation>()
     .AddType<TextMessageContent>()
     .AddType<RollMessageContent>()
+    .AddType<ImageContent>()
+    .AddType<Npc5EContent>()
     .AddMutationConventions()
     .AddProjections()
     .AddFiltering()

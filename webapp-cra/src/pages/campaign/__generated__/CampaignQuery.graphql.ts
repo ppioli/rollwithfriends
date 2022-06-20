@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<82fd99280db9e7d330eedd359471a586>>
+ * @generated SignedSource<<95c4a4d1cef8779f0770089f011f914a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -25,6 +25,7 @@ export type CampaignQuery$data = {
     } | null;
     readonly " $fragmentSpreads": FragmentRefs<"SceneSelector_campaign" | "MessageList_campaign" | "ParticipantList_campaign">;
   }>;
+  readonly " $fragmentSpreads": FragmentRefs<"EntryList_rootQuery">;
 };
 export type CampaignQuery = {
   variables: CampaignQuery$variables;
@@ -95,14 +96,14 @@ v6 = [
   {
     "kind": "Literal",
     "name": "first",
-    "value": 10
+    "value": 30
   }
 ],
 v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "userId",
+  "name": "totalCount",
   "storageKey": null
 },
 v8 = {
@@ -110,6 +111,45 @@ v8 = {
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
+  "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v10 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "PageInfo",
+  "kind": "LinkedField",
+  "name": "pageInfo",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "endCursor",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasNextPage",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "userId",
   "storageKey": null
 };
 return {
@@ -119,6 +159,17 @@ return {
     "metadata": null,
     "name": "CampaignQuery",
     "selections": [
+      {
+        "args": [
+          {
+            "kind": "Literal",
+            "name": "count",
+            "value": 30
+          }
+        ],
+        "kind": "FragmentSpread",
+        "name": "EntryList_rootQuery"
+      },
       {
         "alias": null,
         "args": (v1/*: any*/),
@@ -177,6 +228,54 @@ return {
     "selections": [
       {
         "alias": null,
+        "args": (v6/*: any*/),
+        "concreteType": "EntriesConnection",
+        "kind": "LinkedField",
+        "name": "entries",
+        "plural": false,
+        "selections": [
+          (v7/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "EntriesEdge",
+            "kind": "LinkedField",
+            "name": "edges",
+            "plural": true,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "NonPlayerCharacter5E",
+                "kind": "LinkedField",
+                "name": "node",
+                "plural": false,
+                "selections": [
+                  (v2/*: any*/),
+                  (v3/*: any*/),
+                  (v8/*: any*/)
+                ],
+                "storageKey": null
+              },
+              (v9/*: any*/)
+            ],
+            "storageKey": null
+          },
+          (v10/*: any*/)
+        ],
+        "storageKey": "entries(first:30)"
+      },
+      {
+        "alias": null,
+        "args": (v6/*: any*/),
+        "filters": null,
+        "handle": "connection",
+        "key": "RootQuery_entries",
+        "kind": "LinkedHandle",
+        "name": "entries"
+      },
+      {
+        "alias": null,
         "args": (v1/*: any*/),
         "concreteType": "Campaign",
         "kind": "LinkedField",
@@ -207,6 +306,7 @@ return {
             "name": "messages",
             "plural": false,
             "selections": [
+              (v7/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -224,7 +324,7 @@ return {
                     "plural": false,
                     "selections": [
                       (v2/*: any*/),
-                      (v7/*: any*/),
+                      (v11/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -301,43 +401,13 @@ return {
                     ],
                     "storageKey": null
                   },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "cursor",
-                    "storageKey": null
-                  }
+                  (v9/*: any*/)
                 ],
                 "storageKey": null
               },
-              {
-                "alias": null,
-                "args": null,
-                "concreteType": "PageInfo",
-                "kind": "LinkedField",
-                "name": "pageInfo",
-                "plural": false,
-                "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "endCursor",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "hasNextPage",
-                    "storageKey": null
-                  }
-                ],
-                "storageKey": null
-              }
+              (v10/*: any*/)
             ],
-            "storageKey": "messages(first:10)"
+            "storageKey": "messages(first:30)"
           },
           {
             "alias": null,
@@ -357,7 +427,7 @@ return {
             "plural": true,
             "selections": [
               (v2/*: any*/),
-              (v7/*: any*/),
+              (v11/*: any*/),
               (v3/*: any*/),
               {
                 "alias": null,
@@ -420,14 +490,47 @@ return {
                     "alias": null,
                     "args": null,
                     "kind": "ScalarField",
-                    "name": "imageState",
+                    "name": "type",
                     "storageKey": null
                   },
                   {
                     "alias": null,
                     "args": null,
-                    "kind": "ScalarField",
-                    "name": "imageId",
+                    "concreteType": null,
+                    "kind": "LinkedField",
+                    "name": "content",
+                    "plural": false,
+                    "selections": [
+                      (v8/*: any*/),
+                      {
+                        "kind": "InlineFragment",
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "fileId",
+                            "storageKey": null
+                          }
+                        ],
+                        "type": "ImageContent",
+                        "abstractKey": null
+                      },
+                      {
+                        "kind": "InlineFragment",
+                        "selections": [
+                          {
+                            "alias": null,
+                            "args": null,
+                            "kind": "ScalarField",
+                            "name": "npcId",
+                            "storageKey": null
+                          }
+                        ],
+                        "type": "Npc5EContent",
+                        "abstractKey": null
+                      }
+                    ],
                     "storageKey": null
                   }
                 ],
@@ -442,16 +545,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "bd8362816d2a0ad3a4f17c2b8ab80487",
+    "cacheID": "c900b9d3a7e2f23a8c1abfdcf0fe4ba4",
     "id": null,
     "metadata": {},
     "name": "CampaignQuery",
     "operationKind": "query",
-    "text": "query CampaignQuery(\n  $id: ID!\n  $selectedScene: ID\n) {\n  campaigns(where: {id: {eq: $id}}) {\n    id\n    name\n    description\n    ...SceneSelector_campaign\n    ...MessageList_campaign\n    ...ParticipantList_campaign\n    selectedScene(sceneId: $selectedScene) {\n      id\n      ...SelectedScene_scene\n    }\n  }\n}\n\nfragment MapEntityLayer_scene on Scene {\n  entities {\n    id\n    x\n    y\n    width\n    height\n    imageState\n    imageId\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign on Campaign {\n  messages(first: 10) {\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment ParticipantList_campaign on Campaign {\n  participants {\n    id\n    userId\n    name\n    campaignRoll\n  }\n}\n\nfragment SceneSelector_campaign on Campaign {\n  scenes {\n    name\n    id\n  }\n}\n\nfragment SelectedScene_scene on Scene {\n  name\n  ...MapEntityLayer_scene\n}\n"
+    "text": "query CampaignQuery(\n  $id: ID!\n  $selectedScene: ID\n) {\n  ...EntryList_rootQuery_46tGjq\n  campaigns(where: {id: {eq: $id}}) {\n    id\n    name\n    description\n    ...SceneSelector_campaign\n    ...MessageList_campaign\n    ...ParticipantList_campaign\n    selectedScene(sceneId: $selectedScene) {\n      id\n      ...SelectedScene_scene\n    }\n  }\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n}\n\nfragment EntryList_rootQuery_46tGjq on RootQuery {\n  entries(first: 30) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n\nfragment MapEntityLayer_scene on Scene {\n  entities {\n    id\n    x\n    y\n    width\n    height\n    type\n    ...MapEntityFragment\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign on Campaign {\n  messages(first: 30) {\n    totalCount\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment ParticipantList_campaign on Campaign {\n  participants {\n    id\n    userId\n    name\n    campaignRoll\n  }\n}\n\nfragment SceneSelector_campaign on Campaign {\n  scenes {\n    name\n    id\n  }\n}\n\nfragment SelectedScene_scene on Scene {\n  name\n  ...MapEntityLayer_scene\n}\n"
   }
 };
 })();
 
-(node as any).hash = "bd0ebaba5b02b35ddbebd9d275a6a7e6";
+(node as any).hash = "929e5a1ec892ab47204e9f2fbbb2497c";
 
 export default node;

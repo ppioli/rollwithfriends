@@ -1,16 +1,7 @@
-using System.Globalization;
-using System.Net;
-using System.Text.RegularExpressions;
-using System.Xml.Schema;
 using HotChocolate.Subscriptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Net.Http.Headers;
-using Polly;
-using Server.EFModels;
 using Server.Graphql.Subscriptions;
 using server.Infraestructure;
 using Server.Services;

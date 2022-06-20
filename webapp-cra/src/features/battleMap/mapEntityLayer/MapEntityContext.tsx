@@ -1,12 +1,12 @@
 import { createContext, useContext } from "react";
-import { MapEntityData } from "features/mapEntity/MapEntity";
+import { MapEntityScene } from "features/battleMap/mapEntityLayer/MapEntityHelpers";
 
 interface MapEntityContextData {
   isSelected: (id: string) => void;
   selectSet: (ids: string[]) => void;
   selectAdd: (ids: string[]) => void;
   selectToggle: (ids: string[]) => void;
-  getSelected: () => MapEntityData[];
+  getSelected: () => MapEntityScene[];
   selectionBounds: [[number, number], [number, number]] | null;
 }
 

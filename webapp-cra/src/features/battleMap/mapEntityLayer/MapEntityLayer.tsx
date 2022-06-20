@@ -3,10 +3,11 @@ import BaseLayerProps from "features/battleMap/BaseLayerProps";
 import { MapEntity } from "features/mapEntity/MapEntity";
 import { useFragment } from "react-relay";
 import { MapEntityContext } from "features/battleMap/mapEntityLayer/MapEntityContext";
-import { EntitySelectBox } from "features/battleMap/mapEntityLayer/EntitySelectBox";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useGesture } from "@use-gesture/react";
 import { useMapEntityDeleteMutation } from "features/mapEntity/MapEntity.graphql";
+import { getEntitySize } from "features/battleMap/mapEntityLayer/MapEntityHelpers";
+import { EntitySelectBox } from "features/battleMap/mapEntityLayer/EntitySelectBox";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -31,8 +32,8 @@ export default function MapEntityLayer({
           y
           width
           height
-          imageState
-          imageId
+          type
+          ...MapEntityFragment
         }
       }
     `,
@@ -91,10 +92,11 @@ export default function MapEntityLayer({
         maxY = -Infinity;
 
       selectedEntities.forEach((s) => {
+        const [w, h] = getEntitySize(s);
         minX = Math.min(s.x, minX);
         minY = Math.min(s.y, minY);
-        maxX = Math.max(s.x + s.width, maxX);
-        maxY = Math.max(s.y + s.height, maxY);
+        maxX = Math.max(s.x + w, maxX);
+        maxY = Math.max(s.y + h, maxY);
       });
 
       return [
@@ -164,7 +166,7 @@ export default function MapEntityLayer({
     document.addEventListener("keyup", handler);
 
     return () => document.removeEventListener("keyup", handler);
-  }, [getSelected]);
+  }, [deleteEntities, getSelected, sceneId]);
 
   const context = {
     selectionBounds,
@@ -187,7 +189,14 @@ export default function MapEntityLayer({
           {data.entities
             .filter((e) => !isSelected(e.id))
             .map((data) => {
-              return <MapEntity key={data.id} scale={scale} {...data} />;
+              return (
+                <MapEntity
+                  key={data.id}
+                  scale={scale}
+                  id={data.id}
+                  entity={data}
+                />
+              );
             })}
 
           <EntitySelectBox sceneId={sceneId} scale={scale}>
@@ -200,9 +209,10 @@ export default function MapEntityLayer({
                     <MapEntity
                       key={data.id}
                       scale={scale}
-                      x={x - offsetX}
-                      y={y - offsetY}
-                      {...rest}
+                      id={data.id}
+                      entity={data}
+                      offsetX={offsetX}
+                      offsetY={offsetY}
                     />
                   );
                 })
