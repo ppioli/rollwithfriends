@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<95c4a4d1cef8779f0770089f011f914a>>
+ * @generated SignedSource<<69fcadf214ad95003d1fbe64295510d6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -150,6 +150,41 @@ v11 = {
   "args": null,
   "kind": "ScalarField",
   "name": "userId",
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "x",
+  "storageKey": null
+},
+v13 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "y",
+  "storageKey": null
+},
+v14 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "width",
+  "storageKey": null
+},
+v15 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "height",
+  "storageKey": null
+},
+v16 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "type",
   "storageKey": null
 };
 return {
@@ -450,6 +485,35 @@ return {
               (v2/*: any*/),
               (v3/*: any*/),
               {
+                "kind": "ClientExtension",
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "cellSize",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "MapEntity",
+                    "kind": "LinkedField",
+                    "name": "selected",
+                    "plural": true,
+                    "selections": [
+                      (v2/*: any*/),
+                      (v12/*: any*/),
+                      (v13/*: any*/),
+                      (v14/*: any*/),
+                      (v15/*: any*/),
+                      (v16/*: any*/)
+                    ],
+                    "storageKey": null
+                  }
+                ]
+              },
+              {
                 "alias": null,
                 "args": null,
                 "concreteType": "MapEntity",
@@ -458,41 +522,11 @@ return {
                 "plural": true,
                 "selections": [
                   (v2/*: any*/),
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "x",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "y",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "width",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "height",
-                    "storageKey": null
-                  },
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "type",
-                    "storageKey": null
-                  },
+                  (v12/*: any*/),
+                  (v13/*: any*/),
+                  (v14/*: any*/),
+                  (v15/*: any*/),
+                  (v16/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -545,12 +579,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c900b9d3a7e2f23a8c1abfdcf0fe4ba4",
+    "cacheID": "518fccd3b1e352f33e1ec0d62ad248ae",
     "id": null,
     "metadata": {},
     "name": "CampaignQuery",
     "operationKind": "query",
-    "text": "query CampaignQuery(\n  $id: ID!\n  $selectedScene: ID\n) {\n  ...EntryList_rootQuery_46tGjq\n  campaigns(where: {id: {eq: $id}}) {\n    id\n    name\n    description\n    ...SceneSelector_campaign\n    ...MessageList_campaign\n    ...ParticipantList_campaign\n    selectedScene(sceneId: $selectedScene) {\n      id\n      ...SelectedScene_scene\n    }\n  }\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n}\n\nfragment EntryList_rootQuery_46tGjq on RootQuery {\n  entries(first: 30) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n\nfragment MapEntityLayer_scene on Scene {\n  entities {\n    id\n    x\n    y\n    width\n    height\n    type\n    ...MapEntityFragment\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign on Campaign {\n  messages(first: 30) {\n    totalCount\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment ParticipantList_campaign on Campaign {\n  participants {\n    id\n    userId\n    name\n    campaignRoll\n  }\n}\n\nfragment SceneSelector_campaign on Campaign {\n  scenes {\n    name\n    id\n  }\n}\n\nfragment SelectedScene_scene on Scene {\n  name\n  ...MapEntityLayer_scene\n}\n"
+    "text": "query CampaignQuery(\n  $id: ID!\n  $selectedScene: ID\n) {\n  ...EntryList_rootQuery_46tGjq\n  campaigns(where: {id: {eq: $id}}) {\n    id\n    name\n    description\n    ...SceneSelector_campaign\n    ...MessageList_campaign\n    ...ParticipantList_campaign\n    selectedScene(sceneId: $selectedScene) {\n      id\n      ...SelectedScene_scene\n    }\n  }\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n}\n\nfragment EntryList_rootQuery_46tGjq on RootQuery {\n  entries(first: 30) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n\nfragment MapEntityLayer_scene on Scene {\n  entities {\n    id\n    ...MapEntityFragment\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign on Campaign {\n  messages(first: 30) {\n    totalCount\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment ParticipantList_campaign on Campaign {\n  participants {\n    id\n    userId\n    name\n    campaignRoll\n  }\n}\n\nfragment SceneSelector_campaign on Campaign {\n  scenes {\n    name\n    id\n  }\n}\n\nfragment SelectedScene_scene on Scene {\n  name\n  ...MapEntityLayer_scene\n}\n"
   }
 };
 })();

@@ -47,11 +47,15 @@ public class MapEntityMutation
             updated.X = e.X;
             updated.Y = e.Y;
 
-            var content = updated.GetImageContent();
-            content.Width = e.Width;
-            content.Height = e.Height;
+            if ( updated.Type == MapEntityType.Image)
+            {
+                var content = updated.GetImageContent();
+                content.Width = e.Width;
+                content.Height = e.Height;
 
-            updated.SetContent(content);
+                updated.SetContent(content);    
+            }
+            
 
             result.Add(updated);
         }

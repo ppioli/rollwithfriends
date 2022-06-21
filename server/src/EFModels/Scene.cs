@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Server.EFModels.Map;
 
 namespace Server.EFModels;
 

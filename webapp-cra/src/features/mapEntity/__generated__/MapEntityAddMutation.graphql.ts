@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<eba9826d564dc3802be3ae174d52ed1a>>
+ * @generated SignedSource<<f1878fcda1085becee84c28a82715f58>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -110,11 +110,6 @@ return {
               (v2/*: any*/),
               (v3/*: any*/),
               {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "MapEntityFragment"
-              },
-              {
                 "alias": null,
                 "args": null,
                 "concreteType": null,
@@ -125,6 +120,11 @@ return {
                   (v4/*: any*/)
                 ],
                 "storageKey": null
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "MapEntityFragment"
               }
             ],
             "storageKey": null
@@ -163,34 +163,6 @@ return {
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "x",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "y",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "width",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "height",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "content",
@@ -220,6 +192,41 @@ return {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "x",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "y",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "width",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "height",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "type",
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -230,16 +237,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "07ec6e3048974de11b02cf5462c74dd5",
+    "cacheID": "1b8c76bed585462627d9af85ed91c0f2",
     "id": null,
     "metadata": {},
     "name": "MapEntityAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityAddMutation(\n  $input: MapEntitiesAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      name\n      ...MapEntityFragment\n      content {\n        __typename\n        ... on ImageContent {\n          fileId\n        }\n      }\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n"
+    "text": "mutation MapEntityAddMutation(\n  $input: MapEntitiesAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      name\n      content {\n        __typename\n        ... on ImageContent {\n          fileId\n        }\n      }\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "cf411b9895f40550a02d9ea8cd763e98";
+(node as any).hash = "8d7b5521c516924041d12bdf8d9fe9f9";
 
 export default node;

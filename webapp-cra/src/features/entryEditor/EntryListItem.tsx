@@ -27,8 +27,9 @@ function EntryListItemInner({
   );
 
   const handleDragStart = (event: React.DragEvent<any>) => {
-    event.dataTransfer?.setData("type", node.__typename);
+    event.dataTransfer?.setData("entryType", node.__typename);
     event.dataTransfer?.setData("entryId", id);
+    event.dataTransfer?.setData("entryName", npc.name);
   };
 
   return (

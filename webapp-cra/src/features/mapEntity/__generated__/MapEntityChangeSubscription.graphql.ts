@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f4385cc32d8864bc521926f5aa110a1b>>
+ * @generated SignedSource<<7a5197b84ab613f600e545f35751f647>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -159,6 +159,7 @@ return {
                 "name": "height",
                 "storageKey": null
               },
+              (v2/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -214,12 +215,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "83dd80609835cc2fa49a48c69adf29b5",
+    "cacheID": "a35d79ce6e48de027398cfb8a103a8d1",
     "id": null,
     "metadata": {},
     "name": "MapEntityChangeSubscription",
     "operationKind": "subscription",
-    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  x\n  y\n  width\n  height\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n"
+    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n"
   }
 };
 })();

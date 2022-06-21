@@ -41,8 +41,8 @@ export const CampaignSelectPage = ({ preloaded }: CampaignSelectPageProps) => {
           </div>
 
           <div className={"grid grid-cols-4 gap-4"}>
-            {data.campaigns.map((c) => (
-              <CampaignCard {...c} />
+            {data.campaigns.map((c, ix) => (
+              <CampaignCard key={ix} {...c} />
             ))}
           </div>
         </div>

@@ -1,15 +1,21 @@
 import { MapGraphic, MapGraphicProps } from "features/battleMap/MapGraphic";
 
-import React from "react";
+import React, { useCallback } from "react";
 
-import { useMapEntityContext } from "features/battleMap/mapEntityLayer/MapEntityContext";
 import { useFragment } from "react-relay";
 import { MapEntityFragment } from "features/mapEntity/MapEntity.graphql";
 import { MapEntityFragment$key } from "features/mapEntity/__generated__/MapEntityFragment.graphql";
+import {
+  commitSelectionAdd,
+  commitSelectionSet,
+} from "features/battleMap/mapEntityLayer/Selection.graphql";
+import { getEntitySize } from "features/battleMap/mapEntityLayer/GridSize";
 
 export interface MapEntityData {
   id: string;
+  sceneId: string;
   entity: MapEntityFragment$key;
+  gridSize: number;
   offsetX?: number;
   offsetY?: number;
 }
@@ -18,19 +24,25 @@ export function MapEntity({
   id,
   entity,
   scale,
+  gridSize,
   offsetX,
   offsetY,
+  sceneId,
 }: MapEntityData & { scale: number }) {
-  const { selectToggle, selectSet } = useMapEntityContext();
   const data = useFragment(MapEntityFragment, entity);
 
-  const onClick = (add: boolean) => {
-    if (add) {
-      selectToggle([id]);
-    } else {
-      selectSet([id]);
-    }
-  };
+  const onClick = useCallback(
+    (add: boolean) => {
+      if (add) {
+        commitSelectionAdd({ sceneId, selection: [id] });
+      } else {
+        commitSelectionSet({ sceneId, selection: [id] });
+      }
+    },
+    [id, sceneId]
+  );
+
+  const [width, height] = getEntitySize(data, gridSize);
 
   if (data.content.__typename === "ImageContent") {
     const props: MapGraphicProps = {
@@ -39,8 +51,8 @@ export function MapEntity({
       onClick,
       x: data.x - (offsetX ?? 0),
       y: data.y - (offsetY ?? 0),
-      width: data.width,
-      height: data.height,
+      width,
+      height,
     };
 
     return <MapGraphic {...props} />;
@@ -53,8 +65,8 @@ export function MapEntity({
       onClick,
       x: data.x - (offsetX ?? 0),
       y: data.y - (offsetY ?? 0),
-      width: 30, //data.width,
-      height: 30, //, data.height,
+      width, //data.width,
+      height, //, data.height,
     };
 
     return <MapGraphic {...props} />;

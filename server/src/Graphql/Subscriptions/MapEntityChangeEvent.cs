@@ -1,4 +1,5 @@
 using Server.EFModels;
+using Server.EFModels.Map;
 
 namespace Server.Graphql.Subscriptions;
 

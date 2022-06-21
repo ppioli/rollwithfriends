@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3a95caf219a1bf8fbfb7060434cb515a>>
+ * @generated SignedSource<<7c1a71fabafcd4911cd9f6b3ca8dbcd9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,12 +9,15 @@
 // @ts-nocheck
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
+export type MapEntityType = "IMAGE" | "NPC5_E" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type MapEntityFragment$data = {
+  readonly id: string;
   readonly x: number;
   readonly y: number;
   readonly width: number;
   readonly height: number;
+  readonly type: MapEntityType;
   readonly content: {
     readonly __typename: "ImageContent";
     readonly fileId: number;
@@ -43,6 +46,13 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "x",
       "storageKey": null
     },
@@ -65,6 +75,13 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "ScalarField",
       "name": "height",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "type",
       "storageKey": null
     },
     {
@@ -118,6 +135,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "eb28ed5737f5300b758fbba00100b337";
+(node as any).hash = "46a064916597bc51d08905016cd47a78";
 
 export default node;

@@ -44,10 +44,12 @@ export const MapEntityPositionFragment = graphql`
 
 export const MapEntityFragment = graphql`
   fragment MapEntityFragment on MapEntity {
+    id
     x
     y
     width
     height
+    type
     content {
       __typename
       ... on ImageContent {
@@ -92,12 +94,12 @@ export function useMapEntityAddMutation() {
         mapEntity {
           id
           name
-          ...MapEntityFragment
           content {
             ... on ImageContent {
               fileId
             }
           }
+          ...MapEntityFragment
         }
       }
     }
@@ -150,7 +152,7 @@ export function useMapEntityNpcAddMutation() {
       _commit({
         variables: variables,
         updater: (store: RecordSourceSelectorProxy) => {
-          const payload = store.getRootField("mapEntityAdd")!;
+          const payload = store.getRootField("mapEntityNpcAdd")!;
           const added = payload.getLinkedRecords("mapEntity")!;
           // added.forEach((added, ix) => added.setValue(images[ix].src, "href"));
           const scene = store.get(variables.input.sceneId)!;

@@ -1,23 +1,30 @@
 import { FullGestureState } from "@use-gesture/react";
 import { Point } from "utils/Point";
+import { DragEvent } from "react";
 
-export function localPoint(
-  event: Omit<FullGestureState<"drag">, "event"> & {
-    event: PointerEvent | MouseEvent | TouchEvent | KeyboardEvent;
+type DragEventType =
+  | DragEvent<any>
+  | (Omit<FullGestureState<"drag">, "event"> & {
+      event: PointerEvent | MouseEvent | TouchEvent | KeyboardEvent;
+    });
+
+export function localPoint(event: DragEventType): Point {
+  let x, y;
+  if (isDragEvent(event)) {
+    [x, y] = [event.clientX, event.clientY];
+  } else {
+    [x, y] = event.xy;
   }
-): Point {
-  const [x, y] = event.xy;
+
   const [cx, cy] = tryGetBoundingClientRect(event);
 
   return [x - cx, y - cy];
 }
 
-const tryGetBoundingClientRect = (
-  event: Omit<FullGestureState<"drag">, "event"> & {
-    event: PointerEvent | MouseEvent | TouchEvent | KeyboardEvent;
-  }
-) => {
-  const target = event.event.currentTarget as any;
+const tryGetBoundingClientRect = (event: DragEventType) => {
+  const target = (
+    isDragEvent(event) ? event.currentTarget : event.event.currentTarget
+  ) as any;
   if (target["getBoundingClientRect"] !== undefined) {
     const { x, y } = target.getBoundingClientRect();
     return [x, y];
@@ -25,3 +32,7 @@ const tryGetBoundingClientRect = (
 
   return [0, 0];
 };
+
+function isDragEvent(event: DragEventType): event is DragEvent<any> {
+  return (event as any).xy === undefined;
+}

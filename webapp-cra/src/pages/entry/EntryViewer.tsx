@@ -35,7 +35,7 @@ export function EntryViewerPage({ preloaded }: any) {
       <EntryList entries={data} onClickItem={onClickItem} />
 
       <div className={"flex grow h-full justify-center items-center"}>
-        <Suspense fallback={"Loading..."}>
+        <Suspense fallback={"Loading"}>
           <EntryViewerEditor data={data} selected={selected} />
         </Suspense>
       </div>

@@ -1,12 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  MutableRefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Point } from "utils/Point";
 import { useGesture } from "@use-gesture/react";
 import { localPoint } from "utils/localPoint";
 import { clamp } from "lodash";
+import { BoxProps } from "components/moveResizeHandler/BoxProps";
 
 export interface AddedEntry {
-  type: string;
   entryId: string;
+  type: string;
+  name: string;
   x: number;
   y: number;
 }
@@ -15,6 +23,8 @@ interface MapControlProps {
   onChange: (deltaPos: Point, scale: number) => void;
   onFilesDropped: (files: File[]) => void;
   onEntryDropped: (entry: AddedEntry) => void;
+  onBoxSelect: (params: BoxProps) => void;
+  selectBoxRef: MutableRefObject<HTMLDivElement | null>;
 }
 
 const acceptedFiles = ["image/jpeg", "image/png"];
@@ -53,6 +63,8 @@ export default function useMapControl({
   onChange,
   onFilesDropped,
   onEntryDropped,
+  onBoxSelect,
+  selectBoxRef,
 }: MapControlProps) {
   // const [selectDragStart, setSelectDragStart] = useState<Point | null>(null);
   // const [scale, setScale] = useState(1);
@@ -67,31 +79,58 @@ export default function useMapControl({
   const bind = useGesture(
     {
       onDragStart: (evt) => {
-        console.log("Started");
-        if (evt.ctrlKey) {
-          dragStart.current = localPoint(evt);
-        }
+        dragStart.current = localPoint(evt);
+
         // else if (selectBoxRef.current != null) {
         //   setSelectDragStart({ x, y });
         // }
       },
-      onDrag: ({ movement }) => {
-        if (dragStart.current !== null) {
-          // const [nx, ny] = localPoint(evt);
-          // const [x, y] = dragStart.current;
+      onDrag: (event) => {
+        const { movement, ctrlKey } = event;
+        if (ctrlKey) {
           onChange(movement, zoomRef.current);
+        } else {
+          if (dragStart.current === null) {
+            return;
+          }
+          const [x, y] = dragStart.current;
+          const [x2, y2] = localPoint(event);
+
+          if (selectBoxRef.current) {
+            selectBoxRef.current.style.top = `${y}px`;
+            selectBoxRef.current.style.display = "block";
+            selectBoxRef.current.style.left = `${x}px`;
+            selectBoxRef.current.style.width = `${x2 - x}px`;
+            selectBoxRef.current.style.height = `${y2 - y}px`;
+          }
         }
       },
-      onDragEnd: ({ movement: [dx, dy] }) => {
-        if (dragStart.current != null) {
-          const [x, y] = position;
-          setPosition([
-            x + dx * (1 / zoomRef.current),
-            y + dy * (1 / zoomRef.current),
-          ]);
-          dragStart.current = null;
+      onDragEnd: (event) => {
+        const {
+          movement: [dx, dy],
+          ctrlKey,
+        } = event;
+        if (ctrlKey) {
+          if (dragStart.current != null) {
+            const [x, y] = position;
+            setPosition([
+              x + dx * (1 / zoomRef.current),
+              y + dy * (1 / zoomRef.current),
+            ]);
+            dragStart.current = null;
 
-          onChange([0, 0], zoomRef.current);
+            onChange([0, 0], zoomRef.current);
+          }
+        } else {
+          if (dragStart.current === null) {
+            return;
+          }
+          const [x, y] = dragStart.current;
+          const [x2, y2] = localPoint(event);
+          onBoxSelect({ x, y, width: x2 - x, height: y2 - y });
+          if (selectBoxRef.current) {
+            selectBoxRef.current.style.display = "none";
+          }
         }
       },
     },
@@ -131,18 +170,20 @@ export default function useMapControl({
         console.log("Drop: ", event);
         event.preventDefault();
         event.stopPropagation();
+        const [dropX, dropY] = localPoint(event);
         enterCount.current = 0;
         setFileDragging(false);
         const files = handleDropEvent(event);
         if (files.length > 0) {
           onFilesDropped(files);
-        } else if (event.dataTransfer.getData("type")) {
+        } else if (event.dataTransfer.getData("entryType")) {
           // TODO local point this
           const addedEntry: AddedEntry = {
             entryId: event.dataTransfer.getData("entryId"),
-            type: event.dataTransfer.getData("type"),
-            x: event.screenX,
-            y: event.screenY,
+            type: event.dataTransfer.getData("entryType"),
+            name: event.dataTransfer.getData("entryName"),
+            x: dropX,
+            y: dropY,
           };
           onEntryDropped(addedEntry);
         }

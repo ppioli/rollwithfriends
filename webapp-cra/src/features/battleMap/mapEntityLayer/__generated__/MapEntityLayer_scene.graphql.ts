@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<57d54d04dab8c1e616841639c84dfbd4>>
+ * @generated SignedSource<<904bad5669b527a65a31f31a62b89aae>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,18 +9,16 @@
 // @ts-nocheck
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
-export type MapEntityType = "IMAGE" | "NPC5_E" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type MapEntityLayer_scene$data = {
+  readonly selected: ReadonlyArray<{
+    readonly id: string;
+  }> | null;
   readonly entities: ReadonlyArray<{
     readonly id: string;
-    readonly x: number;
-    readonly y: number;
-    readonly width: number;
-    readonly height: number;
-    readonly type: MapEntityType;
     readonly " $fragmentSpreads": FragmentRefs<"MapEntityFragment">;
   }>;
+  readonly " $fragmentSpreads": FragmentRefs<"EntitySelectBox_scene">;
   readonly " $fragmentType": "MapEntityLayer_scene";
 };
 export type MapEntityLayer_scene$key = {
@@ -28,12 +26,25 @@ export type MapEntityLayer_scene$key = {
   readonly " $fragmentSpreads": FragmentRefs<"MapEntityLayer_scene">;
 };
 
-const node: ReaderFragment = {
+const node: ReaderFragment = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
   "name": "MapEntityLayer_scene",
   "selections": [
+    {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "EntitySelectBox_scene"
+    },
     {
       "alias": null,
       "args": null,
@@ -42,48 +53,7 @@ const node: ReaderFragment = {
       "name": "entities",
       "plural": true,
       "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "id",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "x",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "y",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "width",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "height",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "type",
-          "storageKey": null
-        },
+        (v0/*: any*/),
         {
           "args": null,
           "kind": "FragmentSpread",
@@ -91,12 +61,30 @@ const node: ReaderFragment = {
         }
       ],
       "storageKey": null
+    },
+    {
+      "kind": "ClientExtension",
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "concreteType": "MapEntity",
+          "kind": "LinkedField",
+          "name": "selected",
+          "plural": true,
+          "selections": [
+            (v0/*: any*/)
+          ],
+          "storageKey": null
+        }
+      ]
     }
   ],
   "type": "Scene",
   "abstractKey": null
 };
+})();
 
-(node as any).hash = "1be9f581075a0f9ef064e9ac2a82e281";
+(node as any).hash = "63b6be095b3f6edf198f74181f2db49e";
 
 export default node;

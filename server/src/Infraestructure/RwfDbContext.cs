@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using RollWithFriends.Models.Characters;
 using Server.EFModels;
 using Server.EFModels.Character5E;
+using Server.EFModels.Map;
 using Server.EFModels.Messages;
 
 namespace server.Infraestructure;

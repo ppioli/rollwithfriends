@@ -17,6 +17,7 @@ import {
 import classNames from "classnames";
 import { loadImages } from "utils/imageLoader";
 import { FileUploadDefinition, uploadBatch } from "utils/HttpHelpers";
+import { commitCellSize } from "features/battleMap/mapEntityLayer/GridSize";
 
 export interface SceneProps {
   id: string;
@@ -27,11 +28,12 @@ export interface SceneProps {
 const graphql = require("babel-plugin-relay/macro");
 
 export function SelectedScene({ id, scene, className }: SceneProps) {
+  commitCellSize(60, id);
   console.info(
     " ++++++++ ++++++++ ++++++++ ++++++++ Redrawing scene ++++++++ ++++++++ ++++++++ ++++++++ "
   );
   useMapEntitySubscription({ sceneId: id });
-
+  const selectBoxRef = useRef<HTMLDivElement>(null);
   const data: SelectedScene_scene$data = useFragment(
     graphql`
       fragment SelectedScene_scene on Scene {
@@ -48,6 +50,7 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
   const commit = useMapEntityAddMutation();
   const commitNpc = useMapEntityNpcAddMutation();
   const { handlers, fileDragging, offsetX, offsetY, scale } = useMapControl({
+    selectBoxRef,
     onChange: ([dx, dy], scale) => {
       if (containerRef.current) {
         containerRef.current.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
@@ -63,7 +66,6 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
           name: files[ix].name,
         }));
 
-        debugger;
         const input = { sceneId: id, entities };
 
         commit({ input }, (data) => {
@@ -84,21 +86,20 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
       });
     },
     onEntryDropped: (entry) => {
+      const entity = {
+        x: -offsetX + Math.round(entry.x / scale),
+        y: -offsetY + Math.round(entry.y / scale),
+        npcId: entry.entryId,
+        name: entry.name,
+      };
       commitNpc({
         input: {
           sceneId: id,
-          entities: [
-            {
-              x: entry.x,
-              y: entry.y,
-              npcId: entry.entryId,
-              name: "added thingy",
-            },
-          ],
+          entities: [entity],
         },
       });
-      console.log(entry);
     },
+    onBoxSelect: ({ x, y, width, height }) => {},
   });
 
   const cellSize = 60;
@@ -121,10 +122,7 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
         )}
       >
         {draw && (
-          <div
-            className={classNames("absolute", { blur: fileDragging })}
-            ref={containerRef}
-          >
+          <div className={classNames("absolute")} ref={containerRef}>
             <Grid
               {...layerProps}
               width={width}
@@ -135,12 +133,12 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
             <MapEntityLayer sceneId={id} {...layerProps} entities={data} />
           </div>
         )}
-        <div className={"absolute left-1 bottom-1"}>
+        <div className={"absolute left-1 top-1"}>
           {`Position (${offsetX},${offsetY})`} <br />
           {`Canvas size (${width},${height})`} <br />
           {`Scale (${scale})`} <br />
         </div>
-        {fileDragging && (
+        {false && fileDragging && (
           <div
             className={
               "absolute inset-y-0 left-0 editor-width flex justify-center content-center flex-wrap"
@@ -158,6 +156,10 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
             "absolute top-0 bottom-0 left-1 flex flex-col justify-center"
           }
         />
+        <div className={"absolute"} ref={selectBoxRef}>
+          <div className={"w-full h-full border-2 border-primary absolute"} />
+          <div className={"w-full h-full bg-primary opacity-30 absolute"} />
+        </div>
       </div>
     </div>
   );

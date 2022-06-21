@@ -1,11 +1,7 @@
 using Newtonsoft.Json;
-using Server.EFModels.Map;
 using server.Infraestructure;
 
-namespace Server.EFModels;
-
-using AutoMapper;
-using Services;
+namespace Server.EFModels.Map;
 
 
 /// <summary>

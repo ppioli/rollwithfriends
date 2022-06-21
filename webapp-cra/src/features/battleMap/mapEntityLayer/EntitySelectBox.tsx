@@ -2,32 +2,77 @@ import {
   ResizeMoveBox,
   ResizeMoveBoxEvent,
 } from "components/moveResizeHandler/MoveResizeBox";
-import { useMapEntityContext } from "features/battleMap/mapEntityLayer/MapEntityContext";
-import { ReactNode, useRef } from "react";
+import { ReactNode, useMemo, useRef } from "react";
 import { useMapEntityUpdateMutation } from "features/mapEntity/MapEntity.graphql";
 import { MapEntityUpdateInput } from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
-import { getEntitySize } from "features/battleMap/mapEntityLayer/MapEntityHelpers";
+import { useFragment } from "react-relay";
+import { getEntitySize } from "features/battleMap/mapEntityLayer/GridSize";
+import { EntitySelectBox_scene$key } from "features/battleMap/mapEntityLayer/__generated__/EntitySelectBox_scene.graphql";
+
+const graphql = require("babel-plugin-relay/macro");
 
 interface EntitySelectBoxProps {
   scale: number;
-  children: (offsetX: number, offsetY: number) => ReactNode;
   sceneId: string;
+  query: EntitySelectBox_scene$key;
+  children: (offsetX: number, offsetY: number) => ReactNode;
 }
 
 export function EntitySelectBox({
   children,
   scale,
   sceneId,
+  query,
 }: EntitySelectBoxProps) {
-  const { selectionBounds, getSelected } = useMapEntityContext();
   const update = useMapEntityUpdateMutation();
 
+  const { cellSize, selected } = useFragment(
+    graphql`
+      fragment EntitySelectBox_scene on Scene {
+        cellSize
+        selected {
+          id
+          x
+          y
+          width
+          height
+          type
+        }
+      }
+    `,
+    query
+  );
   const containerRef = useRef<HTMLDivElement>(null);
 
-  if (selectionBounds === null) {
-    return null;
-  }
-  const [[sx, sy], [ex, ey]] = selectionBounds;
+  const selectionBounds: [[number, number], [number, number]] | null =
+    useMemo(() => {
+      const selectedEntities = selected ?? [];
+      if (selectedEntities.length === 0) {
+        return null;
+      }
+      let minX = Infinity,
+        minY = Infinity,
+        maxX = -Infinity,
+        maxY = -Infinity;
+
+      selectedEntities.forEach((s) => {
+        const [w, h] = getEntitySize(s, cellSize ?? 30);
+        minX = Math.min(s.x, minX);
+        minY = Math.min(s.y, minY);
+        maxX = Math.max(s.x + w, maxX);
+        maxY = Math.max(s.y + h, maxY);
+      });
+
+      return [
+        [minX, minY],
+        [maxX, maxY],
+      ];
+    }, [cellSize, selected]);
+
+  const [[sx, sy], [ex, ey]] = selectionBounds ?? [
+    [0, 0],
+    [0, 0],
+  ];
 
   const onChange = ({ dx, dy, rw, rh }: ResizeMoveBoxEvent) => {
     if (containerRef.current !== null) {
@@ -42,10 +87,9 @@ export function EntitySelectBox({
 
     const ssx = sx + dx;
     const ssy = sy + dy;
-    console.info("delta mov ", dx, dy);
 
-    const entities: MapEntityUpdateInput[] = getSelected().map((e) => {
-      const [width, height] = getEntitySize(e);
+    const entities: MapEntityUpdateInput[] = (selected ?? []).map((e) => {
+      const [width, height] = getEntitySize(e, cellSize ?? 0);
       return {
         id: e.id,
         x: Math.round(ssx + (e.x - ssx + dx) * rw),

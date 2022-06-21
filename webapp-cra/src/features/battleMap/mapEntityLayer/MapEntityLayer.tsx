@@ -2,12 +2,11 @@ import { MapEntityLayer_scene$key } from "features/battleMap/mapEntityLayer/__ge
 import BaseLayerProps from "features/battleMap/BaseLayerProps";
 import { MapEntity } from "features/mapEntity/MapEntity";
 import { useFragment } from "react-relay";
-import { MapEntityContext } from "features/battleMap/mapEntityLayer/MapEntityContext";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useGesture } from "@use-gesture/react";
 import { useMapEntityDeleteMutation } from "features/mapEntity/MapEntity.graphql";
-import { getEntitySize } from "features/battleMap/mapEntityLayer/MapEntityHelpers";
 import { EntitySelectBox } from "features/battleMap/mapEntityLayer/EntitySelectBox";
+import { commitSelectionSet } from "features/battleMap/mapEntityLayer/Selection.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -22,17 +21,17 @@ export default function MapEntityLayer({
   offsetY,
   entities,
   sceneId,
+  cellSize,
 }: MapEntityLayerProps) {
   const data = useFragment(
     graphql`
       fragment MapEntityLayer_scene on Scene {
+        ...EntitySelectBox_scene
+        selected {
+          id
+        }
         entities {
           id
-          x
-          y
-          width
-          height
-          type
           ...MapEntityFragment
         }
       }
@@ -40,80 +39,85 @@ export default function MapEntityLayer({
     entities
   );
 
-  const [selected, setSelected] = useState<Set<string>>(new Set<string>());
   const deleteEntities = useMapEntityDeleteMutation();
-  const selectAdd = useCallback(
-    (ids: string[]) => {
-      const existing = new Set(selected);
 
-      ids.forEach((id) => {
-        existing.add(id);
-      });
+  // const selectAdd = useCallback(
+  //   (ids: string[]) => {
+  //     const existing = new Set(selected);
+  //
+  //     ids.forEach((id) => {
+  //       existing.add(id);
+  //     });
+  //
+  //     setSelected(existing);
+  //   },
+  //   [selected]
+  // );
 
-      setSelected(existing);
+  // const selectToggle = useCallback(
+  //   (ids: string[]) => {
+  //     const existing = new Set(selected);
+  //
+  //     ids.forEach((id) => {
+  //       if (existing.has(id)) {
+  //         existing.delete(id);
+  //       } else {
+  //         existing.add(id);
+  //       }
+  //     });
+  //
+  //     setSelected(existing);
+  //   },
+  //   [selected]
+  // );
+  //
+  // const getSelected = () => {
+  //   return data.entities.filter((e) => selected.has(e.id));
+  // };
+  //
+  // const selectSet = useCallback((ids: string[]) => {
+  //   setSelected(new Set(ids));
+  // }, []);
+  //
+  // const selectionBounds: [[number, number], [number, number]] | null =
+  //   useMemo(() => {
+  //     const selectedEntities = getSelected();
+  //     if (selectedEntities.length === 0) {
+  //       return null;
+  //     }
+  //     let minX = Infinity,
+  //       minY = Infinity,
+  //       maxX = -Infinity,
+  //       maxY = -Infinity;
+  //
+  //     selectedEntities.forEach((s) => {
+  //       const [w, h] = getEntitySize(s);
+  //       minX = Math.min(s.x, minX);
+  //       minY = Math.min(s.y, minY);
+  //       maxX = Math.max(s.x + w, maxX);
+  //       maxY = Math.max(s.y + h, maxY);
+  //     });
+  //
+  //     return [
+  //       [minX, minY],
+  //       [maxX, maxY],
+  //     ];
+  //   }, [getSelected]);
+
+  const isSelected = useCallback(
+    (id: string) => {
+      const ent = (data.selected ?? []).find((s) => s.id === id);
+      return ent !== undefined;
     },
-    [selected]
+    [data]
   );
-
-  const selectToggle = useCallback(
-    (ids: string[]) => {
-      const existing = new Set(selected);
-
-      ids.forEach((id) => {
-        if (existing.has(id)) {
-          existing.delete(id);
-        } else {
-          existing.add(id);
-        }
-      });
-
-      setSelected(existing);
-    },
-    [selected]
-  );
-
-  const getSelected = () => {
-    return data.entities.filter((e) => selected.has(e.id));
-  };
-
-  const selectSet = useCallback((ids: string[]) => {
-    setSelected(new Set(ids));
-  }, []);
-
-  const selectionBounds: [[number, number], [number, number]] | null =
-    useMemo(() => {
-      const selectedEntities = getSelected();
-      if (selectedEntities.length === 0) {
-        return null;
-      }
-      let minX = Infinity,
-        minY = Infinity,
-        maxX = -Infinity,
-        maxY = -Infinity;
-
-      selectedEntities.forEach((s) => {
-        const [w, h] = getEntitySize(s);
-        minX = Math.min(s.x, minX);
-        minY = Math.min(s.y, minY);
-        maxX = Math.max(s.x + w, maxX);
-        maxY = Math.max(s.y + h, maxY);
-      });
-
-      return [
-        [minX, minY],
-        [maxX, maxY],
-      ];
-    }, [getSelected]);
-
-  const isSelected = useCallback((id: string) => selected.has(id), [selected]);
-  const selectBoxRef = useRef<HTMLDivElement>(null);
 
   const bindOuter = useGesture(
     {
       onClick: (event) => {
         // console.log(event);
         console.log("Clicked");
-        selectSet([]);
+        commitSelectionSet({ sceneId, selection: [] });
       },
       onDragStart: () => {
         console.log("START");
@@ -147,7 +151,7 @@ export default function MapEntityLayer({
       }
 
       if (event.key === "Delete") {
-        const selected = getSelected();
+        const selected = data.selected ?? [];
         if (selected.length === 0) {
           return;
         }
@@ -166,64 +170,60 @@ export default function MapEntityLayer({
     document.addEventListener("keyup", handler);
 
     return () => document.removeEventListener("keyup", handler);
-  }, [deleteEntities, getSelected, sceneId]);
+  }, [deleteEntities, data, sceneId]);
 
-  const context = {
-    selectionBounds,
-    isSelected,
-    selectAdd,
-    selectSet,
-    selectToggle,
-    getSelected,
-  };
+  // const context = {
+  //   selectionBounds,
+  //   isSelected,
+  //   selectAdd,
+  //   selectSet,
+  //   selectToggle,
+  //   getSelected,
+  //   getEntitySize,
+  // };
 
   return (
-    <MapEntityContext.Provider value={context}>
-      <div
-        id={"click-box"}
-        ref={clickThing}
-        className={"absolute w-screen h-screen touch-none"}
-        {...bindOuter()}
-      >
-        <div className={"absolute"} style={{ left: offsetX, top: offsetY }}>
-          {data.entities
-            .filter((e) => !isSelected(e.id))
-            .map((data) => {
-              return (
+    <div
+      id={"click-box"}
+      ref={clickThing}
+      className={"absolute w-screen h-screen touch-none"}
+      {...bindOuter()}
+    >
+      <div className={"absolute"} style={{ left: offsetX, top: offsetY }}>
+        {data.entities
+          .filter((e) => !isSelected(e.id))
+          .map((data) => {
+            return (
+              <MapEntity
+                key={data.id}
+                sceneId={sceneId}
+                gridSize={60}
+                scale={scale}
+                id={data.id}
+                entity={data}
+              />
+            );
+          })}
+
+        <EntitySelectBox sceneId={sceneId} scale={scale} query={data}>
+          {(offsetX, offsetY) =>
+            data.entities
+              .filter((e) => isSelected(e.id))
+              .map((data) => (
                 <MapEntity
                   key={data.id}
                   scale={scale}
                   id={data.id}
                   entity={data}
+                  sceneId={sceneId}
+                  gridSize={60}
+                  offsetX={offsetX}
+                  offsetY={offsetY}
                 />
-              );
-            })}
-
-          <EntitySelectBox sceneId={sceneId} scale={scale}>
-            {(offsetX, offsetY) =>
-              data.entities
-                .filter((e) => isSelected(e.id))
-                .map((data) => {
-                  const { x, y, ...rest } = data;
-                  return (
-                    <MapEntity
-                      key={data.id}
-                      scale={scale}
-                      id={data.id}
-                      entity={data}
-                      offsetX={offsetX}
-                      offsetY={offsetY}
-                    />
-                  );
-                })
-            }
-          </EntitySelectBox>
-          <div className={"absolute"} ref={selectBoxRef}>
-            <div className={"w-full h-full border-2 border-primary absolute"} />
-            <div className={"w-full h-full bg-primary opacity-30 absolute"} />
-          </div>
-        </div>
+              ))
+          }
+        </EntitySelectBox>
       </div>
-    </MapEntityContext.Provider>
+    </div>
   );
 }
