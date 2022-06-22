@@ -8,7 +8,6 @@ import { useResizeDetector } from "react-resize-detector";
 import Grid from "features/battleMap/grid/Grid";
 import MapEntityLayer from "features/battleMap/mapEntityLayer/MapEntityLayer";
 import useMapControl from "features/battleMap/useMapControl";
-import Toolbar from "features/battleMap/toolbar/Toolbar";
 import {
   useMapEntityAddMutation,
   useMapEntityNpcAddMutation,
@@ -22,6 +21,7 @@ import {
   SelectedSceneContextProvider,
 } from "pages/scene/SelectedSceneContext";
 import { commitSelectionBoxSet } from "features/battleMap/mapEntityLayer/Selection.graphql";
+import { Toolbar } from "features/toolbar/Toolbar";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -42,6 +42,7 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
       fragment SelectedScene_scene on Scene {
         name
         ...MapEntityLayer_scene
+        ...Toolbar_scene
       }
     `,
     scene
@@ -187,10 +188,8 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
             </div>
           )}
           <Toolbar
-            sceneId={id}
-            className={
-              "absolute top-0 bottom-0 left-1 flex flex-col justify-center"
-            }
+            className={"absolute bottom-0 left-0 editor-width"}
+            query={data}
           />
           <div className={"absolute"} ref={selectBoxRef}>
             <div className={"w-full h-full border-2 border-primary absolute"} />

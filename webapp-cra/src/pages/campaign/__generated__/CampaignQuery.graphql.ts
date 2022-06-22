@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b38f9b1865af907da3bbbfa6c2ca314f>>
+ * @generated SignedSource<<9f597605691ad79a483a4a0e7b0650da>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -186,6 +186,20 @@ v16 = {
   "kind": "ScalarField",
   "name": "type",
   "storageKey": null
+},
+v17 = {
+  "kind": "InlineFragment",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "npcId",
+      "storageKey": null
+    }
+  ],
+  "type": "Npc5EContent",
+  "abstractKey": null
 };
 return {
   "fragment": {
@@ -494,7 +508,20 @@ return {
                       (v13/*: any*/),
                       (v14/*: any*/),
                       (v15/*: any*/),
-                      (v16/*: any*/)
+                      (v16/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "concreteType": null,
+                        "kind": "LinkedField",
+                        "name": "content",
+                        "plural": false,
+                        "selections": [
+                          (v8/*: any*/),
+                          (v17/*: any*/)
+                        ],
+                        "storageKey": null
+                      }
                     ],
                     "storageKey": null
                   }
@@ -537,20 +564,7 @@ return {
                         "type": "ImageContent",
                         "abstractKey": null
                       },
-                      {
-                        "kind": "InlineFragment",
-                        "selections": [
-                          {
-                            "alias": null,
-                            "args": null,
-                            "kind": "ScalarField",
-                            "name": "npcId",
-                            "storageKey": null
-                          }
-                        ],
-                        "type": "Npc5EContent",
-                        "abstractKey": null
-                      }
+                      (v17/*: any*/)
                     ],
                     "storageKey": null
                   }

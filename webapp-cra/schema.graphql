@@ -651,9 +651,10 @@ input NonPlayerCharacter5EFilterInput {
 }
 
 type Npc5EContent {
-  npcId: Int!
+  npcId: ID!
   width: Int!
   height: Int!
+  npc: NonPlayerCharacter5E!
 }
 
 input NpcAddInput {

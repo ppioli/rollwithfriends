@@ -5,7 +5,6 @@ import { useNavigation } from "yarr";
 import { SelectedScene } from "pages/scene/SelectedScene";
 import "./Campaing.css";
 import { ParticipantsProvider } from "features/participant/ParticipantsContext";
-import { Participants } from "features/participant/Participants";
 import { EntryList } from "features/entryEditor/EntryList";
 import { TabPanel } from "components/tabbedPanel/TabPanel";
 import { Chat } from "features/chat/Chat";
@@ -83,11 +82,6 @@ export const CampaignPage = ({ preloaded }: any) => {
               },
             ]}
           </TabPanel>
-        </div>
-
-        <div className={"absolute bottom-4 left-4 editor-width"}>
-          {/* eslint-disable-next-line react/jsx-no-undef */}
-          <Participants />
         </div>
       </div>
     </ParticipantsProvider>

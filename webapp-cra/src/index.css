@@ -86,6 +86,10 @@
         @apply hover:bg-darker
     }
 
+    .btn-menu.active {
+        @apply bg-dark
+    }
+
     .btn-primary {
         @apply bg-primary focus-primary hover:bg-primary-dark
     }

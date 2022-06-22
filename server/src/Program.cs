@@ -10,6 +10,7 @@ using Server.EFModels;
 using Server.EFModels.Map;
 using Server.EFModels.Messages;
 using Server.Graphql;
+using Server.Graphql.Extension;
 using Server.Graphql.Mutations;
 using Server.Graphql.Query;
 using Server.Graphql.Subscriptions;
@@ -166,6 +167,7 @@ builder.Services
     .AddType<RollMessageContent>()
     .AddType<ImageContent>()
     .AddType<Npc5EContent>()
+    .AddTypeExtension<Npc5EContentExtension>()
     .AddMutationConventions()
     .AddProjections()
     .AddFiltering()

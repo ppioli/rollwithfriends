@@ -7,7 +7,14 @@ import {
 } from "features/chat/Message.graphql";
 import { CampaignQuery as CampaignQueryType } from "pages/campaign/__generated__/CampaignQuery.graphql";
 import { MessageList_campaign$key } from "./__generated__/MessageList_campaign.graphql";
-import { HTMLProps, ReactNode, useCallback, useRef } from "react";
+import {
+  HTMLProps,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import _ from "lodash";
 import { useParticipantContext } from "features/participant/ParticipantsContext";
 import { formatDistanceToNow, parseISO } from "date-fns";
@@ -39,15 +46,28 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
   const items = data.messages?.edges ?? [];
   const rowCount = data.messages?.totalCount ?? 0;
 
-  console.log(`Items ${items.length} Total ${rowCount}`);
-
   const isItemLoaded = (index: number) => {
     return index < (items?.length ?? 0);
   };
   const sizeMap = useRef<number[]>([]);
+
   const getSize = useCallback(
     (index: number) => sizeMap.current[index] || 84,
     []
+  );
+
+  const listRef = useRef<any>();
+
+  const itemData = useMemo(
+    () => ({
+      setSize: (index: number, size: number) => {
+        sizeMap.current[index] = size;
+        listRef.current.resetAfterIndex(index);
+        console.log(sizeMap);
+      },
+      messages: items,
+    }),
+    [items]
   );
 
   const setRequested = useBatchLoader({ loadNext, loadedCount: items.length });
@@ -71,8 +91,8 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
                   itemCount={rowCount}
                   itemSize={getSize}
                   onItemsRendered={onItemsRendered}
-                  ref={ref}
-                  itemData={items}
+                  ref={listRef}
+                  itemData={itemData}
                 >
                   {(props) => <ChatMessage {...props} />}
                 </List>
@@ -89,10 +109,17 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
 
 function ChatMessage({ data, style, index }: ListChildComponentProps) {
   // TODO update ago
-  const node = data[index]?.node;
+  const { messages, setSize } = data;
+  const node = messages[index]?.node;
   const message = useFragment(MessageBodyFragment, node);
-
+  const messageRef = useRef<HTMLDivElement | null>(null);
   const { getById } = useParticipantContext();
+
+  useEffect(() => {
+    if (messageRef.current) {
+      setSize(index, messageRef.current.getBoundingClientRect().height);
+    }
+  }, [setSize, index, messageRef]);
 
   if (!message) {
     return null;
@@ -110,13 +137,15 @@ function ChatMessage({ data, style, index }: ListChildComponentProps) {
   }
 
   return (
-    <div className={"px-3"} style={style}>
-      <div className={"bg-darker rounded-md px-3 pb-3"}>
-        <p className={"font-bold text-sm mb-1 pt-1"}>{user?.name ?? "-"}</p>
-        {content}
-      </div>
-      <div className={"w-100 text-right font-light text-sm"}>
-        {formatDistanceToNow(parseISO(message.createdAt))}
+    <div style={style}>
+      <div className={"px-3"} ref={messageRef}>
+        <div className={"bg-darker rounded-md px-3 pb-3"}>
+          <p className={"font-bold text-sm mb-1 pt-1"}>{user?.name ?? "-"}</p>
+          {content}
+        </div>
+        <div className={"w-100 text-right font-light text-sm"}>
+          {formatDistanceToNow(parseISO(message.createdAt))}
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7c1a71fabafcd4911cd9f6b3ca8dbcd9>>
+ * @generated SignedSource<<9e2fe97f189788d08f3941c34ec53fab>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -23,7 +23,7 @@ export type MapEntityFragment$data = {
     readonly fileId: number;
   } | {
     readonly __typename: "Npc5EContent";
-    readonly npcId: number;
+    readonly npcId: string;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.

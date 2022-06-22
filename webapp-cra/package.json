@@ -63,7 +63,9 @@
   "relay": {
     "language": "typescript",
     "schema": "./schema.graphql",
-    "schemaExtensions": ["./graphql"],
+    "schemaExtensions": [
+      "./graphql"
+    ],
     "src": "./src"
   },
   "eslintConfig": {

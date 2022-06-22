@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2366d520baae30ac30cd05663f0c1d4d>>
+ * @generated SignedSource<<b7d0c5d2d8430e1785f69532c0f4a21d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -29,7 +29,7 @@ export type MapEntityNpcAddMutation$data = {
       readonly id: string;
       readonly name: string;
       readonly content: {
-        readonly npcId?: number;
+        readonly npcId?: string;
       };
       readonly " $fragmentSpreads": FragmentRefs<"MapEntityFragment">;
     }> | null;
