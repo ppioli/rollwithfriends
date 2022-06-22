@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import BaseLayerProps from "features/battleMap/BaseLayerProps";
+import { useSelectedScene } from "pages/scene/SelectedSceneContext";
 
 interface GridProps extends BaseLayerProps {
   width: number;
@@ -9,7 +10,6 @@ interface GridProps extends BaseLayerProps {
 
 export default function Grid({
   scale,
-  cellSize,
   offsetX,
   offsetY,
   width,
@@ -17,6 +17,7 @@ export default function Grid({
   className,
 }: GridProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { cellSize } = useSelectedScene();
 
   useEffect(() => {
     if (canvasRef.current) {

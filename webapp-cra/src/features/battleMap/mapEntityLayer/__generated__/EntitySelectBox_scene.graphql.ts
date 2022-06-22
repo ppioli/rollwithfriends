@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7eb774b046213ea1ebac2e73cbe5e203>>
+ * @generated SignedSource<<30edb9b33390ef3e0ed3c58457fffe0a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,6 @@ import { Fragment, ReaderFragment } from 'relay-runtime';
 export type MapEntityType = "IMAGE" | "NPC5_E" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type EntitySelectBox_scene$data = {
-  readonly cellSize: number;
   readonly selected: ReadonlyArray<{
     readonly id: string;
     readonly x: number;
@@ -37,13 +36,6 @@ const node: ReaderFragment = {
     {
       "kind": "ClientExtension",
       "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "cellSize",
-          "storageKey": null
-        },
         {
           "alias": null,
           "args": null,
@@ -104,6 +96,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "f2a038f84f6d2ba446af9fdb12005bf9";
+(node as any).hash = "378d658b46757d057adda2922980a6fb";
 
 export default node;

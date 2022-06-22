@@ -100,7 +100,6 @@ public class NonPlayerCharacter5E : CharacterBase5E
                throw new EntityNotFound(id);
         
         // TODO HACK Work around for ef proxies
-
         var stry = JsonConvert.SerializeObject(npc, new JsonSerializerSettings()
         {
             ReferenceLoopHandling = ReferenceLoopHandling.Ignore,

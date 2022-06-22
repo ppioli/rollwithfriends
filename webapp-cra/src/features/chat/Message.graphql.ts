@@ -42,8 +42,8 @@ export const MessageListPaginationFragment = graphql`
   fragment MessageList_campaign on Campaign
   @refetchable(queryName: "MessageListPaginationFragment")
   @argumentDefinitions(
-    count: { type: "Int", defaultValue: 30 } # Optional argument
-    cursor: { type: "String", defaultValue: null } # Required argument
+    count: { type: "Int", defaultValue: 10 }
+    cursor: { type: "String", defaultValue: null }
   ) {
     messages(after: $cursor, first: $count)
       @connection(key: "CampaignFragment_messages") {

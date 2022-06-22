@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c2b9f4fe580ddcd941dde5176a597c04>>
+ * @generated SignedSource<<4024e59fa1c4607b3f448ee5472623b7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -64,7 +64,7 @@ return {
         "path": (v0/*: any*/)
       },
       "fragmentPathInResult": [],
-      "operation": require('./EntryList_rootQuery.graphql')
+      "operation": require('./EntryList_Query.graphql')
     }
   },
   "name": "EntryList_rootQuery",
@@ -166,6 +166,6 @@ return {
 };
 })();
 
-(node as any).hash = "361ee539ca99103ff0183f468d42cf8b";
+(node as any).hash = "d62b9ad1dee1acb604d7ecdf85144b6f";
 
 export default node;

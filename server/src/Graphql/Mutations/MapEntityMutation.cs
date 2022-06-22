@@ -127,7 +127,6 @@ public class MapEntityMutation
             throw new EntityNotFound(input.SceneId);
         }
 
-
         var created = input.Entities.Select(
                 n => MapEntity.CreateNpcContent(
                     n.X,

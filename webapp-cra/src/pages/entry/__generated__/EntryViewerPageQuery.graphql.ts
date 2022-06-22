@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5ab48a13f07d6fe72e5cf740795bb5c9>>
+ * @generated SignedSource<<2fea76a8fd6f092a1660c9f81f4886a2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,7 +24,7 @@ var v0 = [
   {
     "kind": "Literal",
     "name": "first",
-    "value": 30
+    "value": 10
   }
 ],
 v1 = {
@@ -72,13 +72,7 @@ return {
     "name": "EntryViewerPageQuery",
     "selections": [
       {
-        "args": [
-          {
-            "kind": "Literal",
-            "name": "count",
-            "value": 30
-          }
-        ],
+        "args": null,
         "kind": "FragmentSpread",
         "name": "EntryList_rootQuery"
       },
@@ -176,7 +170,7 @@ return {
             "storageKey": null
           }
         ],
-        "storageKey": "entries(first:30)"
+        "storageKey": "entries(first:10)"
       },
       {
         "alias": null,
@@ -479,16 +473,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "8c02b9a97605fd24cf3c4948bc30c20d",
+    "cacheID": "ae6f18dd55b48ffb0babf4f0af00874e",
     "id": null,
     "metadata": {},
     "name": "EntryViewerPageQuery",
     "operationKind": "query",
-    "text": "query EntryViewerPageQuery {\n  ...EntryList_rootQuery_46tGjq\n  ...EntryViewerEditor_rootQuery\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n}\n\nfragment EntryList_rootQuery_46tGjq on RootQuery {\n  entries(first: 30) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment EntryViewerEditor_rootQuery on RootQuery {\n  entry {\n    id\n    ...NpcCard5e_NonPlayerCharacter5E\n  }\n}\n\nfragment NpcCard5e_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n  page\n  sourceId\n  avatarId\n  source {\n    shortName\n    id\n  }\n  type {\n    label\n    tags\n  }\n  hitPointsFormula\n  hitPointsAverage\n  armorClasses {\n    description\n    armorClass\n  }\n  challangeRating\n  alignments\n  sizes\n  savingThrows {\n    key\n    value\n  }\n  skills {\n    key\n    value\n  }\n  languages {\n    name\n  }\n  senses {\n    description\n    range\n  }\n  passivePerception\n  resistances {\n    condition\n    types\n  }\n  speeds {\n    walk\n    fly\n    swim\n  }\n  strength\n  dexterity\n  constitution\n  intelligence\n  wisdom\n  charisma\n}\n"
+    "text": "query EntryViewerPageQuery {\n  ...EntryList_rootQuery\n  ...EntryViewerEditor_rootQuery\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n}\n\nfragment EntryList_rootQuery on RootQuery {\n  entries(first: 10) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment EntryViewerEditor_rootQuery on RootQuery {\n  entry {\n    id\n    ...NpcCard5e_NonPlayerCharacter5E\n  }\n}\n\nfragment NpcCard5e_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n  page\n  sourceId\n  avatarId\n  source {\n    shortName\n    id\n  }\n  type {\n    label\n    tags\n  }\n  hitPointsFormula\n  hitPointsAverage\n  armorClasses {\n    description\n    armorClass\n  }\n  challangeRating\n  alignments\n  sizes\n  savingThrows {\n    key\n    value\n  }\n  skills {\n    key\n    value\n  }\n  languages {\n    name\n  }\n  senses {\n    description\n    range\n  }\n  passivePerception\n  resistances {\n    condition\n    types\n  }\n  speeds {\n    walk\n    fly\n    swim\n  }\n  strength\n  dexterity\n  constitution\n  intelligence\n  wisdom\n  charisma\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d7baa65b8e53ad86026ed3cfc614dc5e";
+(node as any).hash = "8222a2d75deafd9b98e735da30d5e0a2";
 
 export default node;

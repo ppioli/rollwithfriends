@@ -12,7 +12,7 @@ const graphql = require("babel-plugin-relay/macro");
 
 export const EntryList_rootQuery = graphql`
   fragment EntryList_rootQuery on RootQuery
-  @refetchable(queryName: "EntryList_rootQuery")
+  @refetchable(queryName: "EntryList_Query")
   @argumentDefinitions(
     count: { type: "Int", defaultValue: 10 } # Optional argument
     cursor: { type: "String", defaultValue: null } # Required argument
@@ -45,7 +45,7 @@ export function EntryList(props: EntryListProps) {
 
 function EntryListInner({ entries, onClickItem, ...divProps }: EntryListProps) {
   console.info("entries", entries);
-  const { data, loadNext } = usePaginationFragment(
+  const { data, loadNext, hasNext } = usePaginationFragment(
     EntryList_rootQuery,
     entries
   );
@@ -53,7 +53,7 @@ function EntryListInner({ entries, onClickItem, ...divProps }: EntryListProps) {
 
   console.info("Data ", data);
 
-  const items = data.entries?.edges ?? [];
+  const items = useMemo(() => data.entries?.edges ?? [], [data]);
 
   const setRequested = useBatchLoader({
     loadNext,
@@ -82,7 +82,11 @@ function EntryListInner({ entries, onClickItem, ...divProps }: EntryListProps) {
         <InfiniteLoader
           isItemLoaded={isItemLoaded}
           itemCount={rowCount}
-          loadMoreItems={(from, to) => setRequested(to)}
+          loadMoreItems={(from, to) => {
+            if (hasNext) {
+              setRequested(to);
+            }
+          }}
         >
           {({ onItemsRendered, ref }) => (
             <List

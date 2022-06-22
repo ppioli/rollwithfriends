@@ -19,8 +19,6 @@ public class CharacterService
         IEnumerable<NpcAdd> payload)
     {
         
-
-        
         var createdNpcs = payload.Select(
             input => new NonPlayerCharacter5E(
                 input.Name,

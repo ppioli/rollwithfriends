@@ -14,14 +14,11 @@ export function useBatchLoader({ loadNext, loadedCount }: UseBatchLoaderOpts) {
     if (loading || requested == null || requested === loadedCount) {
       return;
     }
-    debugger;
+
     setLoading(true);
     const count = requested - loadedCount;
-    console.log("Count " + count);
     loadNext(count, {
-      onComplete: () => {
-        setLoading(false);
-      },
+      onComplete: () => setLoading(false),
     });
   }, [requested, loadedCount, loading, loadNext]);
 

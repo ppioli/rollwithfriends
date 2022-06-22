@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<69fcadf214ad95003d1fbe64295510d6>>
+ * @generated SignedSource<<b38f9b1865af907da3bbbfa6c2ca314f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -96,7 +96,7 @@ v6 = [
   {
     "kind": "Literal",
     "name": "first",
-    "value": 30
+    "value": 10
   }
 ],
 v7 = {
@@ -195,13 +195,7 @@ return {
     "name": "CampaignQuery",
     "selections": [
       {
-        "args": [
-          {
-            "kind": "Literal",
-            "name": "count",
-            "value": 30
-          }
-        ],
+        "args": null,
         "kind": "FragmentSpread",
         "name": "EntryList_rootQuery"
       },
@@ -298,7 +292,7 @@ return {
           },
           (v10/*: any*/)
         ],
-        "storageKey": "entries(first:30)"
+        "storageKey": "entries(first:10)"
       },
       {
         "alias": null,
@@ -442,7 +436,7 @@ return {
               },
               (v10/*: any*/)
             ],
-            "storageKey": "messages(first:30)"
+            "storageKey": "messages(first:10)"
           },
           {
             "alias": null,
@@ -487,13 +481,6 @@ return {
               {
                 "kind": "ClientExtension",
                 "selections": [
-                  {
-                    "alias": null,
-                    "args": null,
-                    "kind": "ScalarField",
-                    "name": "cellSize",
-                    "storageKey": null
-                  },
                   {
                     "alias": null,
                     "args": null,
@@ -579,16 +566,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "518fccd3b1e352f33e1ec0d62ad248ae",
+    "cacheID": "99159e0cf21ab8ddd907d4970c26f08b",
     "id": null,
     "metadata": {},
     "name": "CampaignQuery",
     "operationKind": "query",
-    "text": "query CampaignQuery(\n  $id: ID!\n  $selectedScene: ID\n) {\n  ...EntryList_rootQuery_46tGjq\n  campaigns(where: {id: {eq: $id}}) {\n    id\n    name\n    description\n    ...SceneSelector_campaign\n    ...MessageList_campaign\n    ...ParticipantList_campaign\n    selectedScene(sceneId: $selectedScene) {\n      id\n      ...SelectedScene_scene\n    }\n  }\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n}\n\nfragment EntryList_rootQuery_46tGjq on RootQuery {\n  entries(first: 30) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n\nfragment MapEntityLayer_scene on Scene {\n  entities {\n    id\n    ...MapEntityFragment\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign on Campaign {\n  messages(first: 30) {\n    totalCount\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment ParticipantList_campaign on Campaign {\n  participants {\n    id\n    userId\n    name\n    campaignRoll\n  }\n}\n\nfragment SceneSelector_campaign on Campaign {\n  scenes {\n    name\n    id\n  }\n}\n\nfragment SelectedScene_scene on Scene {\n  name\n  ...MapEntityLayer_scene\n}\n"
+    "text": "query CampaignQuery(\n  $id: ID!\n  $selectedScene: ID\n) {\n  ...EntryList_rootQuery\n  campaigns(where: {id: {eq: $id}}) {\n    id\n    name\n    description\n    ...SceneSelector_campaign\n    ...MessageList_campaign\n    ...ParticipantList_campaign\n    selectedScene(sceneId: $selectedScene) {\n      id\n      ...SelectedScene_scene\n    }\n  }\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n}\n\nfragment EntryList_rootQuery on RootQuery {\n  entries(first: 10) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n\nfragment MapEntityLayer_scene on Scene {\n  entities {\n    id\n    ...MapEntityFragment\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign on Campaign {\n  messages(first: 10) {\n    totalCount\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment ParticipantList_campaign on Campaign {\n  participants {\n    id\n    userId\n    name\n    campaignRoll\n  }\n}\n\nfragment SceneSelector_campaign on Campaign {\n  scenes {\n    name\n    id\n  }\n}\n\nfragment SelectedScene_scene on Scene {\n  name\n  ...MapEntityLayer_scene\n}\n"
   }
 };
 })();
 
-(node as any).hash = "929e5a1ec892ab47204e9f2fbbb2497c";
+(node as any).hash = "1fc90f1a1c4631a2c6413e549922543a";
 
 export default node;

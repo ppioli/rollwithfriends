@@ -7,12 +7,12 @@ import { useGesture } from "@use-gesture/react";
 import { useMapEntityDeleteMutation } from "features/mapEntity/MapEntity.graphql";
 import { EntitySelectBox } from "features/battleMap/mapEntityLayer/EntitySelectBox";
 import { commitSelectionSet } from "features/battleMap/mapEntityLayer/Selection.graphql";
+import { useSelectedScene } from "pages/scene/SelectedSceneContext";
 
 const graphql = require("babel-plugin-relay/macro");
 
 interface MapEntityLayerProps extends BaseLayerProps {
   entities: MapEntityLayer_scene$key;
-  sceneId: string;
 }
 
 export default function MapEntityLayer({
@@ -20,9 +20,8 @@ export default function MapEntityLayer({
   offsetX,
   offsetY,
   entities,
-  sceneId,
-  cellSize,
 }: MapEntityLayerProps) {
+  const { sceneId } = useSelectedScene();
   const data = useFragment(
     graphql`
       fragment MapEntityLayer_scene on Scene {
@@ -40,69 +39,6 @@ export default function MapEntityLayer({
   );
 
   const deleteEntities = useMapEntityDeleteMutation();
-
-  // const selectAdd = useCallback(
-  //   (ids: string[]) => {
-  //     const existing = new Set(selected);
-  //
-  //     ids.forEach((id) => {
-  //       existing.add(id);
-  //     });
-  //
-  //     setSelected(existing);
-  //   },
-  //   [selected]
-  // );
-
-  // const selectToggle = useCallback(
-  //   (ids: string[]) => {
-  //     const existing = new Set(selected);
-  //
-  //     ids.forEach((id) => {
-  //       if (existing.has(id)) {
-  //         existing.delete(id);
-  //       } else {
-  //         existing.add(id);
-  //       }
-  //     });
-  //
-  //     setSelected(existing);
-  //   },
-  //   [selected]
-  // );
-  //
-  // const getSelected = () => {
-  //   return data.entities.filter((e) => selected.has(e.id));
-  // };
-  //
-  // const selectSet = useCallback((ids: string[]) => {
-  //   setSelected(new Set(ids));
-  // }, []);
-  //
-  // const selectionBounds: [[number, number], [number, number]] | null =
-  //   useMemo(() => {
-  //     const selectedEntities = getSelected();
-  //     if (selectedEntities.length === 0) {
-  //       return null;
-  //     }
-  //     let minX = Infinity,
-  //       minY = Infinity,
-  //       maxX = -Infinity,
-  //       maxY = -Infinity;
-  //
-  //     selectedEntities.forEach((s) => {
-  //       const [w, h] = getEntitySize(s);
-  //       minX = Math.min(s.x, minX);
-  //       minY = Math.min(s.y, minY);
-  //       maxX = Math.max(s.x + w, maxX);
-  //       maxY = Math.max(s.y + h, maxY);
-  //     });
-  //
-  //     return [
-  //       [minX, minY],
-  //       [maxX, maxY],
-  //     ];
-  //   }, [getSelected]);
 
   const isSelected = useCallback(
     (id: string) => {
@@ -157,7 +93,7 @@ export default function MapEntityLayer({
         }
 
         const deleted = selected.map((s) => s.id);
-
+        commitSelectionSet({ sceneId, selection: [] });
         deleteEntities({
           input: {
             deleted,
@@ -196,8 +132,6 @@ export default function MapEntityLayer({
             return (
               <MapEntity
                 key={data.id}
-                sceneId={sceneId}
-                gridSize={60}
                 scale={scale}
                 id={data.id}
                 entity={data}
@@ -215,8 +149,6 @@ export default function MapEntityLayer({
                   scale={scale}
                   id={data.id}
                   entity={data}
-                  sceneId={sceneId}
-                  gridSize={60}
                   offsetX={offsetX}
                   offsetY={offsetY}
                 />

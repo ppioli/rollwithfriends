@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b442aabb541f9f064f13750357d47c10>>
+ * @generated SignedSource<<adf30550049724d88a31e064ebcc83c4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -28,7 +28,7 @@ export type MessageListPaginationFragment = {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
-    "defaultValue": 30,
+    "defaultValue": 10,
     "kind": "LocalArgument",
     "name": "count"
   },
@@ -305,16 +305,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "61829ea9e9b76ec6b17ae848e3e503b6",
+    "cacheID": "5515633882f407c005bbda1fd2b675c1",
     "id": null,
     "metadata": {},
     "name": "MessageListPaginationFragment",
     "operationKind": "query",
-    "text": "query MessageListPaginationFragment(\n  $count: Int = 30\n  $cursor: String = null\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...MessageList_campaign_1G22uz\n    id\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign_1G22uz on Campaign {\n  messages(after: $cursor, first: $count) {\n    totalCount\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n"
+    "text": "query MessageListPaginationFragment(\n  $count: Int = 10\n  $cursor: String = null\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...MessageList_campaign_1G22uz\n    id\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign_1G22uz on Campaign {\n  messages(after: $cursor, first: $count) {\n    totalCount\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "3efd3bef64ae81dcbe9cd0bddedc2b51";
+(node as any).hash = "7b08da65a5700e3918c21e00fd468267";
 
 export default node;

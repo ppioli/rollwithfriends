@@ -14,7 +14,7 @@ const graphql = require("babel-plugin-relay/macro");
 
 export const CampaignQuery = graphql`
   query CampaignQuery($id: ID!, $selectedScene: ID) {
-    ...EntryList_rootQuery @arguments(count: 30)
+    ...EntryList_rootQuery
     campaigns(where: { id: { eq: $id } }) {
       id
       name

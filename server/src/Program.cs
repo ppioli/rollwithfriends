@@ -174,10 +174,15 @@ builder.Services
     .AddAuthorization()
     .AddMutationConventions(applyToAllMutations: true)
     .AddSocketSessionInterceptor<SocketSessionInterceptor>()
+    .ModifyRequestOptions(
+        opt =>
+        {
+            opt.IncludeExceptionDetails = builder.Environment.IsDevelopment();
+        }) 
     .AddErrorFilter(
         error =>
         {
-            System.Console.WriteLine(error);
+            logger.Information(error.Exception, error.Message);
 
             return error;
         });

@@ -9,7 +9,7 @@ const graphql = require("babel-plugin-relay/macro");
 
 export const EntryViewerPageQuery = graphql`
   query EntryViewerPageQuery {
-    ...EntryList_rootQuery @arguments(count: 30)
+    ...EntryList_rootQuery
     ...EntryViewerEditor_rootQuery
   }
 `;

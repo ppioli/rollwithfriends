@@ -6,8 +6,8 @@ import { ReactNode, useMemo, useRef } from "react";
 import { useMapEntityUpdateMutation } from "features/mapEntity/MapEntity.graphql";
 import { MapEntityUpdateInput } from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
 import { useFragment } from "react-relay";
-import { getEntitySize } from "features/battleMap/mapEntityLayer/GridSize";
 import { EntitySelectBox_scene$key } from "features/battleMap/mapEntityLayer/__generated__/EntitySelectBox_scene.graphql";
+import { useSelectedScene } from "pages/scene/SelectedSceneContext";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -25,11 +25,10 @@ export function EntitySelectBox({
   query,
 }: EntitySelectBoxProps) {
   const update = useMapEntityUpdateMutation();
-
-  const { cellSize, selected } = useFragment(
+  const { getEntitySize, cellSize } = useSelectedScene();
+  const { selected } = useFragment(
     graphql`
       fragment EntitySelectBox_scene on Scene {
-        cellSize
         selected {
           id
           x
@@ -56,7 +55,7 @@ export function EntitySelectBox({
         maxY = -Infinity;
 
       selectedEntities.forEach((s) => {
-        const [w, h] = getEntitySize(s, cellSize ?? 30);
+        const [w, h] = getEntitySize(s);
         minX = Math.min(s.x, minX);
         minY = Math.min(s.y, minY);
         maxX = Math.max(s.x + w, maxX);
@@ -67,7 +66,7 @@ export function EntitySelectBox({
         [minX, minY],
         [maxX, maxY],
       ];
-    }, [cellSize, selected]);
+    }, [getEntitySize, selected]);
 
   const [[sx, sy], [ex, ey]] = selectionBounds ?? [
     [0, 0],
@@ -89,11 +88,23 @@ export function EntitySelectBox({
     const ssy = sy + dy;
 
     const entities: MapEntityUpdateInput[] = (selected ?? []).map((e) => {
-      const [width, height] = getEntitySize(e, cellSize ?? 0);
+      const [width, height] = getEntitySize(e);
+      const snapToGrid = e.type === "NPC5_E";
+      let x = ssx + (e.x - ssx + dx) * rw;
+      let y = ssy + (e.y - ssy + dy) * rh;
+
+      if (snapToGrid) {
+        x = Math.round(Math.round(x / cellSize) * cellSize);
+        y = Math.round(Math.round(y / cellSize) * cellSize);
+      } else {
+        x = Math.round(x);
+        y = Math.round(y);
+      }
+
       return {
         id: e.id,
-        x: Math.round(ssx + (e.x - ssx + dx) * rw),
-        y: Math.round(ssy + (e.y - ssy + dy) * rh),
+        x,
+        y,
         width: Math.round(width * rw),
         height: Math.round(height * rh),
       };

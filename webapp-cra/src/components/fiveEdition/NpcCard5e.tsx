@@ -117,7 +117,7 @@ interface AbilityCardProps {
 
 function AbilityCard({ value, label }: AbilityCardProps) {
   return (
-    <div className={"flex flex-col items-center"}>
+    <div className={"flex flex-col items-center "}>
       <div>{label}</div>
       <div className={"bg-darkest rounded absolute w-16 h-16 relative"}>
         <div className={"absolute inset-0 flex justify-center items-center"}>
@@ -126,6 +126,7 @@ function AbilityCard({ value, label }: AbilityCardProps) {
           </div>
         </div>
         <div
+          style={{ left: 0, right: 0 }}
           className={
             "absolute flex justify-center inset-x-0 h-4 bottom-0 text-center"
           }

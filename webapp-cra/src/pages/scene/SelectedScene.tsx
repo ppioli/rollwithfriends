@@ -2,7 +2,7 @@ import {
   SelectedScene_scene$data,
   SelectedScene_scene$key,
 } from "pages/scene/__generated__/SelectedScene_scene.graphql";
-import { useRef } from "react";
+import { useCallback, useRef } from "react";
 import { useFragment } from "react-relay";
 import { useResizeDetector } from "react-resize-detector";
 import Grid from "features/battleMap/grid/Grid";
@@ -17,7 +17,13 @@ import {
 import classNames from "classnames";
 import { loadImages } from "utils/imageLoader";
 import { FileUploadDefinition, uploadBatch } from "utils/HttpHelpers";
-import { commitCellSize } from "features/battleMap/mapEntityLayer/GridSize";
+import {
+  EntityData,
+  SelectedSceneContextProvider,
+} from "pages/scene/SelectedSceneContext";
+import { commitSelectionBoxSet } from "features/battleMap/mapEntityLayer/Selection.graphql";
+
+const graphql = require("babel-plugin-relay/macro");
 
 export interface SceneProps {
   id: string;
@@ -25,10 +31,7 @@ export interface SceneProps {
   className: string;
 }
 
-const graphql = require("babel-plugin-relay/macro");
-
 export function SelectedScene({ id, scene, className }: SceneProps) {
-  commitCellSize(60, id);
   console.info(
     " ++++++++ ++++++++ ++++++++ ++++++++ Redrawing scene ++++++++ ++++++++ ++++++++ ++++++++ "
   );
@@ -46,9 +49,26 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
 
   const { ref, width, height } = useResizeDetector();
   const containerRef = useRef<HTMLDivElement>(null);
-
   const commit = useMapEntityAddMutation();
   const commitNpc = useMapEntityNpcAddMutation();
+
+  const cellSize = 60;
+  const getEntitySize: (entity: EntityData) => [number, number] = useCallback(
+    (data: EntityData) => {
+      if (data.type === "IMAGE") {
+        return [data.width, data.height];
+      }
+
+      if (data.type === "NPC5_E") {
+        return [data.width * cellSize, data.height * cellSize];
+      }
+
+      throw new Error(
+        `Could not determine size for entity of type ${data.type}`
+      );
+    },
+    [cellSize]
+  );
   const { handlers, fileDragging, offsetX, offsetY, scale } = useMapControl({
     selectBoxRef,
     onChange: ([dx, dy], scale) => {
@@ -86,9 +106,11 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
       });
     },
     onEntryDropped: (entry) => {
+      const x = Math.round((-offsetX + entry.x) / scale);
+      const y = Math.round((-offsetY + entry.y) / scale);
       const entity = {
-        x: -offsetX + Math.round(entry.x / scale),
-        y: -offsetY + Math.round(entry.y / scale),
+        x: Math.round(x / cellSize) * cellSize,
+        y: Math.round(y / cellSize) * cellSize,
         npcId: entry.entryId,
         name: entry.name,
       };
@@ -99,68 +121,83 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
         },
       });
     },
-    onBoxSelect: ({ x, y, width, height }) => {},
-  });
+    onBoxSelect: (selectionBox) => {
+      selectionBox.x = (-offsetX + selectionBox.x) / scale;
+      selectionBox.y = (-offsetY + selectionBox.y) / scale;
+      selectionBox.width = selectionBox.width / scale;
+      selectionBox.height = selectionBox.height / scale;
 
-  const cellSize = 60;
+      commitSelectionBoxSet({
+        sceneId: id,
+        add: false,
+        selectionBox,
+        getEntitySize,
+      });
+    },
+  });
 
   const layerProps = {
     offsetX,
     offsetY,
-    cellSize,
     scale,
   };
 
   const draw = width && height && width > 50 && height > 50;
 
   return (
-    <div ref={ref} className={className}>
-      <div
-        {...handlers}
-        className={classNames(
-          "w-full h-full relative touch-none overflow-hidden"
-        )}
-      >
-        {draw && (
-          <div className={classNames("absolute")} ref={containerRef}>
-            <Grid
-              {...layerProps}
-              width={width}
-              height={height}
-              className={"absolute"}
-            />
+    <SelectedSceneContextProvider
+      sceneId={id}
+      cellSize={cellSize}
+      getEntitySize={getEntitySize}
+    >
+      <div ref={ref} className={className}>
+        <div
+          {...handlers}
+          className={classNames(
+            "w-full h-full relative touch-none overflow-hidden"
+          )}
+        >
+          {draw && (
+            <div className={classNames("absolute")} ref={containerRef}>
+              <Grid
+                {...layerProps}
+                width={width}
+                height={height}
+                className={"absolute"}
+              />
 
-            <MapEntityLayer sceneId={id} {...layerProps} entities={data} />
-          </div>
-        )}
-        <div className={"absolute left-1 top-1"}>
-          {`Position (${offsetX},${offsetY})`} <br />
-          {`Canvas size (${width},${height})`} <br />
-          {`Scale (${scale})`} <br />
-        </div>
-        {false && fileDragging && (
-          <div
-            className={
-              "absolute inset-y-0 left-0 editor-width flex justify-center content-center flex-wrap"
-            }
-          >
-            <div className={"text-center"}>
-              <h3>Drag ICON</h3>
-              <h1>Drop to add</h1>
+              <MapEntityLayer {...layerProps} entities={data} />
             </div>
+          )}
+          <div className={"absolute left-1 top-1"}>
+            {`Position (${offsetX},${offsetY})`} <br />
+            {`Canvas size (${width},${height})`} <br />
+            {`Scale (${scale})`} <br />
           </div>
-        )}
-        <Toolbar
-          sceneId={id}
-          className={
-            "absolute top-0 bottom-0 left-1 flex flex-col justify-center"
-          }
-        />
-        <div className={"absolute"} ref={selectBoxRef}>
-          <div className={"w-full h-full border-2 border-primary absolute"} />
-          <div className={"w-full h-full bg-primary opacity-30 absolute"} />
+          {false && fileDragging && (
+            <div
+              className={
+                "absolute inset-y-0 left-0 editor-width flex justify-center content-center flex-wrap"
+              }
+            >
+              <div className={"text-center"}>
+                <h3>Drag ICON</h3>
+                <h1>Drop to add</h1>
+              </div>
+            </div>
+          )}
+          <Toolbar
+            sceneId={id}
+            className={
+              "absolute top-0 bottom-0 left-1 flex flex-col justify-center"
+            }
+          />
+          <div className={"absolute"} ref={selectBoxRef}>
+            <div className={"w-full h-full border-2 border-primary absolute"} />
+            <div className={"w-full h-full bg-primary opacity-30 absolute"} />
+          </div>
         </div>
       </div>
-    </div>
+    </SelectedSceneContextProvider>
   );
 }

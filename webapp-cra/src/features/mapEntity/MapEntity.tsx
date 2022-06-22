@@ -9,13 +9,11 @@ import {
   commitSelectionAdd,
   commitSelectionSet,
 } from "features/battleMap/mapEntityLayer/Selection.graphql";
-import { getEntitySize } from "features/battleMap/mapEntityLayer/GridSize";
+import { useSelectedScene } from "pages/scene/SelectedSceneContext";
 
 export interface MapEntityData {
   id: string;
-  sceneId: string;
   entity: MapEntityFragment$key;
-  gridSize: number;
   offsetX?: number;
   offsetY?: number;
 }
@@ -24,11 +22,10 @@ export function MapEntity({
   id,
   entity,
   scale,
-  gridSize,
   offsetX,
   offsetY,
-  sceneId,
 }: MapEntityData & { scale: number }) {
+  const { sceneId, getEntitySize } = useSelectedScene();
   const data = useFragment(MapEntityFragment, entity);
 
   const onClick = useCallback(
@@ -42,7 +39,7 @@ export function MapEntity({
     [id, sceneId]
   );
 
-  const [width, height] = getEntitySize(data, gridSize);
+  const [width, height] = getEntitySize(data);
 
   if (data.content.__typename === "ImageContent") {
     const props: MapGraphicProps = {

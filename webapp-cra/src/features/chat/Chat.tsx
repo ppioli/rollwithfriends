@@ -39,7 +39,7 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
   const items = data.messages?.edges ?? [];
   const rowCount = data.messages?.totalCount ?? 0;
 
-  console.log("total count ", items.length, rowCount);
+  console.log(`Items ${items.length} Total ${rowCount}`);
 
   const isItemLoaded = (index: number) => {
     return index < (items?.length ?? 0);
@@ -65,7 +65,7 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
             >
               {({ onItemsRendered, ref }) => (
                 <List
-                  className="List"
+                  className="scroll-none"
                   height={height}
                   width={width}
                   itemCount={rowCount}
