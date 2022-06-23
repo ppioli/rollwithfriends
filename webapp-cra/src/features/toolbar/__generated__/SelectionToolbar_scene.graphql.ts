@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<31da649ae3c9ff67755cde9a2030c9f0>>
+ * @generated SignedSource<<9394930ee33c3cf4f21a035867f2060a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -21,6 +21,7 @@ export type SelectionToolbar_scene$data = {
     readonly width: number;
     readonly height: number;
     readonly type: MapEntityType;
+    readonly name: string;
     readonly content: {
       readonly __typename: "ImageContent";
       readonly fileId: number;
@@ -111,6 +112,13 @@ return {
               "args": null,
               "kind": "ScalarField",
               "name": "type",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "name",
               "storageKey": null
             },
             {

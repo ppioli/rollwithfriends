@@ -50,6 +50,7 @@ export const MapEntityFragment = graphql`
     width
     height
     type
+    name
     content {
       __typename
       ... on ImageContent {

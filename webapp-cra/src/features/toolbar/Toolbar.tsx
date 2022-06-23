@@ -23,10 +23,12 @@ export function Toolbar({ query, ...divProps }: ToolbarProps) {
     <TabPanel {...divProps} horizontal={true}>
       {[
         {
-          label: "Tokens",
+          label: "Selection",
           component: <SelectionToolbar query={data} />,
         },
         { label: "Tools", component: <GeneralToolbar /> },
+        { label: "Scenes", component: <GeneralToolbar /> },
+        { label: "Participants", component: <GeneralToolbar /> },
       ]}
     </TabPanel>
   );
@@ -34,7 +36,7 @@ export function Toolbar({ query, ...divProps }: ToolbarProps) {
 
 export function GeneralToolbar() {
   return (
-    <div className={"bg-dark w-full h-32"}>
+    <div className={"bg-dark w-full h-full"}>
       <button type={"button"} className={"btn btn-primary"}>
         Send ping
       </button>

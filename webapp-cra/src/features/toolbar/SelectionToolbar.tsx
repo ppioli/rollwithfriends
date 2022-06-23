@@ -4,7 +4,9 @@ import {
   SelectionToolbar_scene$key,
 } from "features/toolbar/__generated__/SelectionToolbar_scene.graphql";
 import { useFragment } from "react-relay";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
+import { Npc5EContentToolbar } from "features/toolbar/character5E/Npc5EContentToolbar";
+import { Size } from "features/mapEntity/__generated__/MapEntityFragment.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -37,7 +39,14 @@ type Npc5E = {
   maximumHp: number | null;
   currentHp: number | null;
   temporaryHp: number | null;
+  size: Size | null;
+  name: string | null;
+  npcId: string | null;
 };
+
+function mergeValue<T>(existingValue: T | null, value: T) {
+  return existingValue === value ? value : null;
+}
 
 type SelectionType = Npc5E | Mixed | Unknown | Empty;
 
@@ -59,23 +68,28 @@ function processSelection(data: SelectionToolbar_scene$data): SelectionType {
       const val: Npc5E = {
         type: "Npc5E",
         ids: [selection[0].id],
+        name: selection[0].name,
         ac: selection[0].content.ac,
         currentHp: selection[0].content.currentHp,
         maximumHp: selection[0].content.maximumHp,
         temporaryHp: selection[0].content.temporaryHp,
+        npcId: selection[0].content.npcId,
+        size: selection[0].content.size,
       };
 
       for (let ix = 1; ix < selection.length; ix++) {
         const content = selection[ix].content;
+        val.name = mergeValue(selection[ix].name, val.name);
         if (content.__typename === "Npc5EContent") {
           val.ids.push(selection[ix].id);
-          val.ac = content.ac === val.ac ? val.ac : null;
-          val.currentHp =
-            content.currentHp === val.currentHp ? val.currentHp : null;
-          val.maximumHp =
-            content.maximumHp === val.maximumHp ? val.maximumHp : null;
-          val.temporaryHp =
-            content.temporaryHp === val.temporaryHp ? val.temporaryHp : null;
+
+          val.ac = mergeValue(content.ac, val.ac);
+          val.currentHp = mergeValue(content.currentHp, val.currentHp);
+          val.maximumHp = mergeValue(content.maximumHp, val.maximumHp);
+          val.temporaryHp = mergeValue(content.temporaryHp, val.temporaryHp);
+
+          val.npcId = mergeValue(content.npcId, val.npcId);
+          val.size = mergeValue(content.size, val.size);
         }
       }
       return val;
@@ -97,7 +111,7 @@ export function SelectionToolbar({ query }: SelectionToolbarProps) {
 
   if (selection.type === "Empty") {
     content = (
-      <div className={"w-full h-full flex justify-center align-center"}>
+      <div className={"w-full h-full flex justify-center items-center"}>
         Empty Selection
       </div>
     );
@@ -105,7 +119,7 @@ export function SelectionToolbar({ query }: SelectionToolbarProps) {
 
   if (selection.type === "Unknown") {
     content = (
-      <div className={"w-full h-full flex justify-center align-center"}>
+      <div className={"w-full h-full flex justify-center items-center"}>
         ???
       </div>
     );
@@ -121,13 +135,12 @@ export function SelectionToolbar({ query }: SelectionToolbarProps) {
   if (selection.type === "Npc5E") {
     content = (
       <div className={"w-full h-full flex justify-center align-center"}>
-        <div>AC {selection.ac ?? "<>"}</div>
-        <div>HP {selection.currentHp ?? "<>"}</div>
-        <div>MAX HP {selection.maximumHp ?? "<>"}</div>
-        <div>TMP HP {selection.temporaryHp ?? "<>"}</div>
+        <Suspense fallback={"..."}>
+          <Npc5EContentToolbar {...selection} />
+        </Suspense>
       </div>
     );
   }
 
-  return <div>{content}</div>;
+  return <div className={"w-full h-full bg-dark"}>{content}</div>;
 }

@@ -1,14 +1,14 @@
 import { SvgProps } from "components/icons/Dice";
 
 export interface DuoToneSvgProps extends SvgProps {
-  accentFill: string;
+  accentFill?: string;
 }
 
 export function Shield({ accentFill, size, fill }: DuoToneSvgProps) {
   return (
     <svg
-      width="60"
-      height="60"
+      width={size}
+      height={size}
       version="1.1"
       viewBox="0 0 15.875 15.875"
       xmlns="http://www.w3.org/2000/svg"
@@ -32,8 +32,8 @@ export function Shield({ accentFill, size, fill }: DuoToneSvgProps) {
 export function Wing({ accentFill, size, fill }: DuoToneSvgProps) {
   return (
     <svg
-      width="60"
-      height="60"
+      width={size}
+      height={size}
       version="1.1"
       viewBox="0 0 15.875 15.875"
       xmlns="http://www.w3.org/2000/svg"
@@ -58,8 +58,8 @@ export function Wing({ accentFill, size, fill }: DuoToneSvgProps) {
 export function Swim({ accentFill, size, fill }: DuoToneSvgProps) {
   return (
     <svg
-      width="60"
-      height="60"
+      width={size}
+      height={size}
       version="1.1"
       viewBox="0 0 15.875 15.875"
       xmlns="http://www.w3.org/2000/svg"
@@ -91,8 +91,8 @@ export function Swim({ accentFill, size, fill }: DuoToneSvgProps) {
 export function Boot({ accentFill, size, fill }: DuoToneSvgProps) {
   return (
     <svg
-      width="60"
-      height="60"
+      width={size}
+      height={size}
       version="1.1"
       viewBox="0 0 15.875 15.875"
       xmlns="http://www.w3.org/2000/svg"
@@ -116,8 +116,8 @@ export function Boot({ accentFill, size, fill }: DuoToneSvgProps) {
 export function Hearth({ accentFill, size, fill }: DuoToneSvgProps) {
   return (
     <svg
-      width="60"
-      height="60"
+      width={size}
+      height={size}
       version="1.1"
       viewBox="0 0 15.875 15.875"
       xmlns="http://www.w3.org/2000/svg"

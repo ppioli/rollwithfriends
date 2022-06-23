@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8fb6f4a65f6603c88b7e8605d40d83ce>>
+ * @generated SignedSource<<0f6c4e35f09ae6cfd71789a3875fa66f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -282,12 +282,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "9201713fbee8be0a5f622371a9b6ae27",
+    "cacheID": "48990792cf3e652e2b35fdcbd5aaa0f7",
     "id": null,
     "metadata": {},
     "name": "MapEntityNpcAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityNpcAddMutation(\n  $input: MapEntitiesNpcAddInput!\n) {\n  mapEntityNpcAdd(input: $input) {\n    mapEntity {\n      id\n      name\n      ...MapEntityFragment\n      content {\n        __typename\n        ... on Npc5EContent {\n          npcId\n        }\n      }\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n      size\n      ac\n      maximumHp\n      currentHp\n      temporaryHp\n    }\n  }\n}\n"
+    "text": "mutation MapEntityNpcAddMutation(\n  $input: MapEntitiesNpcAddInput!\n) {\n  mapEntityNpcAdd(input: $input) {\n    mapEntity {\n      id\n      name\n      ...MapEntityFragment\n      content {\n        __typename\n        ... on Npc5EContent {\n          npcId\n        }\n      }\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  name\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n      size\n      ac\n      maximumHp\n      currentHp\n      temporaryHp\n    }\n  }\n}\n"
   }
 };
 })();

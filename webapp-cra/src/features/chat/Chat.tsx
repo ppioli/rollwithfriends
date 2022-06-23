@@ -63,7 +63,6 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
       setSize: (index: number, size: number) => {
         sizeMap.current[index] = size;
         listRef.current.resetAfterIndex(index);
-        console.log(sizeMap);
       },
       messages: items,
     }),

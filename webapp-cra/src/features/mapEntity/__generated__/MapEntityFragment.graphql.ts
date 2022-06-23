@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ec4d730bfa75f6b2713da474d7ff52a6>>
+ * @generated SignedSource<<ad66bfa81a50e58899e6784f10654aa0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -19,6 +19,7 @@ export type MapEntityFragment$data = {
   readonly width: number;
   readonly height: number;
   readonly type: MapEntityType;
+  readonly name: string;
   readonly content: {
     readonly __typename: "ImageContent";
     readonly fileId: number;
@@ -88,6 +89,13 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "ScalarField",
       "name": "type",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "name",
       "storageKey": null
     },
     {
@@ -176,6 +184,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "31d2afc5ab14e9779214070c2a1c6679";
+(node as any).hash = "5fe98fa5e71bb351572d5b3855505454";
 
 export default node;

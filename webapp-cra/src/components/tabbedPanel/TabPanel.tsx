@@ -10,10 +10,12 @@ export interface TabPanelTab<T> {
 interface TabPanelProps extends Omit<HTMLProps<HTMLDivElement>, "children"> {
   children: TabPanelTab<any>[];
   horizontal?: boolean;
+  container?: string;
 }
 
 export function TabPanel({
   children,
+  container,
   horizontal = false,
   ...divProps
 }: TabPanelProps) {
@@ -29,7 +31,7 @@ export function TabPanel({
   return (
     <div {...divProps}>
       <div
-        className={classNames("w-full h-full flex", {
+        className={classNames("w-full h-full flex ", {
           "flex-col": !horizontal,
           "flex-row": horizontal,
         })}
@@ -54,7 +56,9 @@ export function TabPanel({
             </button>
           ))}
         </div>
-        {children[selected].component}
+        <div className={classNames(container, "grow")}>
+          {children[selected].component}
+        </div>
       </div>
     </div>
   );

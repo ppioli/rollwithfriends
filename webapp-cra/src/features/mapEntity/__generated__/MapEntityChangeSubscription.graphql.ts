@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<5831760a866e62e67a6ca628d9975146>>
+ * @generated SignedSource<<88c862e1a91f0ef757509966781cdcc7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -163,6 +163,13 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "kind": "ScalarField",
+                "name": "name",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "content",
@@ -250,12 +257,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "d2481a2210f84e37a5fdbb88084a843c",
+    "cacheID": "6cf4e0818f01b19cd5b719fe8b35bc49",
     "id": null,
     "metadata": {},
     "name": "MapEntityChangeSubscription",
     "operationKind": "subscription",
-    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n      size\n      ac\n      maximumHp\n      currentHp\n      temporaryHp\n    }\n  }\n}\n"
+    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  name\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n      size\n      ac\n      maximumHp\n      currentHp\n      temporaryHp\n    }\n  }\n}\n"
   }
 };
 })();
