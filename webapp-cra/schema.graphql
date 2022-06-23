@@ -494,6 +494,9 @@ input MapEntityNpcAddInput {
   x: Int!
   y: Int!
   npcId: ID!
+  ac: Int!
+  maxHp: Int!
+  size: Size!
 }
 
 type MapEntityNpcAddPayload {
@@ -652,6 +655,11 @@ input NonPlayerCharacter5EFilterInput {
 
 type Npc5EContent {
   npcId: ID!
+  size: Size!
+  maximumHp: Int!
+  currentHp: Int!
+  temporaryHp: Int!
+  ac: Int!
   width: Int!
   height: Int!
   npc: NonPlayerCharacter5E!

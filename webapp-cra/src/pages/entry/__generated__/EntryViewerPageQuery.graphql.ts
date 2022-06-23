@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2fea76a8fd6f092a1660c9f81f4886a2>>
+ * @generated SignedSource<<b09383810010fbe2b888c67af54510f3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -48,7 +48,47 @@ v3 = {
   "name": "description",
   "storageKey": null
 },
-v4 = [
+v4 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "ArmorClassOption",
+  "kind": "LinkedField",
+  "name": "armorClasses",
+  "plural": true,
+  "selections": [
+    (v3/*: any*/),
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "armorClass",
+      "storageKey": null
+    }
+  ],
+  "storageKey": null
+},
+v5 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "hitPointsAverage",
+  "storageKey": null
+},
+v6 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "hitPointsFormula",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "sizes",
+  "storageKey": null
+},
+v8 = [
   {
     "alias": null,
     "args": null,
@@ -124,6 +164,10 @@ return {
                 "selections": [
                   (v1/*: any*/),
                   (v2/*: any*/),
+                  (v4/*: any*/),
+                  (v5/*: any*/),
+                  (v6/*: any*/),
+                  (v7/*: any*/),
                   {
                     "alias": null,
                     "args": null,
@@ -256,39 +300,9 @@ return {
             ],
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "hitPointsFormula",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "hitPointsAverage",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "ArmorClassOption",
-            "kind": "LinkedField",
-            "name": "armorClasses",
-            "plural": true,
-            "selections": [
-              (v3/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "armorClass",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          },
+          (v6/*: any*/),
+          (v5/*: any*/),
+          (v4/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -303,13 +317,7 @@ return {
             "name": "alignments",
             "storageKey": null
           },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "sizes",
-            "storageKey": null
-          },
+          (v7/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -317,7 +325,7 @@ return {
             "kind": "LinkedField",
             "name": "savingThrows",
             "plural": true,
-            "selections": (v4/*: any*/),
+            "selections": (v8/*: any*/),
             "storageKey": null
           },
           {
@@ -327,7 +335,7 @@ return {
             "kind": "LinkedField",
             "name": "skills",
             "plural": true,
-            "selections": (v4/*: any*/),
+            "selections": (v8/*: any*/),
             "storageKey": null
           },
           {
@@ -473,12 +481,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "ae6f18dd55b48ffb0babf4f0af00874e",
+    "cacheID": "2a92bcb178138c052ab3f12118712e39",
     "id": null,
     "metadata": {},
     "name": "EntryViewerPageQuery",
     "operationKind": "query",
-    "text": "query EntryViewerPageQuery {\n  ...EntryList_rootQuery\n  ...EntryViewerEditor_rootQuery\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n}\n\nfragment EntryList_rootQuery on RootQuery {\n  entries(first: 10) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment EntryViewerEditor_rootQuery on RootQuery {\n  entry {\n    id\n    ...NpcCard5e_NonPlayerCharacter5E\n  }\n}\n\nfragment NpcCard5e_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n  page\n  sourceId\n  avatarId\n  source {\n    shortName\n    id\n  }\n  type {\n    label\n    tags\n  }\n  hitPointsFormula\n  hitPointsAverage\n  armorClasses {\n    description\n    armorClass\n  }\n  challangeRating\n  alignments\n  sizes\n  savingThrows {\n    key\n    value\n  }\n  skills {\n    key\n    value\n  }\n  languages {\n    name\n  }\n  senses {\n    description\n    range\n  }\n  passivePerception\n  resistances {\n    condition\n    types\n  }\n  speeds {\n    walk\n    fly\n    swim\n  }\n  strength\n  dexterity\n  constitution\n  intelligence\n  wisdom\n  charisma\n}\n"
+    "text": "query EntryViewerPageQuery {\n  ...EntryList_rootQuery\n  ...EntryViewerEditor_rootQuery\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  id\n  name\n  armorClasses {\n    description\n    armorClass\n  }\n  hitPointsAverage\n  hitPointsFormula\n  sizes\n}\n\nfragment EntryList_rootQuery on RootQuery {\n  entries(first: 10) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n\nfragment EntryViewerEditor_rootQuery on RootQuery {\n  entry {\n    id\n    ...NpcCard5e_NonPlayerCharacter5E\n  }\n}\n\nfragment NpcCard5e_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n  page\n  sourceId\n  avatarId\n  source {\n    shortName\n    id\n  }\n  type {\n    label\n    tags\n  }\n  hitPointsFormula\n  hitPointsAverage\n  armorClasses {\n    description\n    armorClass\n  }\n  challangeRating\n  alignments\n  sizes\n  savingThrows {\n    key\n    value\n  }\n  skills {\n    key\n    value\n  }\n  languages {\n    name\n  }\n  senses {\n    description\n    range\n  }\n  passivePerception\n  resistances {\n    condition\n    types\n  }\n  speeds {\n    walk\n    fly\n    swim\n  }\n  strength\n  dexterity\n  constitution\n  intelligence\n  wisdom\n  charisma\n}\n"
   }
 };
 })();

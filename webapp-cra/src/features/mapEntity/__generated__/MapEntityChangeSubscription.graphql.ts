@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7a5197b84ab613f600e545f35751f647>>
+ * @generated SignedSource<<5831760a866e62e67a6ca628d9975146>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -198,6 +198,41 @@ return {
                         "kind": "ScalarField",
                         "name": "npcId",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "size",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "ac",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "maximumHp",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "currentHp",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "temporaryHp",
+                        "storageKey": null
                       }
                     ],
                     "type": "Npc5EContent",
@@ -215,12 +250,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a35d79ce6e48de027398cfb8a103a8d1",
+    "cacheID": "d2481a2210f84e37a5fdbb88084a843c",
     "id": null,
     "metadata": {},
     "name": "MapEntityChangeSubscription",
     "operationKind": "subscription",
-    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n"
+    "text": "subscription MapEntityChangeSubscription(\n  $sceneId: ID!\n) {\n  mapEntityChanged(sceneId: $sceneId) {\n    type\n    userId\n    payload {\n      id\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n      size\n      ac\n      maximumHp\n      currentHp\n      temporaryHp\n    }\n  }\n}\n"
   }
 };
 })();

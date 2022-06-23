@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f3529e48c51c7170936a7b28602b2fec>>
+ * @generated SignedSource<<fd63abb27e52c6ac918b881b9054abfe>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -128,6 +128,52 @@ return {
                   {
                     "alias": null,
                     "args": null,
+                    "concreteType": "ArmorClassOption",
+                    "kind": "LinkedField",
+                    "name": "armorClasses",
+                    "plural": true,
+                    "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "description",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "armorClass",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hitPointsAverage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hitPointsFormula",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "sizes",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
                     "kind": "ScalarField",
                     "name": "__typename",
                     "storageKey": null
@@ -185,12 +231,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "773669368bd555587dfed2359cb75600",
+    "cacheID": "d989a4c149deeaad1ee5a2ccee757d1f",
     "id": null,
     "metadata": {},
     "name": "EntryList_Query",
     "operationKind": "query",
-    "text": "query EntryList_Query(\n  $count: Int = 10\n  $cursor: String = null\n) {\n  ...EntryList_rootQuery_1G22uz\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  name\n}\n\nfragment EntryList_rootQuery_1G22uz on RootQuery {\n  entries(after: $cursor, first: $count) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query EntryList_Query(\n  $count: Int = 10\n  $cursor: String = null\n) {\n  ...EntryList_rootQuery_1G22uz\n}\n\nfragment EntryListItem_NonPlayerCharacter5E on NonPlayerCharacter5E {\n  id\n  name\n  armorClasses {\n    description\n    armorClass\n  }\n  hitPointsAverage\n  hitPointsFormula\n  sizes\n}\n\nfragment EntryList_rootQuery_1G22uz on RootQuery {\n  entries(after: $cursor, first: $count) {\n    totalCount\n    edges {\n      node {\n        id\n        ...EntryListItem_NonPlayerCharacter5E\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();

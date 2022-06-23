@@ -1,11 +1,12 @@
 using System.Security.Claims;
 using HotChocolate.Subscriptions;
 using Microsoft.AspNetCore.Authorization;
+using RollWithFriends.Models.Characters;
 using Server.EFModels;
 using Server.EFModels.Map;
 using Server.Graphql.Subscriptions;
 using server.Infraestructure;
-using Server.Services;
+
 using Path = System.IO.Path;
 
 namespace Server.Graphql.Mutations;
@@ -133,10 +134,9 @@ public class MapEntityMutation
                     n.Y,
                     n.Name,
                     input.SceneId,
-                    new Npc5EContent()
-                    {
-                        NpcId = n.NpcId
-                    }))
+                    new Npc5EContent( 
+                        n.NpcId, n.Size, n.MaxHp, n.Ac)
+                    ))
             .ToList();
 
         await db.AddRangeAsync(created);
@@ -244,6 +244,11 @@ public class MapEntityNpcAdd
     public string Name { get; set; } = null!;
     public int X { get; set; }
     public int Y { get; set; }
+
     [ID]
-    public int NpcId { get; set; } 
+    public int NpcId { get; set; }
+
+    public int Ac { get; set; }
+    public int MaxHp { get; set; }
+    public Size Size { get; set; }
 }

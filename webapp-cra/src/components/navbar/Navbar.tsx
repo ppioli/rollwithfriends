@@ -7,7 +7,7 @@ import {
 } from "components/navbar/NavbarItem";
 import classNames from "classnames";
 import { useToggle } from "utils/hooks/useToggle";
-import { Dice, DiceType } from "components/dices/Dice";
+import { Dice, DiceType } from "components/icons/Dice";
 
 const navbarMenuItems: NavbarItemProps[] = [
   { label: "Home", href: "/" },

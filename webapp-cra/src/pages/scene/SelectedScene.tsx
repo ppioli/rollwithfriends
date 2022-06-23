@@ -22,6 +22,7 @@ import {
 } from "pages/scene/SelectedSceneContext";
 import { commitSelectionBoxSet } from "features/battleMap/mapEntityLayer/Selection.graphql";
 import { Toolbar } from "features/toolbar/Toolbar";
+import { MapEntityNpcAddInput } from "features/mapEntity/__generated__/MapEntityNpcAddMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -107,20 +108,27 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
       });
     },
     onEntryDropped: (entry) => {
-      const x = Math.round((-offsetX + entry.x) / scale);
-      const y = Math.round((-offsetY + entry.y) / scale);
-      const entity = {
-        x: Math.round(x / cellSize) * cellSize,
-        y: Math.round(y / cellSize) * cellSize,
-        npcId: entry.entryId,
-        name: entry.name,
-      };
-      commitNpc({
-        input: {
-          sceneId: id,
-          entities: [entity],
-        },
-      });
+      debugger;
+      if (entry.type === "NonPlayerCharacter5E") {
+        const x = Math.round((-offsetX + entry.x) / scale);
+        const y = Math.round((-offsetY + entry.y) / scale);
+        const content = entry.content;
+        const entity: MapEntityNpcAddInput = {
+          x: Math.round(x / cellSize) * cellSize,
+          y: Math.round(y / cellSize) * cellSize,
+          npcId: content.id,
+          name: content.name,
+          size: content.sizes[0],
+          maxHp: content.hitPointsAverage,
+          ac: content.armorClasses[0].armorClass,
+        };
+        commitNpc({
+          input: {
+            sceneId: id,
+            entities: [entity],
+          },
+        });
+      }
     },
     onBoxSelect: (selectionBox) => {
       selectionBox.x = (-offsetX + selectionBox.x) / scale;

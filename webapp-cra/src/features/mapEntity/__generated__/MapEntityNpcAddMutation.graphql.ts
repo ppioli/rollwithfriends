@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b7d0c5d2d8430e1785f69532c0f4a21d>>
+ * @generated SignedSource<<8fb6f4a65f6603c88b7e8605d40d83ce>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,6 +10,7 @@
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
+export type Size = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
 export type MapEntitiesNpcAddInput = {
   sceneId: string;
   entities: ReadonlyArray<MapEntityNpcAddInput>;
@@ -19,6 +20,9 @@ export type MapEntityNpcAddInput = {
   x: number;
   y: number;
   npcId: string;
+  ac: number;
+  maxHp: number;
+  size: Size;
 };
 export type MapEntityNpcAddMutation$variables = {
   input: MapEntitiesNpcAddInput;
@@ -70,18 +74,11 @@ v3 = {
   "storageKey": null
 },
 v4 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "npcId",
-      "storageKey": null
-    }
-  ],
-  "type": "Npc5EContent",
-  "abstractKey": null
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "npcId",
+  "storageKey": null
 };
 return {
   "fragment": {
@@ -121,7 +118,14 @@ return {
                 "name": "content",
                 "plural": false,
                 "selections": [
-                  (v4/*: any*/)
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      (v4/*: any*/)
+                    ],
+                    "type": "Npc5EContent",
+                    "abstractKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -223,7 +227,49 @@ return {
                     "type": "ImageContent",
                     "abstractKey": null
                   },
-                  (v4/*: any*/)
+                  {
+                    "kind": "InlineFragment",
+                    "selections": [
+                      (v4/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "size",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "ac",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "maximumHp",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "currentHp",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "temporaryHp",
+                        "storageKey": null
+                      }
+                    ],
+                    "type": "Npc5EContent",
+                    "abstractKey": null
+                  }
                 ],
                 "storageKey": null
               }
@@ -236,12 +282,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "227806c70d77d38674444db0f8274d4d",
+    "cacheID": "9201713fbee8be0a5f622371a9b6ae27",
     "id": null,
     "metadata": {},
     "name": "MapEntityNpcAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityNpcAddMutation(\n  $input: MapEntitiesNpcAddInput!\n) {\n  mapEntityNpcAdd(input: $input) {\n    mapEntity {\n      id\n      name\n      ...MapEntityFragment\n      content {\n        __typename\n        ... on Npc5EContent {\n          npcId\n        }\n      }\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n"
+    "text": "mutation MapEntityNpcAddMutation(\n  $input: MapEntitiesNpcAddInput!\n) {\n  mapEntityNpcAdd(input: $input) {\n    mapEntity {\n      id\n      name\n      ...MapEntityFragment\n      content {\n        __typename\n        ... on Npc5EContent {\n          npcId\n        }\n      }\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n      size\n      ac\n      maximumHp\n      currentHp\n      temporaryHp\n    }\n  }\n}\n"
   }
 };
 })();

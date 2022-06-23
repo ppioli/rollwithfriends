@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9e2fe97f189788d08f3941c34ec53fab>>
+ * @generated SignedSource<<ec4d730bfa75f6b2713da474d7ff52a6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,6 +10,7 @@
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
 export type MapEntityType = "IMAGE" | "NPC5_E" | "%future added value";
+export type Size = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type MapEntityFragment$data = {
   readonly id: string;
@@ -24,6 +25,11 @@ export type MapEntityFragment$data = {
   } | {
     readonly __typename: "Npc5EContent";
     readonly npcId: string;
+    readonly size: Size;
+    readonly ac: number;
+    readonly maximumHp: number;
+    readonly currentHp: number;
+    readonly temporaryHp: number;
   } | {
     // This will never be '%other', but we need some
     // value in case none of the concrete values match.
@@ -122,6 +128,41 @@ const node: ReaderFragment = {
               "kind": "ScalarField",
               "name": "npcId",
               "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "size",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "ac",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "maximumHp",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "currentHp",
+              "storageKey": null
+            },
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "temporaryHp",
+              "storageKey": null
             }
           ],
           "type": "Npc5EContent",
@@ -135,6 +176,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "46a064916597bc51d08905016cd47a78";
+(node as any).hash = "31d2afc5ab14e9779214070c2a1c6679";
 
 export default node;

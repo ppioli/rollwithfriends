@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<625a74cd81cd6c60041bd954b06b1945>>
+ * @generated SignedSource<<63e7f700e841f7bba1f6aa8d8eb1d63d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,16 +9,9 @@
 // @ts-nocheck
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
-export type MapEntityType = "IMAGE" | "NPC5_E" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type Toolbar_scene$data = {
-  readonly selected: ReadonlyArray<{
-    readonly type: MapEntityType;
-    readonly id: string;
-    readonly content: {
-      readonly npcId?: string;
-    };
-  }> | null;
+  readonly " $fragmentSpreads": FragmentRefs<"SelectionToolbar_scene">;
   readonly " $fragmentType": "Toolbar_scene";
 };
 export type Toolbar_scene$key = {
@@ -33,65 +26,15 @@ const node: ReaderFragment = {
   "name": "Toolbar_scene",
   "selections": [
     {
-      "kind": "ClientExtension",
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "concreteType": "MapEntity",
-          "kind": "LinkedField",
-          "name": "selected",
-          "plural": true,
-          "selections": [
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "type",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "kind": "ScalarField",
-              "name": "id",
-              "storageKey": null
-            },
-            {
-              "alias": null,
-              "args": null,
-              "concreteType": null,
-              "kind": "LinkedField",
-              "name": "content",
-              "plural": false,
-              "selections": [
-                {
-                  "kind": "InlineFragment",
-                  "selections": [
-                    {
-                      "alias": null,
-                      "args": null,
-                      "kind": "ScalarField",
-                      "name": "npcId",
-                      "storageKey": null
-                    }
-                  ],
-                  "type": "Npc5EContent",
-                  "abstractKey": null
-                }
-              ],
-              "storageKey": null
-            }
-          ],
-          "storageKey": null
-        }
-      ]
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "SelectionToolbar_scene"
     }
   ],
   "type": "Scene",
   "abstractKey": null
 };
 
-(node as any).hash = "7f8bf3326ede1b181e32c2d2d2970d2a";
+(node as any).hash = "833fc81a895b69e493a60e5ee211b21c";
 
 export default node;

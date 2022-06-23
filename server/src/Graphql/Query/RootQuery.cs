@@ -36,24 +36,22 @@ public class RootQuery
     [UsePaging(IncludeTotalCount = true)]
     [UseFiltering()]
     [Authorize()]
-    public async Task<IQueryable<NonPlayerCharacter5E>> Entries(
+    public IQueryable<NonPlayerCharacter5E> Entries(
         RwfDbContext db,
         ClaimsPrincipal user
     )
     {
-        await Task.Delay(1000);
         return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId());
     }
     
     [Authorize()]
     [UseFirstOrDefault()]
-    public async Task<IQueryable<NonPlayerCharacter5E>> Entry(
+    public IQueryable<NonPlayerCharacter5E> Entry(
         RwfDbContext db,
         ClaimsPrincipal user,
         [ID]int? id
     )
     {
-        await Task.Delay(1000);
         return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId() && c.Id == id);
     }
     

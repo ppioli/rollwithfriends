@@ -57,6 +57,11 @@ export const MapEntityFragment = graphql`
       }
       ... on Npc5EContent {
         npcId
+        size
+        ac
+        maximumHp
+        currentHp
+        temporaryHp
       }
     }
   }

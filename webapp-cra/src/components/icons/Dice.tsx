@@ -7,10 +7,13 @@ export enum DiceType {
   D4 = 4,
 }
 
-export interface DiceProps {
-  type: DiceType;
+export interface SvgProps {
   fill?: string;
   size?: number;
+}
+
+export interface DiceProps extends SvgProps {
+  type: DiceType;
 }
 
 export function Dice({ type, size = 50, fill = "#e2e3db" }: DiceProps) {

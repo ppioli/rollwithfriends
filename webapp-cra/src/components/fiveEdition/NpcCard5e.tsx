@@ -89,7 +89,6 @@ export function NpcCard5e({ npc, id }: NpcCard5eProps) {
             <MiscCard value={data.armorClasses[0].armorClass} label={"AC"} />
             <MiscCard value={data.hitPointsAverage} label={"AC"} />
             <MiscCard value={data.speeds.walk ?? 0} label={"AC"} />
-            <MiscCard value={12} label={"AC"} />
           </div>
         </div>
         <div className={"absolute top-0 left-0 p-4"}>

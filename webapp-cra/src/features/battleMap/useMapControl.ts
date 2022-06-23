@@ -10,19 +10,12 @@ import { useGesture } from "@use-gesture/react";
 import { localPoint } from "utils/localPoint";
 import { clamp } from "lodash";
 import { BoxProps } from "components/moveResizeHandler/BoxProps";
-
-export interface AddedEntry {
-  entryId: string;
-  type: string;
-  name: string;
-  x: number;
-  y: number;
-}
+import { AddEntryType } from "features/entryEditor/EntryListItem";
 
 interface MapControlProps {
   onChange: (deltaPos: Point, scale: number) => void;
   onFilesDropped: (files: File[]) => void;
-  onEntryDropped: (entry: AddedEntry) => void;
+  onEntryDropped: (entry: AddEntryType) => void;
   onBoxSelect: (params: BoxProps) => void;
   selectBoxRef: MutableRefObject<HTMLDivElement | null>;
 }
@@ -176,15 +169,14 @@ export default function useMapControl({
         const files = handleDropEvent(event);
         if (files.length > 0) {
           onFilesDropped(files);
-        } else if (event.dataTransfer.getData("entryType")) {
+        } else if (event.dataTransfer.getData("entry")) {
           // TODO local point this
-          const addedEntry: AddedEntry = {
-            entryId: event.dataTransfer.getData("entryId"),
-            type: event.dataTransfer.getData("entryType"),
-            name: event.dataTransfer.getData("entryName"),
-            x: dropX,
-            y: dropY,
-          };
+          const addedEntry: AddEntryType = JSON.parse(
+            event.dataTransfer.getData("entry")
+          );
+          addedEntry.x = dropX;
+          addedEntry.y = dropY;
+
           onEntryDropped(addedEntry);
         }
 
@@ -194,7 +186,7 @@ export default function useMapControl({
       // do it as an active event listener
       ref,
     }),
-    [bind, onFilesDropped, zoom]
+    [bind, onEntryDropped, onFilesDropped]
   );
 
   useEffect(() => {

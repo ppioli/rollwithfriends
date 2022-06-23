@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<f1878fcda1085becee84c28a82715f58>>
+ * @generated SignedSource<<fae12203aa402649b1ea32bf684c5b7b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -185,6 +185,41 @@ return {
                         "kind": "ScalarField",
                         "name": "npcId",
                         "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "size",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "ac",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "maximumHp",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "currentHp",
+                        "storageKey": null
+                      },
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "temporaryHp",
+                        "storageKey": null
                       }
                     ],
                     "type": "Npc5EContent",
@@ -237,12 +272,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "1b8c76bed585462627d9af85ed91c0f2",
+    "cacheID": "860cc8de33986ded35bc03b0e406433e",
     "id": null,
     "metadata": {},
     "name": "MapEntityAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MapEntityAddMutation(\n  $input: MapEntitiesAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      name\n      content {\n        __typename\n        ... on ImageContent {\n          fileId\n        }\n      }\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n    }\n  }\n}\n"
+    "text": "mutation MapEntityAddMutation(\n  $input: MapEntitiesAddInput!\n) {\n  mapEntityAdd(input: $input) {\n    mapEntity {\n      id\n      name\n      content {\n        __typename\n        ... on ImageContent {\n          fileId\n        }\n      }\n      ...MapEntityFragment\n    }\n  }\n}\n\nfragment MapEntityFragment on MapEntity {\n  id\n  x\n  y\n  width\n  height\n  type\n  content {\n    __typename\n    ... on ImageContent {\n      fileId\n    }\n    ... on Npc5EContent {\n      npcId\n      size\n      ac\n      maximumHp\n      currentHp\n      temporaryHp\n    }\n  }\n}\n"
   }
 };
 })();

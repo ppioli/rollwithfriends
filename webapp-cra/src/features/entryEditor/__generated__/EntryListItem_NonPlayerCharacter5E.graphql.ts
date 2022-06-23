@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dd1637a53d8848d4e0431201d104a238>>
+ * @generated SignedSource<<aa65c560bcfd073c707d4cecb1c5951f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,18 @@
 // @ts-nocheck
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
+export type Size = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type EntryListItem_NonPlayerCharacter5E$data = {
+  readonly id: string;
   readonly name: string;
+  readonly armorClasses: ReadonlyArray<{
+    readonly description: string;
+    readonly armorClass: number;
+  }>;
+  readonly hitPointsAverage: number;
+  readonly hitPointsFormula: string;
+  readonly sizes: ReadonlyArray<Size>;
   readonly " $fragmentType": "EntryListItem_NonPlayerCharacter5E";
 };
 export type EntryListItem_NonPlayerCharacter5E$key = {
@@ -29,7 +38,60 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "name",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "concreteType": "ArmorClassOption",
+      "kind": "LinkedField",
+      "name": "armorClasses",
+      "plural": true,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "description",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "armorClass",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hitPointsAverage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hitPointsFormula",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "sizes",
       "storageKey": null
     }
   ],
@@ -37,6 +99,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "8ccc2b53d6cda95f4076ee72b39b8c3f";
+(node as any).hash = "5f1ece01b23ec470fdcfc19c962404f4";
 
 export default node;

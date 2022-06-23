@@ -18,7 +18,6 @@ import {
 import _ from "lodash";
 import { useParticipantContext } from "features/participant/ParticipantsContext";
 import { formatDistanceToNow, parseISO } from "date-fns";
-import { Dice } from "components/dices/Dice";
 import { useResizeDetector } from "react-resize-detector";
 import { useBatchLoader } from "utils/hooks/useBatchLoader";
 import InfiniteLoader from "react-window-infinite-loader";
@@ -26,6 +25,7 @@ import {
   ListChildComponentProps,
   VariableSizeList as List,
 } from "react-window";
+import { Dice } from "components/icons/Dice";
 
 interface ChatProps extends HTMLProps<HTMLDivElement> {
   campaignId: string;
@@ -164,7 +164,6 @@ function RollMessageContent({ rolls }: RollMessageContentProps) {
   const total = _.sumBy(rolls, (roll) => _.sum(roll.result));
   return (
     <div className={"w-full relative h-16"}>
-      {/* eslint-disable-next-line react/jsx-no-undef */}
       <div className={"absolute inset-0 overflow-hidden"}>
         <div className={"flex w-full justify-center flex-nowrap"}>
           <Dice type={20} size={64} fill={"rgba(0,0,0,0.2)"} />

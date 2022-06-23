@@ -1,24 +1,14 @@
-import { HTMLProps, useEffect } from "react";
+import { HTMLProps } from "react";
 import { Toolbar_scene$key } from "features/toolbar/__generated__/Toolbar_scene.graphql";
-import { useFragment, useQueryLoader } from "react-relay";
-import _ from "lodash";
+import { useFragment } from "react-relay";
 import { TabPanel } from "components/tabbedPanel/TabPanel";
-import { Npc5EToolbar, Npc5EToolbarQuery } from "features/toolbar/Npc5EToolbar";
-import { Npc5EToolbarQuery as Npc5EToolbarQueryType } from "features/toolbar/__generated__/Npc5EToolbarQuery.graphql";
+import { SelectionToolbar } from "./SelectionToolbar";
 
 const graphql = require("babel-plugin-relay/macro");
 
 const Toolbar_scene = graphql`
   fragment Toolbar_scene on Scene {
-    selected {
-      type
-      id
-      content {
-        ... on Npc5EContent {
-          npcId
-        }
-      }
-    }
+    ...SelectionToolbar_scene
   }
 `;
 
@@ -28,30 +18,13 @@ export interface ToolbarProps extends HTMLProps<HTMLDivElement> {
 
 export function Toolbar({ query, ...divProps }: ToolbarProps) {
   const data = useFragment(Toolbar_scene, query);
-  const [npcQueryRef, loadNpc] =
-    useQueryLoader<Npc5EToolbarQueryType>(Npc5EToolbarQuery);
-
-  const selectionType = _.uniqBy(data.selected, (d) => d.type);
-  const npcSelected =
-    selectionType.length === 1 && selectionType[0].type === "NPC5_E";
-  let npcId: string | null = null;
-  if (npcSelected && data.selected?.length === 1) {
-    npcId = data.selected[0].content.npcId!;
-  }
-
-  useEffect(() => {
-    debugger;
-    if (npcId) {
-      loadNpc({ id: npcId });
-    }
-  }, [loadNpc, npcId]);
 
   return (
     <TabPanel {...divProps} horizontal={true}>
       {[
         {
           label: "Tokens",
-          component: <Npc5EToolbar query={npcQueryRef} />,
+          component: <SelectionToolbar query={data} />,
         },
         { label: "Tools", component: <GeneralToolbar /> },
       ]}
