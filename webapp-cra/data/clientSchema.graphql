@@ -1,0 +1,13 @@
+extend type RootQuery {
+    entryViewer: EntryViewer
+}
+
+type EntryViewer {
+    selectedEntry: ID
+}
+
+
+extend type Scene {
+    selected: [MapEntity!]
+    cellSize: Int!
+}
