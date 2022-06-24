@@ -3,11 +3,11 @@ import {
   ResizeMoveBoxEvent,
 } from "components/moveResizeHandler/MoveResizeBox";
 import { ReactNode, useMemo, useRef } from "react";
-import { useMapEntityUpdateMutation } from "features/mapEntity/MapEntity.graphql";
 import { MapEntityUpdateInput } from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
 import { useFragment } from "react-relay";
 import { EntitySelectBox_scene$key } from "features/battleMap/mapEntityLayer/__generated__/EntitySelectBox_scene.graphql";
 import { useSelectedScene } from "pages/scene/SelectedSceneContext";
+import { mapEntityPositionUpdateMutation } from "features/mapEntity/MapEntity.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -24,7 +24,6 @@ export function EntitySelectBox({
   sceneId,
   query,
 }: EntitySelectBoxProps) {
-  const update = useMapEntityUpdateMutation();
   const { getEntitySize, cellSize } = useSelectedScene();
   const { selected } = useFragment(
     graphql`
@@ -110,7 +109,7 @@ export function EntitySelectBox({
       };
     });
 
-    update({
+    mapEntityPositionUpdateMutation({
       input: {
         entities,
         sceneId,

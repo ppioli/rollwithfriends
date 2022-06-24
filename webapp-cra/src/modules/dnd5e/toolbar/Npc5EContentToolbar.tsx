@@ -1,9 +1,9 @@
 import { useLazyLoadQuery } from "react-relay";
+import { AcCard } from "modules/dnd5e/toolbar/AcCard";
+import { HpCard } from "modules/dnd5e/toolbar/HpCard";
+import { Npc5EToolbarSection } from "modules/dnd5e/toolbar/Npc5EToolbarSection";
+import { Size5E } from "modules/dnd5e/definitions/character5E";
 import { Npc5EContentToolbarQuery as Npc5EContentToolbarQueryType } from "./__generated__/Npc5EContentToolbarQuery.graphql";
-import { AcCard } from "features/toolbar/character5E/AcCard";
-import { HpCard } from "features/toolbar/character5E/HpCard";
-import { Npc5EToolbarSection } from "features/toolbar/character5E/Npc5EToolbarSection";
-import { Size5E } from "data/character5E";
 
 const graphql = require("babel-plugin-relay/macro");
 

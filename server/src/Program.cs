@@ -9,9 +9,14 @@ using Serilog;
 using Server.EFModels;
 using Server.EFModels.Map;
 using Server.EFModels.Messages;
+using Server.EFModels.Messages.Roll;
 using Server.Graphql;
 using Server.Graphql.Extension;
 using Server.Graphql.Mutations;
+using Server.Graphql.Mutations.MapEntityMutation;
+using Server.Graphql.Mutations.MapEntityMutation.Image;
+using Server.Graphql.Mutations.MapEntityMutation.Npc5E;
+using Server.Graphql.Mutations.MessageMutation;
 using Server.Graphql.Query;
 using Server.Graphql.Subscriptions;
 using server.Infraestructure;
@@ -159,6 +164,8 @@ builder.Services
     .AddTypeExtension<CampaignMutation>()
     .AddTypeExtension<EnrollmentMutation>()
     .AddTypeExtension<MapEntityMutation>()
+    .AddTypeExtension<MapEntityImageMutation>()
+    .AddTypeExtension<MapEntityNpc5EMutation>()
     .AddTypeExtension<SceneMutations>()
     .AddTypeExtension<MessageMutation>()
     .AddTypeExtension<SourceMutation>()

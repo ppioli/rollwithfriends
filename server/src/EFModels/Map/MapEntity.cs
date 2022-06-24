@@ -36,8 +36,8 @@ public class MapEntity
     {
         return Type switch
         {
-            MapEntityType.Image => JsonConvert.DeserializeObject<ImageContent>(Content),
-            MapEntityType.Npc5E => JsonConvert.DeserializeObject<Npc5EContent>(Content),
+            MapEntityType.Image => JsonConvert.DeserializeObject<ImageContent>(Content)!,
+            MapEntityType.Npc5E => JsonConvert.DeserializeObject<Npc5EContent>(Content)!,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -115,6 +115,18 @@ public class MapEntity
         ret.SetContent(content);
 
         return ret;
+    }
+
+    public void Resize(int width, int height)
+    {
+        if (Type == MapEntityType.Image)
+        {
+            var content = GetImageContent();
+            content.Width = width;
+            content.Height = height;
+
+            SetContent(content);
+        }
     }
 }
 

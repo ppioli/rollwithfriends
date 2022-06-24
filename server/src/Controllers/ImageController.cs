@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Server.EFModels;
+using Server.EFModels.Map;
 using server.Infraestructure;
 using Server.Services;
 

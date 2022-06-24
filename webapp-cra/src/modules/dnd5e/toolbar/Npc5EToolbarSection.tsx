@@ -1,6 +1,6 @@
-import { Npc5EContentToolbarQuery$data } from "features/toolbar/character5E/__generated__/Npc5EContentToolbarQuery.graphql";
-import { Abilities5E } from "data/character5E";
-import { AbilitySaveButton } from "features/toolbar/character5E/AbilitySaveButton";
+import { AbilitySaveButton } from "modules/dnd5e/toolbar/AbilitySaveButton";
+import { Abilities5E } from "modules/dnd5e/definitions/character5E";
+import { Npc5EContentToolbarQuery$data } from "modules/dnd5e/toolbar/__generated__/Npc5EContentToolbarQuery.graphql";
 
 export function Npc5EToolbarSection({
   entityIds,

@@ -421,19 +421,19 @@ input ListStringOperationFilterInput {
   any: Boolean
 }
 
-input MapEntitiesAddInput {
+input MapEntitiesImageAddInput {
   sceneId: ID!
-  entities: [MapEntityAddInput!]!
+  entities: [MapEntityImageAddInput!]!
 }
 
 input MapEntitiesNpcAddInput {
   sceneId: ID!
-  entities: [MapEntityNpcAddInput!]!
+  entities: [MapEntityNpc5EAddInput!]!
 }
 
-input MapEntitiesUpdateInput {
+input MapEntitiesPositionUpdateInput {
   sceneId: ID!
-  entities: [MapEntityUpdateInput!]!
+  entities: [MapEntityPositionUpdateInput!]!
 }
 
 type MapEntity implements Node {
@@ -446,18 +446,6 @@ type MapEntity implements Node {
   height: Int!
   sceneId: Int!
   type: MapEntityType!
-}
-
-input MapEntityAddInput {
-  name: String!
-  x: Int!
-  y: Int!
-  width: Int!
-  height: Int!
-}
-
-type MapEntityAddPayload {
-  mapEntity: [MapEntity!]
 }
 
 type MapEntityChangeMessage {
@@ -490,17 +478,41 @@ input MapEntityFilterInput {
   type: MapEntityTypeOperationFilterInput
 }
 
-input MapEntityNpcAddInput {
+input MapEntityImageAddInput {
   name: String!
   x: Int!
   y: Int!
+  width: Int!
+  height: Int!
+}
+
+type MapEntityImageAddPayload {
+  mapEntity: [MapEntity!]
+}
+
+input MapEntityNpc5EAddInput {
   npcId: ID!
+  name: String!
+  x: Int!
+  y: Int!
   ac: Int!
   maxHp: Int!
   size: Size5E!
 }
 
-type MapEntityNpcAddPayload {
+type MapEntityNpc5EAddPayload {
+  mapEntity: [MapEntity!]
+}
+
+input MapEntityPositionUpdateInput {
+  id: ID!
+  x: Int!
+  y: Int!
+  width: Int!
+  height: Int!
+}
+
+type MapEntityPositionUpdatePayload {
   mapEntity: [MapEntity!]
 }
 
@@ -514,18 +526,6 @@ input MapEntityTypeOperationFilterInput {
   neq: MapEntityType
   in: [MapEntityType!]
   nin: [MapEntityType!]
-}
-
-input MapEntityUpdateInput {
-  id: ID!
-  x: Int!
-  y: Int!
-  width: Int!
-  height: Int!
-}
-
-type MapEntityUpdatePayload {
-  mapEntity: [MapEntity!]
 }
 
 type Message implements Node {
@@ -576,10 +576,10 @@ enum MessageType {
 type Mutation {
   campaignAdd(input: CampaignAddInput!): CampaignAddPayload!
   enrollmentAdd(input: EnrollmentAddInput!): EnrollmentAddPayload!
-  mapEntityUpdate(input: MapEntitiesUpdateInput!): MapEntityUpdatePayload!
-  mapEntityAdd(input: MapEntitiesAddInput!): MapEntityAddPayload!
-  mapEntityNpcAdd(input: MapEntitiesNpcAddInput!): MapEntityNpcAddPayload!
+  mapEntityPositionUpdate(input: MapEntitiesPositionUpdateInput!): MapEntityPositionUpdatePayload!
   mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
+  mapEntityImageAdd(input: MapEntitiesImageAddInput!): MapEntityImageAddPayload!
+  mapEntityNpc5EAdd(input: MapEntitiesNpcAddInput!): MapEntityNpc5EAddPayload!
   sceneAdd(input: SceneAddInput!): SceneAddPayload!
   sceneAddDelete(input: SceneAddDeleteInput!): SceneAddDeletePayload!
   sceneAddUpdate(input: SceneAddUpdateInput!): SceneAddUpdatePayload!

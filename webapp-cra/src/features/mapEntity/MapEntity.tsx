@@ -1,4 +1,4 @@
-import { MapGraphic, MapGraphicProps } from "features/battleMap/MapGraphic";
+import { MapGraphicProps } from "features/battleMap/MapGraphic";
 
 import React, { useCallback } from "react";
 
@@ -10,6 +10,8 @@ import {
   commitSelectionSet,
 } from "features/battleMap/mapEntityLayer/Selection.graphql";
 import { useSelectedScene } from "pages/scene/SelectedSceneContext";
+import { MapEntityImage } from "features/mapEntity/image/MapEntityImage";
+import { MapEntityNpc5e } from "modules/dnd5e/mapEntity/MapEntityNpc5e";
 
 export interface MapEntityData {
   id: string;
@@ -52,7 +54,7 @@ export function MapEntity({
       height,
     };
 
-    return <MapGraphic {...props} />;
+    return <MapEntityImage {...props} />;
   }
 
   if (data.content.__typename === "Npc5EContent") {
@@ -62,11 +64,11 @@ export function MapEntity({
       onClick,
       x: data.x - (offsetX ?? 0),
       y: data.y - (offsetY ?? 0),
-      width, //data.width,
-      height, //, data.height,
+      width,
+      height,
     };
 
-    return <MapGraphic {...props} />;
+    return <MapEntityNpc5e {...props} />;
   }
 
   return null;

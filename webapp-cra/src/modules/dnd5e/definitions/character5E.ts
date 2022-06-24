@@ -14,6 +14,19 @@ export type Size5E =
   | "HUGE"
   | "GARGANTUAN";
 
+export type Alignment5E =
+  | "ANY"
+  | "UNALIGNED"
+  | "CHAOTIC_GOOD"
+  | "NEUTRAL_GOOD"
+  | "LAWFUL_GOOD"
+  | "CHAOTIC_NEUTRAL"
+  | "TRUE_NEUTRAL"
+  | "LAWFUL_NEUTRAL"
+  | "CHAOTIC_EVIL"
+  | "NEUTRAL_EVIL"
+  | "LAWFUL_EVIL";
+
 export const Abilities5E: ReadonlyArray<Ability5E> = [
   "STRENGTH",
   "DEXTERITY",

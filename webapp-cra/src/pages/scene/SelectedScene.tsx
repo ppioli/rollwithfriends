@@ -8,11 +8,7 @@ import { useResizeDetector } from "react-resize-detector";
 import Grid from "features/battleMap/grid/Grid";
 import MapEntityLayer from "features/battleMap/mapEntityLayer/MapEntityLayer";
 import useMapControl from "features/battleMap/useMapControl";
-import {
-  useMapEntityAddMutation,
-  useMapEntityNpcAddMutation,
-  useMapEntitySubscription,
-} from "features/mapEntity/MapEntity.graphql";
+import { useMapEntitySubscription } from "features/mapEntity/MapEntity.graphql";
 import classNames from "classnames";
 import { loadImages } from "utils/imageLoader";
 import { FileUploadDefinition, uploadBatch } from "utils/HttpHelpers";
@@ -23,6 +19,8 @@ import {
 import { commitSelectionBoxSet } from "features/battleMap/mapEntityLayer/Selection.graphql";
 import { Toolbar } from "features/toolbar/Toolbar";
 import { MapEntityNpcAddInput } from "features/mapEntity/__generated__/MapEntityNpcAddMutation.graphql";
+import { mapEntityImageAddMutation } from "features/mapEntity/image/MapEntityImage.graphql";
+import { mapEntityNpc5eAddMutation } from "modules/dnd5e/mapEntity/MapEntityNpc5e.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -57,8 +55,6 @@ export function SelectedScene({
 
   const { ref, width, height } = useResizeDetector();
   const containerRef = useRef<HTMLDivElement>(null);
-  const commit = useMapEntityAddMutation();
-  const commitNpc = useMapEntityNpcAddMutation();
 
   const cellSize = 60;
   const getEntitySize: (entity: EntityData) => [number, number] = useCallback(
@@ -96,8 +92,8 @@ export function SelectedScene({
 
         const input = { sceneId: id, entities };
 
-        commit({ input }, (data) => {
-          const result = data.mapEntityAdd.mapEntity;
+        mapEntityImageAddMutation({ input }, (data) => {
+          const result = data.mapEntityImageAdd.mapEntity;
           if (!result) {
             return;
           }
@@ -128,7 +124,7 @@ export function SelectedScene({
           maxHp: content.hitPointsAverage,
           ac: content.armorClasses[0].armorClass,
         };
-        commitNpc({
+        mapEntityNpc5eAddMutation({
           input: {
             sceneId: id,
             entities: [entity],

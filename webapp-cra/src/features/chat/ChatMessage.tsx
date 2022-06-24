@@ -45,14 +45,12 @@ export function ChatMessage({ query }: ChatMessageProps) {
   }
 
   return (
-    <div>
-      <div className={"px-3"} ref={messageRef}>
-        <div className={"bg-darker rounded-md px-3 pb-3"}>
-          <p className={"font-bold text-sm mb-1 pt-1"}>{sender}</p>
-          {content}
-        </div>
-        <div className={"w-100 text-right font-light text-sm"}>{timeAgo}</div>
+    <div className={"px-3 mt-4"} ref={messageRef}>
+      <div className={"bg-darker rounded-md px-3 pb-3"}>
+        <p className={"font-bold text-sm mb-1 pt-1"}>{sender}</p>
+        {content}
       </div>
+      <div className={"w-100 text-right font-light text-sm"}>{timeAgo}</div>
     </div>
   );
 }

@@ -1,8 +1,8 @@
-import { NpcCard5e_NonPlayerCharacter5E$key } from "components/fiveEdition/__generated__/NpcCard5e_NonPlayerCharacter5E.graphql";
 import { useFragment } from "react-relay";
 import { capitalize, startCase } from "lodash";
 import { ServerUrl } from "lib/getRelayClientEnvironment";
-import { Alignment5E } from "components/fiveEdition/__generated__/Npc5eAddMutation.graphql";
+import { NpcCard5e_NonPlayerCharacter5E$key } from "modules/dnd5e/__generated__/NpcCard5e_NonPlayerCharacter5E.graphql";
+import { Alignment5E } from "modules/dnd5e/definitions/character5E";
 
 const graphql = require("babel-plugin-relay/macro");
 

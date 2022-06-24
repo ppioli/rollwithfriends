@@ -5,8 +5,8 @@ import {
 } from "features/toolbar/__generated__/SelectionToolbar_scene.graphql";
 import { useFragment } from "react-relay";
 import { ReactNode, Suspense } from "react";
-import { Npc5EContentToolbar } from "features/toolbar/character5E/Npc5EContentToolbar";
-import { Size5E } from "data/character5E";
+import { Npc5EContentToolbar } from "modules/dnd5e/toolbar/Npc5EContentToolbar";
+import { Size5E } from "modules/dnd5e/definitions/character5E";
 
 const graphql = require("babel-plugin-relay/macro");
 

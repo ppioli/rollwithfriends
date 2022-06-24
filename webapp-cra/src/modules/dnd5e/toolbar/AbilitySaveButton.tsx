@@ -1,8 +1,11 @@
-import { Ability5E, ability5EShortName } from "data/character5E";
 import { useRollMessageAddMutation } from "features/chat/Message.graphql";
 import { useSelectedScene } from "pages/scene/SelectedSceneContext";
 import { RollMessagesAddInput } from "features/chat/__generated__/MessageRollAddMutation.graphql";
 import { Roll } from "data/Roll";
+import {
+  Ability5E,
+  ability5EShortName,
+} from "modules/dnd5e/definitions/character5E";
 
 export function AbilitySaveButton({
   entityIds,
