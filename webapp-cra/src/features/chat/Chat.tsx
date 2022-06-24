@@ -1,40 +1,24 @@
-import { ChatInput } from "features/chat/ChatInput";
-import { useFragment, usePaginationFragment } from "react-relay";
+import { usePaginationFragment } from "react-relay";
 import {
-  MessageBodyFragment,
   MessageListPaginationFragment,
   useMessageSubscription,
 } from "features/chat/Message.graphql";
 import { CampaignQuery as CampaignQueryType } from "pages/campaign/__generated__/CampaignQuery.graphql";
 import { MessageList_campaign$key } from "./__generated__/MessageList_campaign.graphql";
-import {
-  HTMLProps,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
-import _ from "lodash";
-import { useParticipantContext } from "features/participant/ParticipantsContext";
-import { formatDistanceToNow, parseISO } from "date-fns";
+import { HTMLProps, useCallback, useState } from "react";
 import { useResizeDetector } from "react-resize-detector";
-import { useBatchLoader } from "utils/hooks/useBatchLoader";
-import InfiniteLoader from "react-window-infinite-loader";
-import {
-  ListChildComponentProps,
-  VariableSizeList as List,
-} from "react-window";
-import { Dice } from "components/icons/Dice";
+import { Virtuoso } from "react-virtuoso";
+import { ChatMessage } from "features/chat/ChatMessage";
+import { ChatInput } from "./ChatInput";
 
 interface ChatProps extends HTMLProps<HTMLDivElement> {
   campaignId: string;
   messages: MessageList_campaign$key;
 }
-
+const LOAD_COUNT = 20;
 export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
   //TODO Invert list, handle message added count, item size
-  const { data, loadNext } = usePaginationFragment<
+  const { data, loadPrevious, hasPrevious } = usePaginationFragment<
     CampaignQueryType,
     MessageList_campaign$key
   >(MessageListPaginationFragment, messages);
@@ -45,133 +29,62 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
 
   const items = data.messages?.edges ?? [];
   const rowCount = data.messages?.totalCount ?? 0;
+  const [firstItemIndex, setFirstItemIndex] = useState(rowCount - 1);
 
-  const isItemLoaded = (index: number) => {
-    return index < (items?.length ?? 0);
-  };
-  const sizeMap = useRef<number[]>([]);
+  console.info("firstItem", firstItemIndex);
 
-  const getSize = useCallback(
-    (index: number) => sizeMap.current[index] || 84,
-    []
-  );
-
-  const listRef = useRef<any>();
-
-  const itemData = useMemo(
-    () => ({
-      setSize: (index: number, size: number) => {
-        sizeMap.current[index] = size;
-        listRef.current.resetAfterIndex(index);
+  const prependItems = useCallback(() => {
+    if (!hasPrevious) {
+      return;
+    }
+    loadPrevious(LOAD_COUNT, {
+      onComplete: () => {
+        setFirstItemIndex((current) => current - LOAD_COUNT);
       },
-      messages: items,
-    }),
-    [items]
-  );
+    });
+  }, [hasPrevious, loadPrevious]);
 
-  const setRequested = useBatchLoader({ loadNext, loadedCount: items.length });
-
-  const render = width && height;
+  const render = width && height && rowCount > 0;
   return (
     <div {...divProps}>
       <div className={"h-full w-full flex flex-col bg-dark"}>
         <div ref={ref} className={"w-full grow flex flex-col"}>
           {render && (
-            <InfiniteLoader
-              isItemLoaded={isItemLoaded}
-              itemCount={rowCount}
-              loadMoreItems={(from, to) => setRequested(to)}
-            >
-              {({ onItemsRendered, ref }) => (
-                <List
-                  className="scroll-none"
-                  height={height}
-                  width={width}
-                  itemCount={rowCount}
-                  itemSize={getSize}
-                  onItemsRendered={onItemsRendered}
-                  ref={listRef}
-                  itemData={itemData}
-                >
-                  {(props) => <ChatMessage {...props} />}
-                </List>
-              )}
-            </InfiniteLoader>
+            <Virtuoso
+              className={"w-full h-full scroll-none"}
+              data={items}
+              startReached={prependItems}
+              overscan={200}
+              firstItemIndex={firstItemIndex}
+              initialTopMostItemIndex={items.length - 1}
+              followOutput={"smooth"}
+              itemContent={(index, data) => {
+                return <ChatMessage query={data.node} />;
+              }}
+              components={{
+                Header: () => {
+                  return <Header hasPrevious={hasPrevious} />;
+                },
+              }}
+            />
           )}
         </div>
-
         <ChatInput campaignId={campaignId} />
       </div>
     </div>
   );
 }
 
-function ChatMessage({ data, style, index }: ListChildComponentProps) {
-  // TODO update ago
-  const { messages, setSize } = data;
-  const node = messages[index]?.node;
-  const message = useFragment(MessageBodyFragment, node);
-  const messageRef = useRef<HTMLDivElement | null>(null);
-  const { getById } = useParticipantContext();
-
-  useEffect(() => {
-    if (messageRef.current) {
-      setSize(index, messageRef.current.getBoundingClientRect().height);
-    }
-  }, [setSize, index, messageRef]);
-
-  if (!message) {
-    return null;
-  }
-
-  const user = getById(message.userId);
-  let content: ReactNode;
-
-  if (message.content.__typename === "TextMessageContent") {
-    content = <div className={"text-white"}>{message.content.text}</div>;
-  }
-
-  if (message.content.__typename === "RollMessageContent") {
-    content = <RollMessageContent {...message.content} />;
-  }
-
+const Header = ({ hasPrevious }: { hasPrevious: boolean }) => {
   return (
-    <div style={style}>
-      <div className={"px-3"} ref={messageRef}>
-        <div className={"bg-darker rounded-md px-3 pb-3"}>
-          <p className={"font-bold text-sm mb-1 pt-1"}>{user?.name ?? "-"}</p>
-          {content}
-        </div>
-        <div className={"w-100 text-right font-light text-sm"}>
-          {formatDistanceToNow(parseISO(message.createdAt))}
-        </div>
-      </div>
+    <div
+      style={{
+        padding: "2rem",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      {hasPrevious ? "Loading..." : "End of times"}
     </div>
   );
-}
-
-interface RollMessageContentProps {
-  readonly __typename: "RollMessageContent";
-  readonly rolls: ReadonlyArray<{
-    readonly count: number;
-    readonly faces: number;
-    readonly result: ReadonlyArray<number> | null;
-  }>;
-}
-
-function RollMessageContent({ rolls }: RollMessageContentProps) {
-  const total = _.sumBy(rolls, (roll) => _.sum(roll.result));
-  return (
-    <div className={"w-full relative h-16"}>
-      <div className={"absolute inset-0 overflow-hidden"}>
-        <div className={"flex w-full justify-center flex-nowrap"}>
-          <Dice type={20} size={64} fill={"rgba(0,0,0,0.2)"} />
-        </div>
-      </div>
-
-      <div className={"absolute w-full text-5xl p-2 text-center text-white"}>
-        {total}
-      </div>
-    </div>
-  );
-}
+};

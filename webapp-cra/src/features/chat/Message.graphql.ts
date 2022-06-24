@@ -22,9 +22,13 @@ export const MessageBodyFragment = graphql`
   fragment MessageBody_message on Message {
     userId
     createdAt
+    source {
+      name
+    }
     content {
       __typename
       ... on RollMessageContent {
+        dmRoll
         rolls {
           count
           faces
@@ -45,7 +49,7 @@ export const MessageListPaginationFragment = graphql`
     count: { type: "Int", defaultValue: 10 }
     cursor: { type: "String", defaultValue: null }
   ) {
-    messages(after: $cursor, first: $count)
+    messages(before: $cursor, last: $count)
       @connection(key: "CampaignFragment_messages") {
       totalCount
       edges {
@@ -74,10 +78,7 @@ export function useTextMessageAddMutation(
     ) {
       textMessageAdd(input: $input) {
         message
-          @prependNode(
-            connections: $connections
-            edgeTypeName: "MessagesEdge"
-          ) {
+          @appendNode(connections: $connections, edgeTypeName: "MessagesEdge") {
           id
           ...MessageBody_message
         }
@@ -117,10 +118,7 @@ export function useRollMessageAddMutation(
     ) {
       rollMessageAdd(input: $input) {
         message
-          @prependNode(
-            connections: $connections
-            edgeTypeName: "MessagesEdge"
-          ) {
+          @appendNode(connections: $connections, edgeTypeName: "MessagesEdge") {
           id
           ...MessageBody_message
         }
@@ -159,7 +157,7 @@ export function useMessageSubscription(campaignId: string) {
         ) {
           messageSub(campaignId: $campaignId) {
             messages
-              @prependNode(
+              @appendNode(
                 connections: $connections
                 edgeTypeName: "MessagesEdge"
               ) {

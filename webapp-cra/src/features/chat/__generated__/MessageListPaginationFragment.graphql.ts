@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<adf30550049724d88a31e064ebcc83c4>>
+ * @generated SignedSource<<72b8fd2ba0654d87511f8036e5b676a5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -67,12 +67,12 @@ v3 = {
 v4 = [
   {
     "kind": "Variable",
-    "name": "after",
+    "name": "before",
     "variableName": "cursor"
   },
   {
     "kind": "Variable",
-    "name": "first",
+    "name": "last",
     "variableName": "count"
   }
 ];
@@ -182,6 +182,25 @@ return {
                           {
                             "alias": null,
                             "args": null,
+                            "concreteType": "MapEntity",
+                            "kind": "LinkedField",
+                            "name": "source",
+                            "plural": false,
+                            "selections": [
+                              {
+                                "alias": null,
+                                "args": null,
+                                "kind": "ScalarField",
+                                "name": "name",
+                                "storageKey": null
+                              },
+                              (v3/*: any*/)
+                            ],
+                            "storageKey": null
+                          },
+                          {
+                            "alias": null,
+                            "args": null,
                             "concreteType": null,
                             "kind": "LinkedField",
                             "name": "content",
@@ -191,6 +210,13 @@ return {
                               {
                                 "kind": "InlineFragment",
                                 "selections": [
+                                  {
+                                    "alias": null,
+                                    "args": null,
+                                    "kind": "ScalarField",
+                                    "name": "dmRoll",
+                                    "storageKey": null
+                                  },
                                   {
                                     "alias": null,
                                     "args": null,
@@ -270,14 +296,14 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "endCursor",
+                        "name": "hasPreviousPage",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "hasNextPage",
+                        "name": "startCursor",
                         "storageKey": null
                       }
                     ],
@@ -305,16 +331,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "5515633882f407c005bbda1fd2b675c1",
+    "cacheID": "68afc41c5c946e3f27b9c4472cc3f1d4",
     "id": null,
     "metadata": {},
     "name": "MessageListPaginationFragment",
     "operationKind": "query",
-    "text": "query MessageListPaginationFragment(\n  $count: Int = 10\n  $cursor: String = null\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...MessageList_campaign_1G22uz\n    id\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign_1G22uz on Campaign {\n  messages(after: $cursor, first: $count) {\n    totalCount\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n"
+    "text": "query MessageListPaginationFragment(\n  $count: Int = 10\n  $cursor: String = null\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...MessageList_campaign_1G22uz\n    id\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  source {\n    name\n    id\n  }\n  content {\n    __typename\n    ... on RollMessageContent {\n      dmRoll\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n\nfragment MessageList_campaign_1G22uz on Campaign {\n  messages(before: $cursor, last: $count) {\n    totalCount\n    edges {\n      node {\n        id\n        ...MessageBody_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "7b08da65a5700e3918c21e00fd468267";
+(node as any).hash = "f1bdae25a869f36d8f86f39783f9cedb";
 
 export default node;

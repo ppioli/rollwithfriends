@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<da37ef90ac7b4a09dbe05dfc24d4da8d>>
+ * @generated SignedSource<<96f79305d26039a269cea2c742f80ab2>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,6 +15,7 @@ export type TextMessagesAddInput = {
   messages: ReadonlyArray<TextMessageAddInput>;
 };
 export type TextMessageAddInput = {
+  sourceId?: string | null;
   content: string;
 };
 export type MessageAddMutation$variables = {
@@ -144,6 +145,25 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "concreteType": "MapEntity",
+                "kind": "LinkedField",
+                "name": "source",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "name",
+                    "storageKey": null
+                  },
+                  (v3/*: any*/)
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "content",
@@ -159,6 +179,13 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "dmRoll",
+                        "storageKey": null
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -219,7 +246,7 @@ return {
             "alias": null,
             "args": null,
             "filters": null,
-            "handle": "prependNode",
+            "handle": "appendNode",
             "key": "",
             "kind": "LinkedHandle",
             "name": "message",
@@ -242,16 +269,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c3e9e48bbec92ff20baa99ade3c45d06",
+    "cacheID": "c3d420455ca41b2c4a52c8f6e93ba1de",
     "id": null,
     "metadata": {},
     "name": "MessageAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MessageAddMutation(\n  $input: TextMessagesAddInput!\n) {\n  textMessageAdd(input: $input) {\n    message {\n      id\n      ...MessageBody_message\n    }\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n"
+    "text": "mutation MessageAddMutation(\n  $input: TextMessagesAddInput!\n) {\n  textMessageAdd(input: $input) {\n    message {\n      id\n      ...MessageBody_message\n    }\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  source {\n    name\n    id\n  }\n  content {\n    __typename\n    ... on RollMessageContent {\n      dmRoll\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "cb1741290215037ea5308fccedfd4d88";
+(node as any).hash = "9acfa6c588b355c4e74213c88c66e60a";
 
 export default node;

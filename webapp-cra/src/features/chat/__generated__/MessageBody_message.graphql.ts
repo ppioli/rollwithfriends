@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dd7a30c1b63a240e35cedff69e2bf317>>
+ * @generated SignedSource<<c4876e25210b8a6483f5111fc87d9de9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,8 +13,12 @@ import { FragmentRefs } from "relay-runtime";
 export type MessageBody_message$data = {
   readonly userId: string;
   readonly createdAt: any;
+  readonly source: {
+    readonly name: string;
+  } | null;
   readonly content: {
     readonly __typename: "RollMessageContent";
+    readonly dmRoll: boolean;
     readonly rolls: ReadonlyArray<{
       readonly count: number;
       readonly faces: number;
@@ -58,6 +62,24 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
+      "concreteType": "MapEntity",
+      "kind": "LinkedField",
+      "name": "source",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "name",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
       "concreteType": null,
       "kind": "LinkedField",
       "name": "content",
@@ -73,6 +95,13 @@ const node: ReaderFragment = {
         {
           "kind": "InlineFragment",
           "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "kind": "ScalarField",
+              "name": "dmRoll",
+              "storageKey": null
+            },
             {
               "alias": null,
               "args": null,
@@ -131,6 +160,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "852d921635d3b79f562c1cd7684dd0fb";
+(node as any).hash = "3a28c86a773a5c491e52da8822a8826c";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<dbf566efefecfd5fcd0e985ee8242c51>>
+ * @generated SignedSource<<3fb9b34b8acdc398bb8ded807271a2a6>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -58,17 +58,17 @@ return {
       {
         "count": "count",
         "cursor": "cursor",
-        "direction": "forward",
+        "direction": "backward",
         "path": (v0/*: any*/)
       }
     ],
     "refetch": {
       "connection": {
-        "forward": {
+        "forward": null,
+        "backward": {
           "count": "count",
           "cursor": "cursor"
         },
-        "backward": null,
         "path": (v0/*: any*/)
       },
       "fragmentPathInResult": [
@@ -149,14 +149,14 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "endCursor",
+              "name": "hasPreviousPage",
               "storageKey": null
             },
             {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "hasNextPage",
+              "name": "startCursor",
               "storageKey": null
             }
           ],
@@ -172,6 +172,6 @@ return {
 };
 })();
 
-(node as any).hash = "7b08da65a5700e3918c21e00fd468267";
+(node as any).hash = "f1bdae25a869f36d8f86f39783f9cedb";
 
 export default node;

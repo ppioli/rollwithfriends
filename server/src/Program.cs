@@ -184,7 +184,7 @@ builder.Services
     .AddErrorFilter(
         error =>
         {
-            logger.Information(error.Exception, error.Message);
+            logger.Error(error.Exception, "An unhandled error occurred. Message: {Message}",error.Message);
 
             return error;
         });

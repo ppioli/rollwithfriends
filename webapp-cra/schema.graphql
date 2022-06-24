@@ -536,6 +536,8 @@ type Message implements Node {
   campaignId: Int!
   createdAt: DateTime!
   type: MessageType!
+  source: MapEntity
+  sourceId: Int
 }
 
 union MessageContent = TextMessageContent | RollMessageContent
@@ -782,7 +784,6 @@ type RollMessageAddPayload {
 }
 
 type RollMessageContent {
-  sourceId: Int
   dmRoll: Boolean!
   rolls: [Roll!]!
 }
@@ -1001,6 +1002,7 @@ type Subscription {
 }
 
 input TextMessageAddInput {
+  sourceId: ID
   content: String!
 }
 

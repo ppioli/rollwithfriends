@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0c8e4ab1a99002c5fcebfcb8e5da64d3>>
+ * @generated SignedSource<<b15a047eb027430efa81aee3837c6458>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -133,6 +133,25 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "concreteType": "MapEntity",
+                "kind": "LinkedField",
+                "name": "source",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "name",
+                    "storageKey": null
+                  },
+                  (v2/*: any*/)
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "content",
@@ -148,6 +167,13 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "dmRoll",
+                        "storageKey": null
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -208,7 +234,7 @@ return {
             "alias": null,
             "args": null,
             "filters": null,
-            "handle": "prependNode",
+            "handle": "appendNode",
             "key": "",
             "kind": "LinkedHandle",
             "name": "messages",
@@ -231,16 +257,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c5e47638838756322ee2619a29e04ebb",
+    "cacheID": "432ccf2cd91626df90416969387a168c",
     "id": null,
     "metadata": {},
     "name": "MessageSubscription",
     "operationKind": "subscription",
-    "text": "subscription MessageSubscription(\n  $campaignId: ID!\n) {\n  messageSub(campaignId: $campaignId) {\n    messages {\n      id\n      ...MessageBody_message\n    }\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n"
+    "text": "subscription MessageSubscription(\n  $campaignId: ID!\n) {\n  messageSub(campaignId: $campaignId) {\n    messages {\n      id\n      ...MessageBody_message\n    }\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  source {\n    name\n    id\n  }\n  content {\n    __typename\n    ... on RollMessageContent {\n      dmRoll\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "eb32523172daea11906e7ece16470b76";
+(node as any).hash = "19f8f604b3055c801e728cf1a7b0a369";
 
 export default node;

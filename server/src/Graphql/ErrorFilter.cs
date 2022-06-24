@@ -1,17 +1,20 @@
+using server.Infraestructure;
+
 namespace Server.Graphql;
 
 public class ErrorFilter: IErrorFilter
 {
-    private readonly ILogger<ErrorFilter> _logger;
+    // private readonly ILogger<ErrorFilter> _logger;
+    private RwfDbContext _context;
 
-    public ErrorFilter(ILogger<ErrorFilter> logger)
+    public ErrorFilter( RwfDbContext context)
     {
-        _logger = logger;
+        _context = context;
     }
 
     public IError OnError(IError error)
     {
-        _logger.LogError( error.Exception, "An unhandled error was catched");
+        // _logger.LogError( error.Exception, "An unhandled error was catched");
 
         return error;
     }

@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using HotChocolate.Subscriptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Server.EFModels.Messages;
 using Server.Graphql.Subscriptions;
 using server.Infraestructure;
@@ -27,7 +29,15 @@ public class MessageMutation
         }
 
         ICollection<Message> created = input.Messages
-            .Select(message => Message.CreateTextMessage(user.GetId(), input.CampaignId, message.Content))
+            .Select(
+                message => Message.CreateTextMessage(
+                    user.GetId(),
+                    message.SourceId,
+                    input.CampaignId,
+                    new TextMessageContent()
+                    {
+                        Text = message.Content
+                    }))
             .ToList();
 
         await db.AddRangeAsync(created);
@@ -79,10 +89,15 @@ public class MessageMutation
                     {
                         Rolls = rolls,
                         DmRoll = message.DmRoll,
-                        SourceId = message.SourceId
                     };
+                    var proxy = db.CreateProxy<Message>();
 
-                    return Message.CreateRollMessage(user.GetId(), input.CampaignId, rollContent);
+                    proxy.UserId = user.GetId();
+                    proxy.SourceId = message.SourceId;
+                    proxy.CampaignId = input.CampaignId;
+                    proxy.Content = JsonConvert.SerializeObject(rollContent);
+                    proxy.Type = MessageType.Roll;
+                    return proxy;
                 })
             .ToList();
 
@@ -100,6 +115,9 @@ public class MessageMutation
 
 public class TextMessageAdd
 {
+    [ID]
+    public int? SourceId { get; set; }
+
     public string Content { get; set; } = null!;
 }
 
@@ -107,6 +125,7 @@ public class RollMessageAdd
 {
     [ID]
     public int? SourceId { get; set; }
+
     public bool DmRoll { get; set; }
     public List<RollInfo> Rolls { get; set; } = null!;
 }

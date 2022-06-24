@@ -38,7 +38,7 @@ public class Campaign
     [UsePaging(IncludeTotalCount = true)]
     public IQueryable<Message> GetMessages(RwfDbContext context) => context.Messages
         .Where(m => m.CampaignId == Id)
-        .OrderByDescending(s => s.CreatedAt);
+        .OrderBy(s => s.CreatedAt);
 
     [GraphQLIgnore]
     public virtual ICollection<CampaignEnrollment> Participants { get; set; } = new List<CampaignEnrollment>();

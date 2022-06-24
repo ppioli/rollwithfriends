@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c7d12c8b0c23aa068604dffb83dfcc05>>
+ * @generated SignedSource<<e3a50921c018ebf9212844e1b2d92f19>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -150,6 +150,25 @@ return {
               {
                 "alias": null,
                 "args": null,
+                "concreteType": "MapEntity",
+                "kind": "LinkedField",
+                "name": "source",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "name",
+                    "storageKey": null
+                  },
+                  (v3/*: any*/)
+                ],
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
                 "concreteType": null,
                 "kind": "LinkedField",
                 "name": "content",
@@ -165,6 +184,13 @@ return {
                   {
                     "kind": "InlineFragment",
                     "selections": [
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "dmRoll",
+                        "storageKey": null
+                      },
                       {
                         "alias": null,
                         "args": null,
@@ -225,7 +251,7 @@ return {
             "alias": null,
             "args": null,
             "filters": null,
-            "handle": "prependNode",
+            "handle": "appendNode",
             "key": "",
             "kind": "LinkedHandle",
             "name": "message",
@@ -248,16 +274,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c9abda14b7bc6fa8c63b38bd13dcfe9f",
+    "cacheID": "aeec010fcb34d31641492ea293393c54",
     "id": null,
     "metadata": {},
     "name": "MessageRollAddMutation",
     "operationKind": "mutation",
-    "text": "mutation MessageRollAddMutation(\n  $input: RollMessagesAddInput!\n) {\n  rollMessageAdd(input: $input) {\n    message {\n      id\n      ...MessageBody_message\n    }\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  content {\n    __typename\n    ... on RollMessageContent {\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n"
+    "text": "mutation MessageRollAddMutation(\n  $input: RollMessagesAddInput!\n) {\n  rollMessageAdd(input: $input) {\n    message {\n      id\n      ...MessageBody_message\n    }\n  }\n}\n\nfragment MessageBody_message on Message {\n  userId\n  createdAt\n  source {\n    name\n    id\n  }\n  content {\n    __typename\n    ... on RollMessageContent {\n      dmRoll\n      rolls {\n        count\n        faces\n        result\n      }\n    }\n    ... on TextMessageContent {\n      text\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "bb646661c7389e62b53dd0254750e7dc";
+(node as any).hash = "5bd80831e69e84a735b028142c1a8775";
 
 export default node;

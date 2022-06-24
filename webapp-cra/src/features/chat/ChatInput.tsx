@@ -68,6 +68,7 @@ export function ChatInput({ campaignId }: ChatInputProps) {
 
       return;
     } else {
+      // TODO Add source
       const input: TextMessagesAddInput = {
         campaignId,
         messages: [{ content }],
