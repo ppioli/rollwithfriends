@@ -103,7 +103,7 @@ export function useTextMessageAddMutation(
 
 export function useRollMessageAddMutation(
   campaignId: string,
-  onCompleted: () => void
+  onCompleted?: () => void
 ): [(input: RollMessagesAddInput) => Disposable, boolean] {
   const connectionID = ConnectionHandler.getConnectionID(
     campaignId, // passed as input to the mutation/subscription

@@ -2,9 +2,9 @@ import { useMutation } from "react-relay";
 
 import { FileUploadDefinition } from "utils/HttpHelpers";
 import {
+  Npc5EAddInput,
   Npc5eAddMutation,
   Npc5eAddMutation$data,
-  NpcAddInput,
 } from "components/fiveEdition/__generated__/Npc5eAddMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
@@ -46,7 +46,7 @@ export const findImage = (
 export function useNpc5EAddPromise() {
   const [commit] = useMutation<Npc5eAddMutation>(Npc5eAdd);
 
-  return (sourceId: string, npcs: NpcAddInput[]) =>
+  return (sourceId: string, npcs: Npc5EAddInput[]) =>
     new Promise<Npc5eAddMutation$data>((resolve) =>
       commit({
         variables: {

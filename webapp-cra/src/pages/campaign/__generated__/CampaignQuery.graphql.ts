@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<d2014909899ed407be0fac263c3d1b9d>>
+ * @generated SignedSource<<617953ef209223f254a62adb87108402>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -360,7 +360,7 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "ArmorClassOption",
+                    "concreteType": "ArmorClassOption5E",
                     "kind": "LinkedField",
                     "name": "armorClasses",
                     "plural": true,

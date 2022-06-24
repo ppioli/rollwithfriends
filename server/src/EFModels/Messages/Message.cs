@@ -29,7 +29,7 @@ public class Message
         return Type switch
         {
             MessageType.Text => new TextMessageContent() { Text = Content },
-            MessageType.Roll => new RollMessageContent() { Rolls = JsonSerializer.Deserialize<List<Roll>>(Content) },
+            MessageType.Roll =>  JsonSerializer.Deserialize<RollMessageContent>(Content)!,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -49,7 +49,7 @@ public class Message
         return new Message(userId, campaignId, MessageType.Text, content);
     }
     
-    public static Message CreateRollMessage(string userId, int campaignId, List<Roll> info)
+    public static Message CreateRollMessage(string userId, int campaignId, RollMessageContent info)
     {
         return new Message(userId, campaignId, MessageType.Roll, JsonSerializer.Serialize(info));
     }
@@ -75,6 +75,8 @@ public interface IMessageContent
 
 public class RollMessageContent : IMessageContent
 {
+    public int? SourceId { get; set; }
+    public bool DmRoll { get; set; }
     public List<Roll> Rolls { get; set; }
 }
 

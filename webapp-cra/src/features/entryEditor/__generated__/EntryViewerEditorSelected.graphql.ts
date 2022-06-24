@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<581020c590e729027301e3538a2cf19e>>
+ * @generated SignedSource<<7e009f3417197b4751d9cbd5f3ebccf3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -148,7 +148,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "NpcType",
+            "concreteType": "NpcType5E",
             "kind": "LinkedField",
             "name": "type",
             "plural": false,
@@ -187,7 +187,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "ArmorClassOption",
+            "concreteType": "ArmorClassOption5E",
             "kind": "LinkedField",
             "name": "armorClasses",
             "plural": true,
@@ -227,7 +227,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "KeyValuePairOfAbilityAndInt32",
+            "concreteType": "KeyValuePairOfAbility5EAndInt32",
             "kind": "LinkedField",
             "name": "savingThrows",
             "plural": true,
@@ -247,7 +247,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "Language",
+            "concreteType": "Language5E",
             "kind": "LinkedField",
             "name": "languages",
             "plural": true,
@@ -259,7 +259,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "Sense",
+            "concreteType": "Sense5E",
             "kind": "LinkedField",
             "name": "senses",
             "plural": true,
@@ -285,7 +285,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "Resistance",
+            "concreteType": "Resistance5E",
             "kind": "LinkedField",
             "name": "resistances",
             "plural": true,
@@ -310,7 +310,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "Speed",
+            "concreteType": "Speed5E",
             "kind": "LinkedField",
             "name": "speeds",
             "plural": false,

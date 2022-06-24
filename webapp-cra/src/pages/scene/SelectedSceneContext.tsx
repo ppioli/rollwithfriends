@@ -9,6 +9,7 @@ export interface EntityData {
 export type EntitySizeFunction = (entity: EntityData) => [number, number];
 
 export interface SelectedSceneContextData {
+  campaignId: string;
   sceneId: string;
   cellSize: number;
   getEntitySize: EntitySizeFunction;
@@ -19,6 +20,7 @@ const SelectedSceneContext = createContext<SelectedSceneContextData>(
 );
 
 export interface SelectedSceneContextProviderProps {
+  campaignId: string;
   children: ReactNode;
   sceneId: string;
   getEntitySize: EntitySizeFunction;

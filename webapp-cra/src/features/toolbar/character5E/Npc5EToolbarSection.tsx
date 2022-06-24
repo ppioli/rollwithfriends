@@ -3,8 +3,10 @@ import { Abilities5E } from "data/character5E";
 import { AbilitySaveButton } from "features/toolbar/character5E/AbilitySaveButton";
 
 export function Npc5EToolbarSection({
+  entityIds,
   data,
 }: {
+  entityIds: string[];
   data: Npc5EContentToolbarQuery$data;
 }) {
   const character = data.node;
@@ -15,6 +17,7 @@ export function Npc5EToolbarSection({
       <div className={"flex"}>
         {Abilities5E.map((e) => (
           <AbilitySaveButton
+            entityIds={entityIds}
             ability={e}
             base={0}
             mod={character?.savingThrows?.find((s) => s.key === e)?.value}

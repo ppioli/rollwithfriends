@@ -8,7 +8,7 @@ import {
   useNpc5EAddPromise,
 } from "components/fiveEdition/Npc5e.graphql";
 import { FileUploadDefinition, uploadBatch } from "utils/HttpHelpers";
-import { NpcAddInput } from "components/fiveEdition/__generated__/Npc5eAddMutation.graphql";
+import { Npc5EAddInput } from "components/fiveEdition/__generated__/Npc5eAddMutation.graphql";
 
 export function DataManagerPage() {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>();
@@ -133,7 +133,7 @@ function UploadDataList({ files }: UploadDataListProps) {
 
 interface DataBundle {
   source: SourceAddInput;
-  npcs: NpcAddInput[];
+  npcs: Npc5EAddInput[];
 }
 
 async function loadJson(file: File): Promise<DataBundle> {
@@ -146,7 +146,7 @@ async function loadJson(file: File): Promise<DataBundle> {
         let data: any = JSON.parse(e.target.result as string);
         let source = data.source as SourceAddInput;
         console.log("Source", source);
-        let npcs = data.nonPlayerCharacters as NpcAddInput[];
+        let npcs = data.nonPlayerCharacters as Npc5EAddInput[];
 
         resolve({ source, npcs });
       }

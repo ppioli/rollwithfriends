@@ -54,7 +54,13 @@ export function ChatInput({ campaignId }: ChatInputProps) {
         );
         addRollMessage({
           campaignId,
-          messages: [{ content: messageContent }],
+          messages: [
+            {
+              sourceId: null,
+              dmRoll: false,
+              rolls: messageContent,
+            },
+          ],
         });
       } catch (e) {
         console.log(e);

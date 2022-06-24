@@ -6,7 +6,7 @@ import {
 import { useFragment } from "react-relay";
 import { ReactNode, Suspense } from "react";
 import { Npc5EContentToolbar } from "features/toolbar/character5E/Npc5EContentToolbar";
-import { Size } from "features/mapEntity/__generated__/MapEntityFragment.graphql";
+import { Size5E } from "data/character5E";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -39,7 +39,7 @@ type Npc5E = {
   maximumHp: number | null;
   currentHp: number | null;
   temporaryHp: number | null;
-  size: Size | null;
+  size: Size5E | null;
   name: string | null;
   npcId: string | null;
 };
@@ -65,6 +65,9 @@ function processSelection(data: SelectionToolbar_scene$data): SelectionType {
 
   switch (selection[0].content.__typename) {
     case "Npc5EContent":
+      if (selection[0].content.size === "%future added value") {
+        throw new Error("Invalid size");
+      }
       const val: Npc5E = {
         type: "Npc5E",
         ids: [selection[0].id],
@@ -81,13 +84,14 @@ function processSelection(data: SelectionToolbar_scene$data): SelectionType {
         const content = selection[ix].content;
         val.name = mergeValue(selection[ix].name, val.name);
         if (content.__typename === "Npc5EContent") {
+          if (content.size === "%future added value") {
+            throw new Error("Invalid size");
+          }
           val.ids.push(selection[ix].id);
-
           val.ac = mergeValue(content.ac, val.ac);
           val.currentHp = mergeValue(content.currentHp, val.currentHp);
           val.maximumHp = mergeValue(content.maximumHp, val.maximumHp);
           val.temporaryHp = mergeValue(content.temporaryHp, val.temporaryHp);
-
           val.npcId = mergeValue(content.npcId, val.npcId);
           val.size = mergeValue(content.size, val.size);
         }

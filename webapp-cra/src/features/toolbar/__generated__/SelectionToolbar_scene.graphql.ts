@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<9394930ee33c3cf4f21a035867f2060a>>
+ * @generated SignedSource<<5d77704dbd31b257b275ac516325642b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
 export type MapEntityType = "IMAGE" | "NPC5_E" | "%future added value";
-export type Size = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
+export type Size5E = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type SelectionToolbar_scene$data = {
   readonly selected: ReadonlyArray<{
@@ -28,7 +28,7 @@ export type SelectionToolbar_scene$data = {
     } | {
       readonly __typename: "Npc5EContent";
       readonly npcId: string;
-      readonly size: Size;
+      readonly size: Size5E;
       readonly ac: number;
       readonly maximumHp: number;
       readonly currentHp: number;

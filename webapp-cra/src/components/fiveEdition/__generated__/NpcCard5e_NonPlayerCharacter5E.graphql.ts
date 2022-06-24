@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4bec196e9cb68cf0fc3a9de1780d4b4c>>
+ * @generated SignedSource<<a1091b33dba32f7102e8727c381ff8c8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,10 +9,10 @@
 // @ts-nocheck
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
-export type Ability = "STRENGTH" | "DEXTERITY" | "CONSTITUTION" | "INTELLIGENCE" | "WISDOM" | "CHARISMA" | "%future added value";
-export type Alignment = "UNALIGNED" | "CHAOTIC_GOOD" | "NEUTRAL_GOOD" | "LAWFUL_GOOD" | "CHAOTIC_NEUTRAL" | "TRUE_NEUTRAL" | "LAWFUL_NEUTRAL" | "CHAOTIC_EVIL" | "NEUTRAL_EVIL" | "LAWFUL_EVIL" | "%future added value";
-export type DamageType = "BLUDGEONING" | "PIERCING" | "SLASHING" | "ACID" | "%future added value";
-export type Size = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
+export type Ability5E = "STRENGTH" | "DEXTERITY" | "CONSTITUTION" | "INTELLIGENCE" | "WISDOM" | "CHARISMA" | "%future added value";
+export type Alignment5E = "ANY" | "UNALIGNED" | "CHAOTIC_GOOD" | "NEUTRAL_GOOD" | "LAWFUL_GOOD" | "CHAOTIC_NEUTRAL" | "TRUE_NEUTRAL" | "LAWFUL_NEUTRAL" | "CHAOTIC_EVIL" | "NEUTRAL_EVIL" | "LAWFUL_EVIL" | "%future added value";
+export type DamageType5E = "BLUDGEONING" | "PIERCING" | "SLASHING" | "ACID" | "%future added value";
+export type Size5E = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
 export type Skill = "ACROBATICS" | "ANIMAL_HANDLING" | "ARCANA" | "ATHLETICS" | "DECEPTION" | "HISTORY" | "INSIGHT" | "INTIMIDATION" | "INVESTIGATION" | "MEDICINE" | "NATURE" | "PERCEPTION" | "PERFORMANCE" | "PERSUASION" | "RELIGION" | "SLEIGHT_OF_HAND" | "STEALTH" | "SURVIVAL" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type NpcCard5e_NonPlayerCharacter5E$data = {
@@ -34,10 +34,10 @@ export type NpcCard5e_NonPlayerCharacter5E$data = {
     readonly armorClass: number;
   }>;
   readonly challangeRating: number;
-  readonly alignments: ReadonlyArray<Alignment>;
-  readonly sizes: ReadonlyArray<Size>;
+  readonly alignments: ReadonlyArray<Alignment5E>;
+  readonly sizes: ReadonlyArray<Size5E>;
   readonly savingThrows: ReadonlyArray<{
-    readonly key: Ability;
+    readonly key: Ability5E;
     readonly value: number;
   }>;
   readonly skills: ReadonlyArray<{
@@ -54,7 +54,7 @@ export type NpcCard5e_NonPlayerCharacter5E$data = {
   readonly passivePerception: number;
   readonly resistances: ReadonlyArray<{
     readonly condition: string | null;
-    readonly types: ReadonlyArray<DamageType>;
+    readonly types: ReadonlyArray<DamageType5E>;
   }>;
   readonly speeds: {
     readonly walk: number | null;
@@ -154,7 +154,7 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": "NpcType",
+      "concreteType": "NpcType5E",
       "kind": "LinkedField",
       "name": "type",
       "plural": false,
@@ -193,7 +193,7 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": "ArmorClassOption",
+      "concreteType": "ArmorClassOption5E",
       "kind": "LinkedField",
       "name": "armorClasses",
       "plural": true,
@@ -233,7 +233,7 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": "KeyValuePairOfAbilityAndInt32",
+      "concreteType": "KeyValuePairOfAbility5EAndInt32",
       "kind": "LinkedField",
       "name": "savingThrows",
       "plural": true,
@@ -253,7 +253,7 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": "Language",
+      "concreteType": "Language5E",
       "kind": "LinkedField",
       "name": "languages",
       "plural": true,
@@ -265,7 +265,7 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": "Sense",
+      "concreteType": "Sense5E",
       "kind": "LinkedField",
       "name": "senses",
       "plural": true,
@@ -291,7 +291,7 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": "Resistance",
+      "concreteType": "Resistance5E",
       "kind": "LinkedField",
       "name": "resistances",
       "plural": true,
@@ -316,7 +316,7 @@ return {
     {
       "alias": null,
       "args": null,
-      "concreteType": "Speed",
+      "concreteType": "Speed5E",
       "kind": "LinkedField",
       "name": "speeds",
       "plural": false,

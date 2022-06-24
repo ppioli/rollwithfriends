@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b09383810010fbe2b888c67af54510f3>>
+ * @generated SignedSource<<0bdd3ca3d9fd5b2e846328a579e6d77a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -51,7 +51,7 @@ v3 = {
 v4 = {
   "alias": null,
   "args": null,
-  "concreteType": "ArmorClassOption",
+  "concreteType": "ArmorClassOption5E",
   "kind": "LinkedField",
   "name": "armorClasses",
   "plural": true,
@@ -278,7 +278,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "NpcType",
+            "concreteType": "NpcType5E",
             "kind": "LinkedField",
             "name": "type",
             "plural": false,
@@ -321,7 +321,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "KeyValuePairOfAbilityAndInt32",
+            "concreteType": "KeyValuePairOfAbility5EAndInt32",
             "kind": "LinkedField",
             "name": "savingThrows",
             "plural": true,
@@ -341,7 +341,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "Language",
+            "concreteType": "Language5E",
             "kind": "LinkedField",
             "name": "languages",
             "plural": true,
@@ -353,7 +353,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "Sense",
+            "concreteType": "Sense5E",
             "kind": "LinkedField",
             "name": "senses",
             "plural": true,
@@ -379,7 +379,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "Resistance",
+            "concreteType": "Resistance5E",
             "kind": "LinkedField",
             "name": "resistances",
             "plural": true,
@@ -404,7 +404,7 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "Speed",
+            "concreteType": "Speed5E",
             "kind": "LinkedField",
             "name": "speeds",
             "plural": false,

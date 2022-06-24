@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<aa65c560bcfd073c707d4cecb1c5951f>>
+ * @generated SignedSource<<f811c4a84d59a6112fc0996fad6e01ef>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 // @ts-nocheck
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
-export type Size = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
+export type Size5E = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
 import { FragmentRefs } from "relay-runtime";
 export type EntryListItem_NonPlayerCharacter5E$data = {
   readonly id: string;
@@ -20,7 +20,7 @@ export type EntryListItem_NonPlayerCharacter5E$data = {
   }>;
   readonly hitPointsAverage: number;
   readonly hitPointsFormula: string;
-  readonly sizes: ReadonlyArray<Size>;
+  readonly sizes: ReadonlyArray<Size5E>;
   readonly " $fragmentType": "EntryListItem_NonPlayerCharacter5E";
 };
 export type EntryListItem_NonPlayerCharacter5E$key = {
@@ -51,7 +51,7 @@ const node: ReaderFragment = {
     {
       "alias": null,
       "args": null,
-      "concreteType": "ArmorClassOption",
+      "concreteType": "ArmorClassOption5E",
       "kind": "LinkedField",
       "name": "armorClasses",
       "plural": true,

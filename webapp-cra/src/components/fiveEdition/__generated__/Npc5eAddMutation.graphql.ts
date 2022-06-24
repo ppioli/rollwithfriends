@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<4943137601ad93d6f39192ec88173d59>>
+ * @generated SignedSource<<84a6d1380cda9f79fc315a9a0cc8246e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,32 +9,32 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type Ability = "STRENGTH" | "DEXTERITY" | "CONSTITUTION" | "INTELLIGENCE" | "WISDOM" | "CHARISMA" | "%future added value";
-export type Alignment = "UNALIGNED" | "CHAOTIC_GOOD" | "NEUTRAL_GOOD" | "LAWFUL_GOOD" | "CHAOTIC_NEUTRAL" | "TRUE_NEUTRAL" | "LAWFUL_NEUTRAL" | "CHAOTIC_EVIL" | "NEUTRAL_EVIL" | "LAWFUL_EVIL" | "%future added value";
-export type DamageType = "BLUDGEONING" | "PIERCING" | "SLASHING" | "ACID" | "%future added value";
-export type Size = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
+export type Ability5E = "STRENGTH" | "DEXTERITY" | "CONSTITUTION" | "INTELLIGENCE" | "WISDOM" | "CHARISMA" | "%future added value";
+export type Alignment5E = "ANY" | "UNALIGNED" | "CHAOTIC_GOOD" | "NEUTRAL_GOOD" | "LAWFUL_GOOD" | "CHAOTIC_NEUTRAL" | "TRUE_NEUTRAL" | "LAWFUL_NEUTRAL" | "CHAOTIC_EVIL" | "NEUTRAL_EVIL" | "LAWFUL_EVIL" | "%future added value";
+export type DamageType5E = "BLUDGEONING" | "PIERCING" | "SLASHING" | "ACID" | "%future added value";
+export type Size5E = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
 export type Skill = "ACROBATICS" | "ANIMAL_HANDLING" | "ARCANA" | "ATHLETICS" | "DECEPTION" | "HISTORY" | "INSIGHT" | "INTIMIDATION" | "INVESTIGATION" | "MEDICINE" | "NATURE" | "PERCEPTION" | "PERFORMANCE" | "PERSUASION" | "RELIGION" | "SLEIGHT_OF_HAND" | "STEALTH" | "SURVIVAL" | "%future added value";
 export type Npcs5EAddInput = {
   sourceId: string;
-  characters: ReadonlyArray<NpcAddInput>;
+  characters: ReadonlyArray<Npc5EAddInput>;
 };
-export type NpcAddInput = {
+export type Npc5EAddInput = {
   page: number;
-  type: NpcTypeInput;
+  type: NpcType5EInput;
   hitPointsFormula: string;
   hitPointsAverage: number;
-  armorClasses: ReadonlyArray<ArmorClassOptionInput>;
+  armorClasses: ReadonlyArray<ArmorClassOption5EInput>;
   challangeRating: number;
-  alignments: ReadonlyArray<Alignment>;
-  sizes: ReadonlyArray<Size>;
-  savingThrows: ReadonlyArray<KeyValuePairOfAbilityAndInt32Input>;
+  alignments: ReadonlyArray<Alignment5E>;
+  sizes: ReadonlyArray<Size5E>;
+  savingThrows: ReadonlyArray<KeyValuePairOfAbility5EAndInt32Input>;
   skills: ReadonlyArray<KeyValuePairOfSkillAndInt32Input>;
   name: string;
-  languages: ReadonlyArray<LanguageInput>;
-  senses: ReadonlyArray<SenseInput>;
+  languages: ReadonlyArray<Language5EInput>;
+  senses: ReadonlyArray<Sense5EInput>;
   passivePerception: number;
-  resistances: ReadonlyArray<ResistanceInput>;
-  speeds: SpeedInput;
+  resistances: ReadonlyArray<Resistance5EInput>;
+  speeds: Speed5EInput;
   strength: number;
   dexterity: number;
   constitution: number;
@@ -42,34 +42,34 @@ export type NpcAddInput = {
   wisdom: number;
   charisma: number;
 };
-export type NpcTypeInput = {
+export type NpcType5EInput = {
   label: string;
   tags?: ReadonlyArray<string> | null;
 };
-export type ArmorClassOptionInput = {
+export type ArmorClassOption5EInput = {
   armorClass: number;
   description: string;
 };
-export type KeyValuePairOfAbilityAndInt32Input = {
-  key: Ability;
+export type KeyValuePairOfAbility5EAndInt32Input = {
+  key: Ability5E;
   value: number;
 };
 export type KeyValuePairOfSkillAndInt32Input = {
   key: Skill;
   value: number;
 };
-export type LanguageInput = {
+export type Language5EInput = {
   name: string;
 };
-export type SenseInput = {
+export type Sense5EInput = {
   description: string;
   range: number;
 };
-export type ResistanceInput = {
-  types: ReadonlyArray<DamageType>;
+export type Resistance5EInput = {
+  types: ReadonlyArray<DamageType5E>;
   condition?: string | null;
 };
-export type SpeedInput = {
+export type Speed5EInput = {
   walk?: number | null;
   swim?: number | null;
   fly?: number | null;

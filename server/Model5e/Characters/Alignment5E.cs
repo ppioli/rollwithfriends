@@ -2,6 +2,7 @@ namespace RollWithFriends.Models.Characters;
 
 public enum Alignment5E
 {
+    Any,
     Unaligned,
     ChaoticGood,
     NeutralGood,

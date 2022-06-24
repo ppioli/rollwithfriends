@@ -46,6 +46,7 @@ export const CampaignPage = ({ preloaded }: any) => {
           <SelectedScene
             className={"absolute inset-0"}
             id={campaign.selectedScene.id}
+            campaignId={campaign.id}
             scene={campaign.selectedScene}
           />
         )}

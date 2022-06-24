@@ -28,11 +28,17 @@ const graphql = require("babel-plugin-relay/macro");
 
 export interface SceneProps {
   id: string;
+  campaignId: string;
   scene: SelectedScene_scene$key;
   className: string;
 }
 
-export function SelectedScene({ id, scene, className }: SceneProps) {
+export function SelectedScene({
+  id,
+  scene,
+  className,
+  campaignId,
+}: SceneProps) {
   console.info(
     " ++++++++ ++++++++ ++++++++ ++++++++ Redrawing scene ++++++++ ++++++++ ++++++++ ++++++++ "
   );
@@ -157,6 +163,7 @@ export function SelectedScene({ id, scene, className }: SceneProps) {
     <SelectedSceneContextProvider
       sceneId={id}
       cellSize={cellSize}
+      campaignId={campaignId}
       getEntitySize={getEntitySize}
     >
       <div ref={ref} className={className}>

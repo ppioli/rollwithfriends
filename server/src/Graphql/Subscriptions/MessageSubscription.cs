@@ -28,6 +28,7 @@ public class MessageSubscription
         {
             throw new NotAuthorizedException();
         }
+        // TODO Should hide dm rolls
         return receiver.SubscribeAsync<string, MessageEvent>(GetTopic(campaignId));
     }
         

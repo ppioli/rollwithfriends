@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using HotChocolate.Subscriptions;
 using Microsoft.AspNetCore.Authorization;
-using Server.EFModels;
 using Server.EFModels.Messages;
 using Server.Graphql.Subscriptions;
 using server.Infraestructure;
@@ -20,25 +19,28 @@ public class MessageMutation
         [Service()] ITopicEventSender sender,
         [Service()] EnrollmentService enrollmentService,
         TextMessagesAdd input
-        )
+    )
     {
         if (enrollmentService.GetRollInCampaign(user, input.CampaignId) == null)
         {
             throw new NotAuthorizedException();
         }
-    
+
         ICollection<Message> created = input.Messages
-            .Select(message => Message.CreateTextMessage(user.GetId(), input.CampaignId, message.Content)).ToList();
-        
+            .Select(message => Message.CreateTextMessage(user.GetId(), input.CampaignId, message.Content))
+            .ToList();
+
         await db.AddRangeAsync(created);
-    
+
         await db.SaveChangesAsync();
-    
-        await sender.SendAsync(MessageSubscription.GetTopic(input.CampaignId), new MessageEvent() { Messages = created });
-    
+
+        await sender.SendAsync(
+            MessageSubscription.GetTopic(input.CampaignId),
+            new MessageEvent() { Messages = created });
+
         return created;
     }
-    
+
     [Authorize]
     public async Task<ICollection<Message>> RollMessageAdd(
         ClaimsPrincipal user,
@@ -52,35 +54,46 @@ public class MessageMutation
         {
             throw new NotAuthorizedException();
         }
-    
-        
-        Random random = new Random();  
+
+
+        Random random = new Random();
         ICollection<Message> created = input.Messages
             .Select(
                 message =>
                 {
-                    var rolls = message.Content.Select(
-                        roll =>
-                        {
-                            return new Roll()
+                    var rolls = message.Rolls.Select(
+                            roll =>
                             {
-                                Count = roll.Count,
-                                Faces = roll.Faces,
-                                Result = Enumerable.Range(0, roll.Count)
-                                    .Select(s => random.Next(1, roll.Faces + 1))
-                                    .ToList()
-                            };
-                        }).ToList();
-                    
-                    return Message.CreateRollMessage(user.GetId(), input.CampaignId, rolls);
-                }).ToList();
-        
+                                return new Roll()
+                                {
+                                    Count = roll.Count,
+                                    Faces = roll.Faces,
+                                    Result = Enumerable.Range(0, roll.Count)
+                                        .Select(s => random.Next(1, roll.Faces + 1))
+                                        .ToList()
+                                };
+                            })
+                        .ToList();
+
+                    var rollContent = new RollMessageContent()
+                    {
+                        Rolls = rolls,
+                        DmRoll = message.DmRoll,
+                        SourceId = message.SourceId
+                    };
+
+                    return Message.CreateRollMessage(user.GetId(), input.CampaignId, rollContent);
+                })
+            .ToList();
+
         await db.AddRangeAsync(created);
-    
+
         await db.SaveChangesAsync();
-    
-        await sender.SendAsync(MessageSubscription.GetTopic(input.CampaignId), new MessageEvent() { Messages = created });
-    
+
+        await sender.SendAsync(
+            MessageSubscription.GetTopic(input.CampaignId),
+            new MessageEvent() { Messages = created });
+
         return created;
     }
 }
@@ -92,7 +105,10 @@ public class TextMessageAdd
 
 public class RollMessageAdd
 {
-    public List<RollInfo> Content { get; set; } = null!;
+    [ID]
+    public int? SourceId { get; set; }
+    public bool DmRoll { get; set; }
+    public List<RollInfo> Rolls { get; set; } = null!;
 }
 
 public class MessagesAdd<T>
@@ -109,7 +125,10 @@ public class RollInfo
     public int Count { get; set; }
 }
 
-public class TextMessagesAdd : MessagesAdd<TextMessageAdd> {}
-public class RollMessagesAdd : MessagesAdd<RollMessageAdd> {}
+public class TextMessagesAdd : MessagesAdd<TextMessageAdd>
+{
+}
 
-
+public class RollMessagesAdd : MessagesAdd<RollMessageAdd>
+{
+}

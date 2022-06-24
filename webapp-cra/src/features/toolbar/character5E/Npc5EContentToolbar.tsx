@@ -1,20 +1,21 @@
-import { Size } from "features/mapEntity/__generated__/MapEntityFragment.graphql";
 import { useLazyLoadQuery } from "react-relay";
 import { Npc5EContentToolbarQuery as Npc5EContentToolbarQueryType } from "./__generated__/Npc5EContentToolbarQuery.graphql";
 import { AcCard } from "features/toolbar/character5E/AcCard";
 import { HpCard } from "features/toolbar/character5E/HpCard";
 import { Npc5EToolbarSection } from "features/toolbar/character5E/Npc5EToolbarSection";
+import { Size5E } from "data/character5E";
 
 const graphql = require("babel-plugin-relay/macro");
 
 export interface Npc5EContentToolbarProps {
+  ids: string[];
   ac: number | null;
   maximumHp: number | null;
   currentHp: number | null;
   temporaryHp: number | null;
   name: string | null;
   npcId: string | null;
-  size: Size | null;
+  size: Size5E | null;
 }
 
 const Npc5EContentToolbarQuery = graphql`
@@ -37,6 +38,7 @@ const Npc5EContentToolbarQuery = graphql`
 `;
 
 export function Npc5EContentToolbar({
+  ids,
   ac,
   maximumHp,
   currentHp,
@@ -78,7 +80,7 @@ export function Npc5EContentToolbar({
         </div>
       </div>
 
-      <Npc5EToolbarSection data={characterData} />
+      <Npc5EToolbarSection data={characterData} entityIds={ids} />
     </div>
   );
 }

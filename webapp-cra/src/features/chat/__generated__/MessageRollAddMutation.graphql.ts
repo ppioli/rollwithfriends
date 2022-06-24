@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<37a68b288b53140211e5bbe27ba004ea>>
+ * @generated SignedSource<<c7d12c8b0c23aa068604dffb83dfcc05>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,9 @@ export type RollMessagesAddInput = {
   messages: ReadonlyArray<RollMessageAddInput>;
 };
 export type RollMessageAddInput = {
-  content: ReadonlyArray<RollInfoInput>;
+  sourceId?: string | null;
+  dmRoll: boolean;
+  rolls: ReadonlyArray<RollInfoInput>;
 };
 export type RollInfoInput = {
   faces: number;

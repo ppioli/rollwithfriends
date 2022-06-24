@@ -2,7 +2,7 @@ import { NpcCard5e_NonPlayerCharacter5E$key } from "components/fiveEdition/__gen
 import { useFragment } from "react-relay";
 import { capitalize, startCase } from "lodash";
 import { ServerUrl } from "lib/getRelayClientEnvironment";
-import { Alignment } from "components/fiveEdition/__generated__/Npc5eAddMutation.graphql";
+import { Alignment5E } from "components/fiveEdition/__generated__/Npc5eAddMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -160,7 +160,7 @@ function MiscCard({ value, label }: AbilityCardProps) {
   );
 }
 
-function formatAlignment(alignment: Alignment) {
+function formatAlignment(alignment: Alignment5E) {
   return capitalize(startCase(alignment));
 }
 

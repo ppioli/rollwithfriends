@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0f6c4e35f09ae6cfd71789a3875fa66f>>
+ * @generated SignedSource<<9627fe577bc01325eb593ac6c58b274a>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,7 @@
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type Size = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
+export type Size5E = "TINY" | "SMALL" | "MEDIUM" | "LARGE" | "HUGE" | "GARGANTUAN" | "%future added value";
 export type MapEntitiesNpcAddInput = {
   sceneId: string;
   entities: ReadonlyArray<MapEntityNpcAddInput>;
@@ -22,7 +22,7 @@ export type MapEntityNpcAddInput = {
   npcId: string;
   ac: number;
   maxHp: number;
-  size: Size;
+  size: Size5E;
 };
 export type MapEntityNpcAddMutation$variables = {
   input: MapEntitiesNpcAddInput;

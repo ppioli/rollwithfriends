@@ -56,7 +56,7 @@ directive @specifiedBy(
   url: String!
 ) on SCALAR
 
-enum Ability {
+enum Ability5E {
   STRENGTH
   DEXTERITY
   CONSTITUTION
@@ -65,14 +65,15 @@ enum Ability {
   CHARISMA
 }
 
-input AbilityOperationFilterInput {
-  eq: Ability
-  neq: Ability
-  in: [Ability!]
-  nin: [Ability!]
+input Ability5EOperationFilterInput {
+  eq: Ability5E
+  neq: Ability5E
+  in: [Ability5E!]
+  nin: [Ability5E!]
 }
 
-enum Alignment {
+enum Alignment5E {
+  ANY
   UNALIGNED
   CHAOTIC_GOOD
   NEUTRAL_GOOD
@@ -85,11 +86,11 @@ enum Alignment {
   LAWFUL_EVIL
 }
 
-input AlignmentOperationFilterInput {
-  eq: Alignment
-  neq: Alignment
-  in: [Alignment!]
-  nin: [Alignment!]
+input Alignment5EOperationFilterInput {
+  eq: Alignment5E
+  neq: Alignment5E
+  in: [Alignment5E!]
+  nin: [Alignment5E!]
 }
 
 enum ApplyPolicy {
@@ -97,19 +98,19 @@ enum ApplyPolicy {
   AFTER_RESOLVER
 }
 
-type ArmorClassOption {
+type ArmorClassOption5E {
   armorClass: Int!
   description: String!
 }
 
-input ArmorClassOptionFilterInput {
-  and: [ArmorClassOptionFilterInput!]
-  or: [ArmorClassOptionFilterInput!]
+input ArmorClassOption5EFilterInput {
+  and: [ArmorClassOption5EFilterInput!]
+  or: [ArmorClassOption5EFilterInput!]
   armorClass: ComparableInt32OperationFilterInput
   description: StringOperationFilterInput
 }
 
-input ArmorClassOptionInput {
+input ArmorClassOption5EInput {
   armorClass: Int!
   description: String!
 }
@@ -217,18 +218,18 @@ input ComparableNullableOfInt32OperationFilterInput {
   nlte: Int
 }
 
-enum DamageType {
+enum DamageType5E {
   BLUDGEONING
   PIERCING
   SLASHING
   ACID
 }
 
-input DamageTypeOperationFilterInput {
-  eq: DamageType
-  neq: DamageType
-  in: [DamageType!]
-  nin: [DamageType!]
+input DamageType5EOperationFilterInput {
+  eq: DamageType5E
+  neq: DamageType5E
+  in: [DamageType5E!]
+  nin: [DamageType5E!]
 }
 
 """The `DateTime` scalar represents an ISO-8601 compliant date time type."""
@@ -268,10 +269,10 @@ type FileLoadingMessage {
   progress: Int!
 }
 
-input IDictionaryOfAbilityAndInt32FilterInput {
-  and: [IDictionaryOfAbilityAndInt32FilterInput!]
-  or: [IDictionaryOfAbilityAndInt32FilterInput!]
-  keys: ListAbilityOperationFilterInput
+input IDictionaryOfAbility5EAndInt32FilterInput {
+  and: [IDictionaryOfAbility5EAndInt32FilterInput!]
+  or: [IDictionaryOfAbility5EAndInt32FilterInput!]
+  keys: ListAbility5EOperationFilterInput
   values: ListComparableInt32OperationFilterInput
 }
 
@@ -295,13 +296,13 @@ type ImageContent {
   height: Int!
 }
 
-type KeyValuePairOfAbilityAndInt32 {
-  key: Ability!
+type KeyValuePairOfAbility5EAndInt32 {
+  key: Ability5E!
   value: Int!
 }
 
-input KeyValuePairOfAbilityAndInt32Input {
-  key: Ability!
+input KeyValuePairOfAbility5EAndInt32Input {
+  key: Ability5E!
   value: Int!
 }
 
@@ -315,31 +316,31 @@ input KeyValuePairOfSkillAndInt32Input {
   value: Int!
 }
 
-type Language {
+type Language5E {
   name: String!
 }
 
-input LanguageFilterInput {
-  and: [LanguageFilterInput!]
-  or: [LanguageFilterInput!]
+input Language5EFilterInput {
+  and: [Language5EFilterInput!]
+  or: [Language5EFilterInput!]
   name: StringOperationFilterInput
 }
 
-input LanguageInput {
+input Language5EInput {
   name: String!
 }
 
-input ListAbilityOperationFilterInput {
-  all: AbilityOperationFilterInput
-  none: AbilityOperationFilterInput
-  some: AbilityOperationFilterInput
+input ListAbility5EOperationFilterInput {
+  all: Ability5EOperationFilterInput
+  none: Ability5EOperationFilterInput
+  some: Ability5EOperationFilterInput
   any: Boolean
 }
 
-input ListAlignmentOperationFilterInput {
-  all: AlignmentOperationFilterInput
-  none: AlignmentOperationFilterInput
-  some: AlignmentOperationFilterInput
+input ListAlignment5EOperationFilterInput {
+  all: Alignment5EOperationFilterInput
+  none: Alignment5EOperationFilterInput
+  some: Alignment5EOperationFilterInput
   any: Boolean
 }
 
@@ -350,24 +351,24 @@ input ListComparableInt32OperationFilterInput {
   any: Boolean
 }
 
-input ListDamageTypeOperationFilterInput {
-  all: DamageTypeOperationFilterInput
-  none: DamageTypeOperationFilterInput
-  some: DamageTypeOperationFilterInput
+input ListDamageType5EOperationFilterInput {
+  all: DamageType5EOperationFilterInput
+  none: DamageType5EOperationFilterInput
+  some: DamageType5EOperationFilterInput
   any: Boolean
 }
 
-input ListFilterInputTypeOfArmorClassOptionFilterInput {
-  all: ArmorClassOptionFilterInput
-  none: ArmorClassOptionFilterInput
-  some: ArmorClassOptionFilterInput
+input ListFilterInputTypeOfArmorClassOption5EFilterInput {
+  all: ArmorClassOption5EFilterInput
+  none: ArmorClassOption5EFilterInput
+  some: ArmorClassOption5EFilterInput
   any: Boolean
 }
 
-input ListFilterInputTypeOfLanguageFilterInput {
-  all: LanguageFilterInput
-  none: LanguageFilterInput
-  some: LanguageFilterInput
+input ListFilterInputTypeOfLanguage5EFilterInput {
+  all: Language5EFilterInput
+  none: Language5EFilterInput
+  some: Language5EFilterInput
   any: Boolean
 }
 
@@ -378,10 +379,10 @@ input ListFilterInputTypeOfMapEntityFilterInput {
   any: Boolean
 }
 
-input ListFilterInputTypeOfResistanceFilterInput {
-  all: ResistanceFilterInput
-  none: ResistanceFilterInput
-  some: ResistanceFilterInput
+input ListFilterInputTypeOfResistance5EFilterInput {
+  all: Resistance5EFilterInput
+  none: Resistance5EFilterInput
+  some: Resistance5EFilterInput
   any: Boolean
 }
 
@@ -392,17 +393,17 @@ input ListFilterInputTypeOfSceneFilterInput {
   any: Boolean
 }
 
-input ListFilterInputTypeOfSenseFilterInput {
-  all: SenseFilterInput
-  none: SenseFilterInput
-  some: SenseFilterInput
+input ListFilterInputTypeOfSense5EFilterInput {
+  all: Sense5EFilterInput
+  none: Sense5EFilterInput
+  some: Sense5EFilterInput
   any: Boolean
 }
 
-input ListSizeOperationFilterInput {
-  all: SizeOperationFilterInput
-  none: SizeOperationFilterInput
-  some: SizeOperationFilterInput
+input ListSize5EOperationFilterInput {
+  all: Size5EOperationFilterInput
+  none: Size5EOperationFilterInput
+  some: Size5EOperationFilterInput
   any: Boolean
 }
 
@@ -496,7 +497,7 @@ input MapEntityNpcAddInput {
   npcId: ID!
   ac: Int!
   maxHp: Int!
-  size: Size!
+  size: Size5E!
 }
 
 type MapEntityNpcAddPayload {
@@ -597,23 +598,23 @@ type NonPlayerCharacter5E implements Node {
   page: Int!
   sourceId: Int!
   source: Source!
-  type: NpcType!
+  type: NpcType5E!
   hitPointsFormula: String!
   hitPointsAverage: Int!
-  armorClasses: [ArmorClassOption!]!
+  armorClasses: [ArmorClassOption5E!]!
   challangeRating: Float!
-  alignments: [Alignment!]!
-  sizes: [Size!]!
-  savingThrows: [KeyValuePairOfAbilityAndInt32!]!
+  alignments: [Alignment5E!]!
+  sizes: [Size5E!]!
+  savingThrows: [KeyValuePairOfAbility5EAndInt32!]!
   skills: [KeyValuePairOfSkillAndInt32!]!
   id: ID!
   name: String!
   avatarId: Int!
-  languages: [Language!]!
-  senses: [Sense!]!
+  languages: [Language5E!]!
+  senses: [Sense5E!]!
   passivePerception: Int!
-  resistances: [Resistance!]!
-  speeds: Speed!
+  resistances: [Resistance5E!]!
+  speeds: Speed5E!
   strength: Int!
   dexterity: Int!
   constitution: Int!
@@ -628,23 +629,23 @@ input NonPlayerCharacter5EFilterInput {
   page: ComparableInt32OperationFilterInput
   sourceId: ComparableInt32OperationFilterInput
   source: SourceFilterInput
-  type: NpcTypeFilterInput
+  type: NpcType5EFilterInput
   hitPointsFormula: StringOperationFilterInput
   hitPointsAverage: ComparableInt32OperationFilterInput
-  armorClasses: ListFilterInputTypeOfArmorClassOptionFilterInput
+  armorClasses: ListFilterInputTypeOfArmorClassOption5EFilterInput
   challangeRating: ComparableDoubleOperationFilterInput
-  alignments: ListAlignmentOperationFilterInput
-  sizes: ListSizeOperationFilterInput
-  savingThrows: IDictionaryOfAbilityAndInt32FilterInput
+  alignments: ListAlignment5EOperationFilterInput
+  sizes: ListSize5EOperationFilterInput
+  savingThrows: IDictionaryOfAbility5EAndInt32FilterInput
   skills: IDictionaryOfSkillAndInt32FilterInput
   id: ComparableInt32OperationFilterInput
   name: StringOperationFilterInput
   avatarId: ComparableInt32OperationFilterInput
-  languages: ListFilterInputTypeOfLanguageFilterInput
-  senses: ListFilterInputTypeOfSenseFilterInput
+  languages: ListFilterInputTypeOfLanguage5EFilterInput
+  senses: ListFilterInputTypeOfSense5EFilterInput
   passivePerception: ComparableInt32OperationFilterInput
-  resistances: ListFilterInputTypeOfResistanceFilterInput
-  speeds: SpeedFilterInput
+  resistances: ListFilterInputTypeOfResistance5EFilterInput
+  speeds: Speed5EFilterInput
   strength: ComparableInt32OperationFilterInput
   dexterity: ComparableInt32OperationFilterInput
   constitution: ComparableInt32OperationFilterInput
@@ -653,9 +654,34 @@ input NonPlayerCharacter5EFilterInput {
   charisma: ComparableInt32OperationFilterInput
 }
 
+input Npc5EAddInput {
+  page: Int!
+  type: NpcType5EInput!
+  hitPointsFormula: String!
+  hitPointsAverage: Int!
+  armorClasses: [ArmorClassOption5EInput!]!
+  challangeRating: Float!
+  alignments: [Alignment5E!]!
+  sizes: [Size5E!]!
+  savingThrows: [KeyValuePairOfAbility5EAndInt32Input!]!
+  skills: [KeyValuePairOfSkillAndInt32Input!]!
+  name: String!
+  languages: [Language5EInput!]!
+  senses: [Sense5EInput!]!
+  passivePerception: Int!
+  resistances: [Resistance5EInput!]!
+  speeds: Speed5EInput!
+  strength: Int!
+  dexterity: Int!
+  constitution: Int!
+  intelligence: Int!
+  wisdom: Int!
+  charisma: Int!
+}
+
 type Npc5EContent {
   npcId: ID!
-  size: Size!
+  size: Size5E!
   maximumHp: Int!
   currentHp: Int!
   temporaryHp: Int!
@@ -665,53 +691,28 @@ type Npc5EContent {
   npc: NonPlayerCharacter5E!
 }
 
-input NpcAddInput {
-  page: Int!
-  type: NpcTypeInput!
-  hitPointsFormula: String!
-  hitPointsAverage: Int!
-  armorClasses: [ArmorClassOptionInput!]!
-  challangeRating: Float!
-  alignments: [Alignment!]!
-  sizes: [Size!]!
-  savingThrows: [KeyValuePairOfAbilityAndInt32Input!]!
-  skills: [KeyValuePairOfSkillAndInt32Input!]!
-  name: String!
-  languages: [LanguageInput!]!
-  senses: [SenseInput!]!
-  passivePerception: Int!
-  resistances: [ResistanceInput!]!
-  speeds: SpeedInput!
-  strength: Int!
-  dexterity: Int!
-  constitution: Int!
-  intelligence: Int!
-  wisdom: Int!
-  charisma: Int!
-}
-
 input Npcs5EAddInput {
   sourceId: ID!
-  characters: [NpcAddInput!]!
+  characters: [Npc5EAddInput!]!
 }
 
 type Npcs5EAddPayload {
   nonPlayerCharacter5E: [NonPlayerCharacter5E!]
 }
 
-type NpcType {
+type NpcType5E {
   label: String!
   tags: [String!]
 }
 
-input NpcTypeFilterInput {
-  and: [NpcTypeFilterInput!]
-  or: [NpcTypeFilterInput!]
+input NpcType5EFilterInput {
+  and: [NpcType5EFilterInput!]
+  or: [NpcType5EFilterInput!]
   label: StringOperationFilterInput
   tags: ListStringOperationFilterInput
 }
 
-input NpcTypeInput {
+input NpcType5EInput {
   label: String!
   tags: [String!]
 }
@@ -742,20 +743,20 @@ type Participant implements Node {
   campaignRoll: CampaignRoll!
 }
 
-type Resistance {
-  types: [DamageType!]!
+type Resistance5E {
+  types: [DamageType5E!]!
   condition: String
 }
 
-input ResistanceFilterInput {
-  and: [ResistanceFilterInput!]
-  or: [ResistanceFilterInput!]
-  types: ListDamageTypeOperationFilterInput
+input Resistance5EFilterInput {
+  and: [Resistance5EFilterInput!]
+  or: [Resistance5EFilterInput!]
+  types: ListDamageType5EOperationFilterInput
   condition: StringOperationFilterInput
 }
 
-input ResistanceInput {
-  types: [DamageType!]!
+input Resistance5EInput {
+  types: [DamageType5E!]!
   condition: String
 }
 
@@ -771,7 +772,9 @@ input RollInfoInput {
 }
 
 input RollMessageAddInput {
-  content: [RollInfoInput!]!
+  sourceId: ID
+  dmRoll: Boolean!
+  rolls: [RollInfoInput!]!
 }
 
 type RollMessageAddPayload {
@@ -779,6 +782,8 @@ type RollMessageAddPayload {
 }
 
 type RollMessageContent {
+  sourceId: Int
+  dmRoll: Boolean!
   rolls: [Roll!]!
 }
 
@@ -864,24 +869,24 @@ input SceneFilterInput {
   entities: ListFilterInputTypeOfMapEntityFilterInput
 }
 
-type Sense {
+type Sense5E {
   description: String!
   range: Int!
 }
 
-input SenseFilterInput {
-  and: [SenseFilterInput!]
-  or: [SenseFilterInput!]
+input Sense5EFilterInput {
+  and: [Sense5EFilterInput!]
+  or: [Sense5EFilterInput!]
   description: StringOperationFilterInput
   range: ComparableInt32OperationFilterInput
 }
 
-input SenseInput {
+input Sense5EInput {
   description: String!
   range: Int!
 }
 
-enum Size {
+enum Size5E {
   TINY
   SMALL
   MEDIUM
@@ -890,11 +895,11 @@ enum Size {
   GARGANTUAN
 }
 
-input SizeOperationFilterInput {
-  eq: Size
-  neq: Size
-  in: [Size!]
-  nin: [Size!]
+input Size5EOperationFilterInput {
+  eq: Size5E
+  neq: Size5E
+  in: [Size5E!]
+  nin: [Size5E!]
 }
 
 enum Skill {
@@ -954,21 +959,21 @@ input SourceFilterInput {
   ownerId: StringOperationFilterInput
 }
 
-type Speed {
+type Speed5E {
   walk: Int
   swim: Int
   fly: Int
 }
 
-input SpeedFilterInput {
-  and: [SpeedFilterInput!]
-  or: [SpeedFilterInput!]
+input Speed5EFilterInput {
+  and: [Speed5EFilterInput!]
+  or: [Speed5EFilterInput!]
   walk: ComparableNullableOfInt32OperationFilterInput
   swim: ComparableNullableOfInt32OperationFilterInput
   fly: ComparableNullableOfInt32OperationFilterInput
 }
 
-input SpeedInput {
+input Speed5EInput {
   walk: Int
   swim: Int
   fly: Int

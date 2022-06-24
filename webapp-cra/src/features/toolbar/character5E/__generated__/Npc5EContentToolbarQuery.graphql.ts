@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7fe5368dda1c071651ebeb2029b5d1ef>>
+ * @generated SignedSource<<d3e8eacbdb5d490dd59c1bf1f3b1b29e>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,7 +9,7 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Query } from 'relay-runtime';
-export type Ability = "STRENGTH" | "DEXTERITY" | "CONSTITUTION" | "INTELLIGENCE" | "WISDOM" | "CHARISMA" | "%future added value";
+export type Ability5E = "STRENGTH" | "DEXTERITY" | "CONSTITUTION" | "INTELLIGENCE" | "WISDOM" | "CHARISMA" | "%future added value";
 export type Npc5EContentToolbarQuery$variables = {
   id: string;
   skip: boolean;
@@ -23,7 +23,7 @@ export type Npc5EContentToolbarQuery$data = {
       readonly tags: ReadonlyArray<string> | null;
     };
     readonly savingThrows?: ReadonlyArray<{
-      readonly key: Ability;
+      readonly key: Ability5E;
       readonly value: number;
     }>;
   } | null;
@@ -86,7 +86,7 @@ v1 = [
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "NpcType",
+                "concreteType": "NpcType5E",
                 "kind": "LinkedField",
                 "name": "type",
                 "plural": false,
@@ -111,7 +111,7 @@ v1 = [
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "KeyValuePairOfAbilityAndInt32",
+                "concreteType": "KeyValuePairOfAbility5EAndInt32",
                 "kind": "LinkedField",
                 "name": "savingThrows",
                 "plural": true,
