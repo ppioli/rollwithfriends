@@ -6,7 +6,7 @@ namespace Server.EFModels.Map;
 public class Npc5EContent : IMapEntityContent {
     [ID(nameof(NonPlayerCharacter5E))]
     public int NpcId { get; set; }
-    public Size Size { get; set; }
+    public Size5E Size { get; set; }
     public int MaximumHp { get; set; }
     public int CurrentHp { get; set; }
     public int TemporaryHp { get; set; }
@@ -21,7 +21,7 @@ public class Npc5EContent : IMapEntityContent {
     }
     
     
-    public Npc5EContent(int npcId, Size size, int maximumHp, int ac)
+    public Npc5EContent(int npcId, Size5E size, int maximumHp, int ac)
     {
         NpcId = npcId;
         Size = size;

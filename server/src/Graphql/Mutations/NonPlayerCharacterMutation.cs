@@ -42,5 +42,5 @@ public class Npcs5EAdd
     [ID]
     public int SourceId { get; set; }
 
-    public NpcAdd[] Characters { get; set; } = null!;
+    public Npc5EAdd[] Characters { get; set; } = null!;
 }

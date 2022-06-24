@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using HotChocolate.AspNetCore.Authorization;
 using RollWithFriends.Models.Characters;
+using RollWithFriends.Models.Import;
 using Server.EFModels;
 using server.Infraestructure;
 

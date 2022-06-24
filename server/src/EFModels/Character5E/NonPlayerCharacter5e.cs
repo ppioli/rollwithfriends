@@ -15,19 +15,19 @@ public class NonPlayerCharacter5E : CharacterBase5E
     public int SourceId { get; set; }
     public virtual Source Source { get; set; } = null!;
 
-    public NpcType Type { get; set; } = null!;
+    public NpcType5E Type { get; set; } = null!;
 
     public string HitPointsFormula { get; set; } = null!;
     public int HitPointsAverage { get; set; }
 
-    public ArmorClassOption[] ArmorClasses { get; set; } = null!;
+    public ArmorClassOption5E[] ArmorClasses { get; set; } = null!;
 
     public double ChallangeRating { get; set; }
 
-    public Alignment[] Alignments { get; set; } = null!;
+    public Alignment5E[] Alignments { get; set; } = null!;
 
-    public Size[] Sizes { get; set; } = null!;
-    public IDictionary<Ability, int> SavingThrows { get; set; } = null!;
+    public Size5E[] Sizes { get; set; } = null!;
+    public IDictionary<Ability5E, int> SavingThrows { get; set; } = null!;
     public IDictionary<Skill, int> Skills { get; set; } = null!;
 
     protected NonPlayerCharacter5E()
@@ -50,15 +50,15 @@ public class NonPlayerCharacter5E : CharacterBase5E
         int hitPointsAverage,
         double challangeRating,
         IDictionary<Skill, int> skills,
-        IDictionary<Ability, int> savingThrows,
-        Size[] sizes,
-        Alignment[] alignments,
-        Language[] languages,
-        Speed speed,
-        Sense[] senses,
-        Resistance[] resistances,
-        ArmorClassOption[] armorClasses,
-        NpcType type) : base(
+        IDictionary<Ability5E, int> savingThrows,
+        Size5E[] sizes,
+        Alignment5E[] alignments,
+        Language5E[] languages,
+        Speed5E speed,
+        Sense5E[] senses,
+        Resistance5E[] resistances,
+        ArmorClassOption5E[] armorClasses,
+        NpcType5E type) : base(
         name,
         file,
         passivePerception,

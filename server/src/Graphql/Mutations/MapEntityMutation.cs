@@ -250,5 +250,5 @@ public class MapEntityNpcAdd
 
     public int Ac { get; set; }
     public int MaxHp { get; set; }
-    public Size Size { get; set; }
+    public Size5E Size { get; set; }
 }

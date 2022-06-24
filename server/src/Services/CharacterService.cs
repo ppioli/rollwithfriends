@@ -2,6 +2,7 @@ using RollWithFriends.Models.Characters;
 using Server.EFModels;
 using Server.EFModels.Character5E;
 using server.Infraestructure;
+using Source = Server.EFModels.Source;
 
 namespace Server.Services;
 
@@ -16,7 +17,7 @@ public class CharacterService
 
     public async Task<ICollection<NonPlayerCharacter5E>> AddNonPlayerCharacters(
         Source source,
-        IEnumerable<NpcAdd> payload)
+        IEnumerable<Npc5EAdd> payload)
     {
         
         var createdNpcs = payload.Select(
@@ -36,7 +37,7 @@ public class CharacterService
                 input.HitPointsAverage,
                 input.ChallangeRating,
                 new Dictionary<Skill, int>(input.Skills),
-                new Dictionary<Ability, int>(input.SavingThrows),
+                new Dictionary<Ability5E, int>(input.SavingThrows),
                 input.Sizes,
                 input.Alignments,
                 input.Languages,

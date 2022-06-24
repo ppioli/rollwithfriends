@@ -9,6 +9,7 @@ using Server.EFModels;
 using Server.EFModels.Character5E;
 using Server.EFModels.Map;
 using Server.EFModels.Messages;
+using Source = Server.EFModels.Source;
 
 namespace server.Infraestructure;
 
@@ -91,31 +92,31 @@ public class RwfDbContext : IdentityDbContext<
                 b.Property(npc => npc.Sizes)
                     .HasConversion(
                         s => JsonConvert.SerializeObject(s),
-                        dbValue => JsonConvert.DeserializeObject<Size[]>(dbValue));
+                        dbValue => JsonConvert.DeserializeObject<Size5E[]>(dbValue));
                         
                 b.Property(npc => npc.SavingThrows)
-                    .HasConversion(new JsonValueConverter<IDictionary<Ability, int>>());
+                    .HasConversion(new JsonValueConverter<IDictionary<Ability5E, int>>());
                 
                 b.Property(npc => npc.Alignments)
-                    .HasConversion(new JsonValueConverter<Alignment[]>());
+                    .HasConversion(new JsonValueConverter<Alignment5E[]>());
                 
                 b.Property(npc => npc.ArmorClasses)
-                    .HasConversion( new JsonValueConverter<ArmorClassOption[]>());
+                    .HasConversion( new JsonValueConverter<ArmorClassOption5E[]>());
                 
                 b.Property(npc => npc.Type)
-                    .HasConversion( new JsonValueConverter<NpcType>());
+                    .HasConversion( new JsonValueConverter<NpcType5E>());
                 
                 b.Property(npc => npc.Languages)
-                    .HasConversion( new JsonValueConverter<Language[]>());
+                    .HasConversion( new JsonValueConverter<Language5E[]>());
                 
                 b.Property(npc => npc.Senses)
-                    .HasConversion( new JsonValueConverter<Sense[]>());
+                    .HasConversion( new JsonValueConverter<Sense5E[]>());
                 
                 b.Property(npc => npc.Resistances)
-                    .HasConversion( new JsonValueConverter<Resistance[]>());
+                    .HasConversion( new JsonValueConverter<Resistance5E[]>());
                 
                 b.Property(npc => npc.Speeds)
-                    .HasConversion( new JsonValueConverter<Speed>());
+                    .HasConversion( new JsonValueConverter<Speed5E>());
             });
         
 

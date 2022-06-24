@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+
 using RollWithFriends.Models.Characters;
 
 namespace Server.EFModels.Character5E;
@@ -14,17 +14,17 @@ public class CharacterBase5E
     public virtual AppFile Avatar { get; set; } = null!;
 
 
-    public Language[] Languages { get; set; }
+    public Language5E[] Languages { get; set; }
 
 
-    public Sense[] Senses { get; set; }
+    public Sense5E[] Senses { get; set; }
 
     public int PassivePerception { get; set; }
 
 
-    public Resistance[] Resistances { get; set; }
+    public Resistance5E[] Resistances { get; set; }
 
-    public Speed Speeds { get; set; }
+    public Speed5E Speeds { get; set; }
 
     public int Strength { get; set; }
     public int Dexterity { get; set; }
@@ -47,10 +47,10 @@ public class CharacterBase5E
         int intelligence,
         int wisdom,
         int charisma,
-        Language[] languages,
-        Speed speed,
-        Sense[] senses,
-        Resistance[] resistances)
+        Language5E[] languages,
+        Speed5E speed,
+        Sense5E[] senses,
+        Resistance5E[] resistances)
     {
         Name = name;
         Avatar = file;

@@ -1,5 +1,5 @@
 namespace RollWithFriends.Models.Characters;
 
-public class PlayerCharacter
+public class PlayerCharacter5E
 {
 }
