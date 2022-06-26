@@ -1,30 +1,41 @@
 import { HTMLProps } from "react";
-import { Toolbar_scene$key } from "features/toolbar/__generated__/Toolbar_scene.graphql";
 import { useFragment } from "react-relay";
 import { TabPanel } from "components/tabbedPanel/TabPanel";
 import { SelectionToolbar } from "./SelectionToolbar";
+import { Toolbar_campaign$key } from "features/toolbar/__generated__/Toolbar_campaign.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
-const Toolbar_scene = graphql`
-  fragment Toolbar_scene on Scene {
-    ...SelectionToolbar_scene
+const Toolbar_campaign = graphql`
+  fragment Toolbar_campaign on Campaign {
+    id
+    selectedScene(sceneId: $selectedScene) {
+      id
+      ...SelectionToolbar_scene
+    }
   }
 `;
 
 export interface ToolbarProps extends HTMLProps<HTMLDivElement> {
-  query: Toolbar_scene$key;
+  query: Toolbar_campaign$key;
 }
 
 export function Toolbar({ query, ...divProps }: ToolbarProps) {
-  const data = useFragment(Toolbar_scene, query);
+  const data = useFragment(Toolbar_campaign, query);
 
   return (
     <TabPanel {...divProps} horizontal={true}>
       {[
         {
           label: "Selection",
-          component: <SelectionToolbar query={data} />,
+          enabled: data.selectedScene !== null,
+          component: (
+            <div>
+              {data.selectedScene ? (
+                <SelectionToolbar query={data.selectedScene} />
+              ) : null}
+            </div>
+          ),
         },
         { label: "Tools", component: <GeneralToolbar /> },
         { label: "Scenes", component: <GeneralToolbar /> },

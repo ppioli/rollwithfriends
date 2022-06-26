@@ -8,6 +8,7 @@ import { ParticipantsProvider } from "features/participant/ParticipantsContext";
 import { EntryList } from "features/entryEditor/EntryList";
 import { TabPanel } from "components/tabbedPanel/TabPanel";
 import { Chat } from "features/chat/Chat";
+import { Toolbar } from "features/toolbar/Toolbar";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -21,6 +22,7 @@ export const CampaignQuery = graphql`
       ...SceneSelector_campaign
       ...MessageList_campaign
       ...ParticipantList_campaign
+      ...Toolbar_campaign
       selectedScene(sceneId: $selectedScene) {
         id
         ...SelectedScene_scene
@@ -37,7 +39,7 @@ export const CampaignPage = ({ preloaded }: any) => {
     preloaded.query
   );
 
-  const campaign = data.campaigns[0];
+  const campaign = data.campaigns[0]!;
 
   return (
     <ParticipantsProvider campaign={campaign}>
@@ -84,6 +86,10 @@ export const CampaignPage = ({ preloaded }: any) => {
             ]}
           </TabPanel>
         </div>
+        <Toolbar
+          className={"absolute bottom-0 left-0 editor-width"}
+          query={campaign}
+        />
       </div>
     </ParticipantsProvider>
   );

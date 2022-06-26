@@ -17,7 +17,6 @@ import {
   SelectedSceneContextProvider,
 } from "pages/scene/SelectedSceneContext";
 import { commitSelectionBoxSet } from "features/battleMap/mapEntityLayer/Selection.graphql";
-import { Toolbar } from "features/toolbar/Toolbar";
 import { MapEntityNpcAddInput } from "features/mapEntity/__generated__/MapEntityNpcAddMutation.graphql";
 import { mapEntityImageAddMutation } from "features/mapEntity/image/MapEntityImage.graphql";
 import { mapEntityNpc5eAddMutation } from "modules/dnd5e/mapEntity/MapEntityNpc5e.graphql";
@@ -47,7 +46,6 @@ export function SelectedScene({
       fragment SelectedScene_scene on Scene {
         name
         ...MapEntityLayer_scene
-        ...Toolbar_scene
       }
     `,
     scene
@@ -198,10 +196,7 @@ export function SelectedScene({
               </div>
             </div>
           )}
-          <Toolbar
-            className={"absolute bottom-0 left-0 editor-width"}
-            query={data}
-          />
+
           <div className={"absolute"} ref={selectBoxRef}>
             <div className={"w-full h-full border-2 border-primary absolute"} />
             <div className={"w-full h-full bg-primary opacity-30 absolute"} />

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8178d7e2599b6e46b384615483d141a1>>
+ * @generated SignedSource<<e8f512f8bc618becfbecd51614600e20>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,7 +12,7 @@ import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type SelectedScene_scene$data = {
   readonly name: string;
-  readonly " $fragmentSpreads": FragmentRefs<"MapEntityLayer_scene" | "Toolbar_scene">;
+  readonly " $fragmentSpreads": FragmentRefs<"MapEntityLayer_scene">;
   readonly " $fragmentType": "SelectedScene_scene";
 };
 export type SelectedScene_scene$key = {
@@ -37,17 +37,12 @@ const node: ReaderFragment = {
       "args": null,
       "kind": "FragmentSpread",
       "name": "MapEntityLayer_scene"
-    },
-    {
-      "args": null,
-      "kind": "FragmentSpread",
-      "name": "Toolbar_scene"
     }
   ],
   "type": "Scene",
   "abstractKey": null
 };
 
-(node as any).hash = "d02d264428b3469b65815b70444191a5";
+(node as any).hash = "76f1b9c3465d2173106ffa5ae0c1f6fa";
 
 export default node;

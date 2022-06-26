@@ -1,14 +1,14 @@
 import { HTMLProps, ReactNode, useState } from "react";
 import classNames from "classnames";
 
-export interface TabPanelTab<T> {
+export interface TabPanelTab {
   label: string;
   component: ReactNode;
   enabled?: boolean;
 }
 
 interface TabPanelProps extends Omit<HTMLProps<HTMLDivElement>, "children"> {
-  children: TabPanelTab<any>[];
+  children: TabPanelTab[];
   horizontal?: boolean;
   container?: string;
 }
