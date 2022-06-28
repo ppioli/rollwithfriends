@@ -6,9 +6,9 @@ export function HpCard({
   maxHp,
   temporaryHp,
 }: {
-  hp: number | null;
-  maxHp: number | null;
-  temporaryHp: number | null;
+  hp?: number;
+  maxHp?: number;
+  temporaryHp?: number;
 }) {
   return (
     <FillSize className={"relative"}>

@@ -4,22 +4,28 @@ import { useFragment } from "react-relay";
 import { ParticipantList_campaign$key } from "features/participant/__generated__/ParticipantList_campaign.graphql";
 import { ParticipantList } from "features/participant/Participant.graphql";
 
-interface ParticipantsContextData {
+interface CampaignContextData {
   getById: (id: string) => ParticipantData | undefined;
   getIds: () => string[];
+  campaignId: string;
+  sceneId?: string;
 }
 
-const ParticipantsContext = createContext<ParticipantsContextData>({} as any);
+const CampaignContext = createContext<CampaignContextData>({} as any);
 
-export interface ParticipantsProviderProps {
+export interface CampaignProviderProps {
+  campaignId: string;
+  sceneId?: string;
   campaign: ParticipantList_campaign$key;
   children: ReactNode;
 }
 
-export function ParticipantsProvider({
+export function CampaignProvider({
+  campaignId,
+  sceneId,
   campaign,
   children,
-}: ParticipantsProviderProps) {
+}: CampaignProviderProps) {
   const data = useFragment(ParticipantList, campaign);
 
   const userMap: Record<string, ParticipantData> = {};
@@ -33,18 +39,20 @@ export function ParticipantsProvider({
 
   const getIds = () => Object.keys(userMap);
 
-  const contextData: ParticipantsContextData = {
+  const contextData: CampaignContextData = {
     getById,
     getIds,
+    campaignId,
+    sceneId,
   };
 
   return (
-    <ParticipantsContext.Provider value={contextData}>
+    <CampaignContext.Provider value={contextData}>
       {children}
-    </ParticipantsContext.Provider>
+    </CampaignContext.Provider>
   );
 }
 
-export function useParticipantContext() {
-  return useContext(ParticipantsContext);
+export function useCampaignContext() {
+  return useContext(CampaignContext);
 }

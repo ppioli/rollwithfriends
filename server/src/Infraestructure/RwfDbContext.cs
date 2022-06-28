@@ -30,11 +30,13 @@ public class RwfDbContext : IdentityDbContext<
 
     public RwfDbContext(DbContextOptions<RwfDbContext> options) : base(options)
     {
+        
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
         
         
         

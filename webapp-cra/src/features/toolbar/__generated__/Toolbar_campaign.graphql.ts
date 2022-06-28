@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c02019449f841ec6a80b13c87766fe55>>
+ * @generated SignedSource<<fb01aa0dc45746c777fdfa3e6cc5bb4d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,8 +14,11 @@ export type Toolbar_campaign$data = {
   readonly id: string;
   readonly selectedScene: {
     readonly id: string;
-    readonly " $fragmentSpreads": FragmentRefs<"SelectionToolbar_scene">;
+    readonly selected: ReadonlyArray<{
+      readonly id: string;
+    }> | null;
   } | null;
+  readonly " $fragmentSpreads": FragmentRefs<"SceneSelector_campaign">;
   readonly " $fragmentType": "Toolbar_campaign";
 };
 export type Toolbar_campaign$key = {
@@ -44,6 +47,11 @@ return {
   "selections": [
     (v0/*: any*/),
     {
+      "args": null,
+      "kind": "FragmentSpread",
+      "name": "SceneSelector_campaign"
+    },
+    {
       "alias": null,
       "args": [
         {
@@ -59,9 +67,21 @@ return {
       "selections": [
         (v0/*: any*/),
         {
-          "args": null,
-          "kind": "FragmentSpread",
-          "name": "SelectionToolbar_scene"
+          "kind": "ClientExtension",
+          "selections": [
+            {
+              "alias": null,
+              "args": null,
+              "concreteType": "MapEntity",
+              "kind": "LinkedField",
+              "name": "selected",
+              "plural": true,
+              "selections": [
+                (v0/*: any*/)
+              ],
+              "storageKey": null
+            }
+          ]
         }
       ],
       "storageKey": null
@@ -72,6 +92,6 @@ return {
 };
 })();
 
-(node as any).hash = "86d1eeae192c94d9874e0f63be9654c9";
+(node as any).hash = "8cbe534de6519475df86721e194600cd";
 
 export default node;

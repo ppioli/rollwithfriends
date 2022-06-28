@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.EFModels;
 using Server.EFModels.Map;
 using server.Infraestructure;
@@ -27,7 +28,8 @@ public class ImageController : Controller
     public IActionResult Token( string mapEntityId )
     {
         var id = (int)_idSerializer.Deserialize(mapEntityId).Value;
-        var entity = _db.MapEntities.First(f => f.Id == id);
+        var entity = _db.MapEntities
+            .First(f => f.Id == id);
 
         AppFile? file = null;
         if (entity.Type  == MapEntityType.Image)
@@ -39,8 +41,10 @@ public class ImageController : Controller
         if (entity.Type == MapEntityType.Npc5E)
         {
             var content = entity.GetNpc5EContent();
-            file = _db.NonPlayerCharacters5E.Find(content.NpcId)?.Avatar ??
-                   throw new EntityNotFound(mapEntityId);
+            file = _db.NonPlayerCharacters5E
+                .Include( e => e.Avatar)
+                .Select(e => e.Avatar)
+                .FirstOrDefault(e => e.Id == content.NpcId);
         }
         if (file == null || !file.Loaded)
         {

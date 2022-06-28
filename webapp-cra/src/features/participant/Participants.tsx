@@ -1,10 +1,10 @@
-import { useParticipantContext } from "features/participant/ParticipantsContext";
+import { useCampaignContext } from "features/participant/CampaignContext";
 import { ParticipantAvatar } from "features/participant/ParticipantAvatar";
 
 export function Participants() {
-  const { getIds } = useParticipantContext();
+  const { getIds } = useCampaignContext();
   return (
-    <div className={"w-100 flex gap-2"}>
+    <div className={"s-full flex gap-2 justify-center items-center"}>
       {getIds().map((id) => (
         <ParticipantAvatar id={id} key={id} />
       ))}

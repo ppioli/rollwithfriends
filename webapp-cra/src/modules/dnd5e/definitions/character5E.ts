@@ -54,3 +54,11 @@ export function ability5EShortName(ability: Ability5E) {
       return "??";
   }
 }
+
+export function getNpcProficiencyBonus(challengeRating: number): number {
+  if (challengeRating < 5) {
+    return 2;
+  }
+
+  return 2 + Math.ceil((challengeRating - 4) / 4);
+}

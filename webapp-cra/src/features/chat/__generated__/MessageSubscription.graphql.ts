@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b15a047eb027430efa81aee3837c6458>>
+ * @generated SignedSource<<7fd84938e04db6d017f4980b1abccde8>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -226,6 +226,18 @@ return {
                   }
                 ],
                 "storageKey": null
+              },
+              {
+                "kind": "ClientExtension",
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "isNew",
+                    "storageKey": null
+                  }
+                ]
               }
             ],
             "storageKey": null

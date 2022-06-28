@@ -3,11 +3,11 @@ import {
   ResizeMoveBoxEvent,
 } from "components/moveResizeHandler/MoveResizeBox";
 import { ReactNode, useMemo, useRef } from "react";
-import { MapEntityUpdateInput } from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
 import { useFragment } from "react-relay";
 import { EntitySelectBox_scene$key } from "features/battleMap/mapEntityLayer/__generated__/EntitySelectBox_scene.graphql";
 import { useSelectedScene } from "pages/scene/SelectedSceneContext";
 import { mapEntityPositionUpdateMutation } from "features/mapEntity/MapEntity.graphql";
+import { MapEntityPositionUpdateInput } from "features/mapEntity/__generated__/MapEntityPositionUpdateMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -86,28 +86,30 @@ export function EntitySelectBox({
     const ssx = sx + dx;
     const ssy = sy + dy;
 
-    const entities: MapEntityUpdateInput[] = (selected ?? []).map((e) => {
-      const [width, height] = getEntitySize(e);
-      const snapToGrid = e.type === "NPC5_E";
-      let x = ssx + (e.x - ssx + dx) * rw;
-      let y = ssy + (e.y - ssy + dy) * rh;
+    const entities: MapEntityPositionUpdateInput[] = (selected ?? []).map(
+      (e) => {
+        const [width, height] = getEntitySize(e);
+        const snapToGrid = e.type === "NPC5_E";
+        let x = ssx + (e.x - ssx + dx) * rw;
+        let y = ssy + (e.y - ssy + dy) * rh;
 
-      if (snapToGrid) {
-        x = Math.round(Math.round(x / cellSize) * cellSize);
-        y = Math.round(Math.round(y / cellSize) * cellSize);
-      } else {
-        x = Math.round(x);
-        y = Math.round(y);
+        if (snapToGrid) {
+          x = Math.round(Math.round(x / cellSize) * cellSize);
+          y = Math.round(Math.round(y / cellSize) * cellSize);
+        } else {
+          x = Math.round(x);
+          y = Math.round(y);
+        }
+
+        return {
+          id: e.id,
+          x,
+          y,
+          width: Math.round(width * rw),
+          height: Math.round(height * rh),
+        };
       }
-
-      return {
-        id: e.id,
-        x,
-        y,
-        width: Math.round(width * rw),
-        height: Math.round(height * rh),
-      };
-    });
+    );
 
     mapEntityPositionUpdateMutation({
       input: {

@@ -1,40 +1,26 @@
-import { useRollMessageAddMutation } from "features/chat/Message.graphql";
-import { useSelectedScene } from "pages/scene/SelectedSceneContext";
-import { RollMessagesAddInput } from "features/chat/__generated__/MessageRollAddMutation.graphql";
-import { Roll } from "data/Roll";
 import {
   Ability5E,
   ability5EShortName,
 } from "modules/dnd5e/definitions/character5E";
+import { RollMessagesAddInput } from "features/chat/__generated__/MessageRollAddMutation.graphql";
+import { useRollMessageAddMutation } from "features/chat/Message.graphql";
 
 export function AbilitySaveButton({
-  entityIds,
+  payloadBuilder,
   ability,
-  base,
-  mod,
 }: {
-  entityIds: string[];
+  payloadBuilder: (ability: Ability5E) => RollMessagesAddInput;
   ability: Ability5E;
-  base: number;
-  mod?: number;
 }) {
-  const { campaignId } = useSelectedScene();
-  const [addRollMessage, rollInFlight] = useRollMessageAddMutation(campaignId);
-  const rollSave = () => {
-    const input: RollMessagesAddInput = {
-      campaignId,
-      messages: entityIds.map((id) => ({
-        dmRoll: false,
-        sourceId: id,
-        rolls: [Roll.D20(), Roll.Flat(base + (mod ?? 0))],
-      })),
-    };
-    addRollMessage(input);
-  };
+  const [addRollMessage, rollInFlight] = useRollMessageAddMutation();
+
   return (
     <button
       disabled={rollInFlight}
-      onClick={() => rollSave()}
+      onClick={() => {
+        console.log("Asf");
+        addRollMessage(payloadBuilder(ability));
+      }}
       className={"btn btn-primary"}
     >
       {ability5EShortName(ability)}

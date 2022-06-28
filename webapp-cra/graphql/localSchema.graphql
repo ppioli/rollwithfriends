@@ -1,3 +1,7 @@
 extend type Scene {
     selected: [MapEntity!]
 }
+
+extend type Message {
+    isNew: Boolean
+}

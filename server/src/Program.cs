@@ -42,7 +42,6 @@ builder.Services
         options =>
         {
             options
-                .UseLazyLoadingProxies()
                 .UseNpgsql(configuration.GetConnectionString("DefaultDatabase"));
 
             if (environment.IsDevelopment())

@@ -1,10 +1,9 @@
 import { usePreloadedQuery } from "react-relay";
 import { CampaignQuery as CampaignQueryType } from "pages/campaign/__generated__/CampaignQuery.graphql";
-import { SceneSelector } from "pages/scene/SceneSelector";
 import { useNavigation } from "yarr";
 import { SelectedScene } from "pages/scene/SelectedScene";
 import "./Campaing.css";
-import { ParticipantsProvider } from "features/participant/ParticipantsContext";
+import { CampaignProvider } from "features/participant/CampaignContext";
 import { EntryList } from "features/entryEditor/EntryList";
 import { TabPanel } from "components/tabbedPanel/TabPanel";
 import { Chat } from "features/chat/Chat";
@@ -19,7 +18,6 @@ export const CampaignQuery = graphql`
       id
       name
       description
-      ...SceneSelector_campaign
       ...MessageList_campaign
       ...ParticipantList_campaign
       ...Toolbar_campaign
@@ -42,29 +40,18 @@ export const CampaignPage = ({ preloaded }: any) => {
   const campaign = data.campaigns[0]!;
 
   return (
-    <ParticipantsProvider campaign={campaign}>
+    <CampaignProvider
+      campaign={campaign}
+      campaignId={campaign.id}
+      sceneId={campaign.selectedScene?.id}
+    >
       <div className={"content-area relative"}>
         {campaign.selectedScene && (
           <SelectedScene
-            className={"absolute inset-0"}
-            id={campaign.selectedScene.id}
-            campaignId={campaign.id}
             scene={campaign.selectedScene}
+            className={"absolute inset-0"}
           />
         )}
-
-        <div className={"absolute editor-width"}>
-          <SceneSelector
-            campaignId={campaign.id}
-            campaign={campaign}
-            onSceneChange={(sceneId) => {
-              replace({
-                pathname: `/campaign/${campaign.id}`,
-                search: `selectedScene=${encodeURIComponent(sceneId)}`,
-              });
-            }}
-          />
-        </div>
 
         <div className={"absolute w-96 inset-y-0 right-0 flex flex-col"}>
           <TabPanel className={"w-full h-full"}>
@@ -91,6 +78,6 @@ export const CampaignPage = ({ preloaded }: any) => {
           query={campaign}
         />
       </div>
-    </ParticipantsProvider>
+    </CampaignProvider>
   );
 };

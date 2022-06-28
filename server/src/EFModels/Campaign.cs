@@ -22,7 +22,10 @@ public class Campaign
     [IsProjected(true)]
     public string DungeonMasterId { get; set; }
 
+    [GraphQLIgnore]
     public virtual ICollection<Scene> Scenes { get; set; } = new List<Scene>();
+
+    public IQueryable<Scene> GetScenes(RwfDbContext dbContext) => dbContext.Scenes.Where(e => e.CampaignId == Id);
 
     [GraphQLIgnore]
     public virtual Scene? SelectedScene { get; set; }
@@ -70,16 +73,8 @@ public class Campaign
 
     public static Campaign Get(int id, RwfDbContext context)
     {
-        var item = context.Campaigns.FirstOrDefault(c => c.Id == id) ?? throw new EntityNotFound(id);
-        //TODO HACK
-        var serialized = JsonConvert.SerializeObject(
-            item,
-            new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
-
-        return JsonConvert.DeserializeObject<Campaign>(serialized);
+        return context.Campaigns.FirstOrDefault(c => c.Id == id) ?? throw new EntityNotFound(id);
+        
     }
 
     public bool IsDungeonMaster(ClaimsPrincipal user)

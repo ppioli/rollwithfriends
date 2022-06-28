@@ -22,6 +22,7 @@ public class NonPlayerCharacter5E : CharacterBase5E
 
     public ArmorClassOption5E[] ArmorClasses { get; set; } = null!;
 
+    // TODO Fix typo
     public double ChallangeRating { get; set; }
 
     public Alignment5E[] Alignments { get; set; } = null!;

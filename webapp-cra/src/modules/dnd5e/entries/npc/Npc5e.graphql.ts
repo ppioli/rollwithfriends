@@ -1,9 +1,9 @@
 import { commitMutation } from "react-relay";
 
 import { FileUploadDefinition } from "utils/HttpHelpers";
-import { Npc5eAddMutation } from "modules/dnd5e/__generated__/Npc5eAddMutation.graphql";
 import { CommitMutationFunction } from "utils/mutationPromise";
 import { RelayEnvironment } from "lib/getRelayClientEnvironment";
+import { Npc5eAddMutation } from "modules/dnd5e/entries/npc/__generated__/Npc5eAddMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 

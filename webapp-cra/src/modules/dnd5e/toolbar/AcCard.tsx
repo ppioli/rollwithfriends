@@ -1,7 +1,7 @@
 import { FillSize } from "components/FillSize";
 import { Shield } from "components/icons/Misc";
 
-export function AcCard({ ac }: { ac: number | null }) {
+export function AcCard({ ac }: { ac?: number }) {
   return (
     <FillSize className={"relative"}>
       {(width, height) => (

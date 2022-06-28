@@ -1,7 +1,7 @@
 import { useFragment } from "react-relay";
 import { MessageBodyFragment } from "features/chat/Message.graphql";
 import { ReactNode, useEffect, useRef, useState } from "react";
-import { useParticipantContext } from "features/participant/ParticipantsContext";
+import { useCampaignContext } from "features/participant/CampaignContext";
 import { RollMessageContent } from "features/chat/RollMessageContent";
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { MessageBody_message$key } from "features/chat/__generated__/MessageBody_message.graphql";
@@ -14,7 +14,7 @@ export function ChatMessage({ query }: ChatMessageProps) {
   // TODO update ago
   const message = useFragment(MessageBodyFragment, query);
   const messageRef = useRef<HTMLDivElement | null>(null);
-  const { getById } = useParticipantContext();
+  const { getById } = useCampaignContext();
 
   const [timeAgo, setTimeAgo] = useState(
     formatDistanceToNow(parseISO(message.createdAt))
@@ -33,7 +33,6 @@ export function ChatMessage({ query }: ChatMessageProps) {
   }
   const sender = message.source?.name ?? getById(message.userId)?.name ?? "???";
 
-  console.log("Source", message.source?.name);
   let content: ReactNode;
 
   if (message.content.__typename === "TextMessageContent") {
@@ -41,7 +40,9 @@ export function ChatMessage({ query }: ChatMessageProps) {
   }
 
   if (message.content.__typename === "RollMessageContent") {
-    content = <RollMessageContent {...message.content} />;
+    content = (
+      <RollMessageContent isNew={message.isNew ?? false} {...message.content} />
+    );
   }
 
   return (

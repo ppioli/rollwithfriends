@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e8f512f8bc618becfbecd51614600e20>>
+ * @generated SignedSource<<dd6fb81dd127acd11f4ad0044059e788>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,6 +11,7 @@
 import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type SelectedScene_scene$data = {
+  readonly id: string;
   readonly name: string;
   readonly " $fragmentSpreads": FragmentRefs<"MapEntityLayer_scene">;
   readonly " $fragmentType": "SelectedScene_scene";
@@ -30,6 +31,13 @@ const node: ReaderFragment = {
       "alias": null,
       "args": null,
       "kind": "ScalarField",
+      "name": "id",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
       "name": "name",
       "storageKey": null
     },
@@ -43,6 +51,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "76f1b9c3465d2173106ffa5ae0c1f6fa";
+(node as any).hash = "d388ee15305ce06fac97364ab35aa7e5";
 
 export default node;

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Server.EFModels.Map;
+using server.Infraestructure;
 
 namespace Server.EFModels;
 
@@ -14,8 +15,11 @@ public class Scene
     public virtual Campaign Campaign { get; set; } = null!;
     public int CampaignId { get; set; }
     
+    [GraphQLIgnore]
     public virtual ICollection<MapEntity> Entities { get; set; } = new List<MapEntity>();
-    
+
+    public IQueryable<MapEntity> GetEntities(RwfDbContext context) => context.MapEntities.Where(e => e.SceneId == Id);
+
     protected Scene() {}
 
     public Scene(string name)

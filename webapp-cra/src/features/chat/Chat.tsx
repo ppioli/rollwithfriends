@@ -5,7 +5,7 @@ import {
 } from "features/chat/Message.graphql";
 import { CampaignQuery as CampaignQueryType } from "pages/campaign/__generated__/CampaignQuery.graphql";
 import { MessageList_campaign$key } from "./__generated__/MessageList_campaign.graphql";
-import { HTMLProps, useCallback, useState } from "react";
+import { HTMLProps, useCallback, useEffect, useRef, useState } from "react";
 import { useResizeDetector } from "react-resize-detector";
 import { Virtuoso } from "react-virtuoso";
 import { ChatMessage } from "features/chat/ChatMessage";
@@ -28,14 +28,15 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
   useMessageSubscription(campaignId);
 
   const { ref, width, height } = useResizeDetector();
-
+  const virtuoso = useRef<any>(null);
   const items = data.messages?.edges;
   const rowCount = data.messages?.totalCount ?? 0;
-  const [firstItemIndex, setFirstItemIndex] = useState(rowCount - 1);
+  const [atBottom, setAtBottom] = useState(false);
 
-  console.info("firstItem", firstItemIndex);
+  const [firstItemIndex, setFirstItemIndex] = useState(rowCount);
 
   const prependItems = useCallback(() => {
+    debugger;
     if (!hasPrevious) {
       return;
     }
@@ -45,6 +46,18 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
       },
     });
   }, [hasPrevious, loadPrevious]);
+
+  useEffect(() => {
+    if (data.messages?.edges?.length === null || virtuoso.current === null) {
+      return;
+    }
+    console.log("effect", data.messages?.edges?.length);
+    virtuoso.current.scrollToIndex({
+      index: data.messages?.edges?.length! - 1,
+      align: "bottom",
+      behavior: "smooth",
+    });
+  }, [atBottom, data, virtuoso]);
 
   const render = width && height && items;
   return (
@@ -60,11 +73,13 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
             <Virtuoso
               className={"w-full h-full scroll-none"}
               data={items}
+              ref={virtuoso}
               startReached={prependItems}
               overscan={200}
               firstItemIndex={firstItemIndex}
               initialTopMostItemIndex={items.length - 1}
-              followOutput={"smooth"}
+              atBottomStateChange={(bottom) => setAtBottom(bottom)}
+              followOutput={"auto"}
               itemContent={(index, data) => {
                 return <ChatMessage query={data.node} />;
               }}
