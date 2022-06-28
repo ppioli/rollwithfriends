@@ -17,12 +17,14 @@ public class SourceMutation
         SourceAdd input)
     {
         
-        var source = new Source( user.GetId(), input.Name, input.Description, input.ShortName);
+        // var source = new Source( user.GetId(), input.Name, input.Description, input.ShortName);
+        //
+        // await db.AddAsync(source);
+        //
+        // await db.SaveChangesAsync();
+        //
+        // return source;
 
-        await db.AddAsync(source);
-
-        await db.SaveChangesAsync();
-
-        return source;
+        return null;
     }
 }

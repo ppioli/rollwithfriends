@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Server.AspNetCore;
@@ -19,6 +20,22 @@ public class UserInfo
 [Route("/api/claims")]
 public class TestController : Controller
 {
+    private readonly IUsuarioService _usuarioService;
+    
+    public TestController(IUsuarioService usuarioService)
+    {
+        _usuarioService = usuarioService;
+    }
+
+    [HttpGet]
+    [Route("/seed")]
+    public async Task<IActionResult> Seed()
+    {
+        await _usuarioService.Seed();
+
+        return new OkObjectResult("Ok");
+    }
+
     [HttpGet]
     [Authorize()]
     [Route("/userInfo")]

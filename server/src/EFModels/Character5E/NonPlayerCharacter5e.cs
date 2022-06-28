@@ -89,25 +89,26 @@ public class NonPlayerCharacter5E : CharacterBase5E
     [Authorize]
     [GraphQLType(typeof(NonPlayerCharacter5E))]
     public static async Task<NonPlayerCharacter5E> Get(int id,
-        ClaimsPrincipal user,
-        RwfDbContext dbContext
-        )
+        ClaimsPrincipal user
+    )
     {
-        var npc = dbContext
-                      .NonPlayerCharacters5E
-                   .Include(npc => npc.Source)
-                   .FirstOrDefault(s => s.Source.OwnerId == user.GetId() && s.Id == id) ??
-               throw new EntityNotFound(id);
-        
-        // TODO HACK Work around for ef proxies
-        var stry = JsonConvert.SerializeObject(npc, new JsonSerializerSettings()
-        {
-            ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-        });
-
-        var deserialized = JsonConvert.DeserializeObject<NonPlayerCharacter5E>(stry); 
-
-        return deserialized!;
+        // TODO Redoo
+        return null;
+        // var npc = dbContext
+        //               .NonPlayerCharacters5E
+        //            .Include(npc => npc.Source)
+        //            .FirstOrDefault(s => s.Source.OwnerId == user.GetId() && s.Id == id) ??
+        //        throw new EntityNotFound(id);
+        //
+        // 
+        // var stry = JsonConvert.SerializeObject(npc, new JsonSerializerSettings()
+        // {
+        //     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+        // });
+        //
+        // var deserialized = JsonConvert.DeserializeObject<NonPlayerCharacter5E>(stry); 
+        //
+        // return deserialized!;
 
     }
 }

@@ -23,32 +23,33 @@ public class MessageMutation
         TextMessagesAdd input
     )
     {
-        if (enrollmentService.GetRollInCampaign(user, input.CampaignId) == null)
-        {
-            throw new NotAuthorizedException();
-        }
-
-        ICollection<Message> created = input.Messages
-            .Select(
-                message => Message.CreateTextMessage(
-                    user.GetId(),
-                    message.SourceId,
-                    input.CampaignId,
-                    new TextMessageContent()
-                    {
-                        Text = message.Content
-                    }))
-            .ToList();
-
-        await db.AddRangeAsync(created);
-
-        await db.SaveChangesAsync();
-
-        await sender.SendAsync(
-            MessageSubscription.GetTopic(input.CampaignId),
-            new MessageEvent() { Messages = created });
-
-        return created;
+        // if (enrollmentService.GetRollInCampaign(user, input.CampaignId) == null)
+        // {
+        //     throw new NotAuthorizedException();
+        // }
+        //
+        // ICollection<Message> created = input.Messages
+        //     .Select(
+        //         message => Message.CreateTextMessage(
+        //             user.GetId(),
+        //             message.SourceId,
+        //             input.CampaignId,
+        //             new TextMessageContent()
+        //             {
+        //                 Text = message.Content
+        //             }))
+        //     .ToList();
+        //
+        // await db.AddRangeAsync(created);
+        //
+        // await db.SaveChangesAsync();
+        //
+        // await sender.SendAsync(
+        //     MessageSubscription.GetTopic(input.CampaignId),
+        //     new MessageEvent() { Messages = created });
+        //
+        // return created;
+        return null;
     }
 
     [Authorize]
@@ -60,56 +61,57 @@ public class MessageMutation
         RollMessagesAdd input
     )
     {
-        if (enrollmentService.GetRollInCampaign(user, input.CampaignId) == null)
-        {
-            throw new NotAuthorizedException();
-        }
-
-
-        Random random = new Random();
-        ICollection<Message> created = input.Messages
-            .Select(
-                message =>
-                {
-                    var rolls = message.Rolls.Select(
-                            roll =>
-                            {
-                                return new Roll()
-                                {
-                                    Count = roll.Count,
-                                    Faces = roll.Faces,
-                                    Result = Enumerable.Range(0, roll.Count)
-                                        .Select(s => random.Next(1, roll.Faces + 1))
-                                        .ToList()
-                                };
-                            })
-                        .ToList();
-
-                    var rollContent = new RollMessageContent()
-                    {
-                        Rolls = rolls,
-                        DmRoll = message.DmRoll,
-                    };
-                    var proxy = db.CreateProxy<Message>();
-
-                    proxy.UserId = user.GetId();
-                    proxy.SourceId = message.SourceId;
-                    proxy.CampaignId = input.CampaignId;
-                    proxy.Content = JsonConvert.SerializeObject(rollContent);
-                    proxy.Type = MessageType.Roll;
-                    return proxy;
-                })
-            .ToList();
-
-        await db.AddRangeAsync(created);
-
-        await db.SaveChangesAsync();
-
-        await sender.SendAsync(
-            MessageSubscription.GetTopic(input.CampaignId),
-            new MessageEvent() { Messages = created });
-
-        return created;
+        // if (enrollmentService.GetRollInCampaign(user, input.CampaignId) == null)
+        // {
+        //     throw new NotAuthorizedException();
+        // }
+        //
+        //
+        // Random random = new Random();
+        // ICollection<Message> created = input.Messages
+        //     .Select(
+        //         message =>
+        //         {
+        //             var rolls = message.Rolls.Select(
+        //                     roll =>
+        //                     {
+        //                         return new Roll()
+        //                         {
+        //                             Count = roll.Count,
+        //                             Faces = roll.Faces,
+        //                             Result = Enumerable.Range(0, roll.Count)
+        //                                 .Select(s => random.Next(1, roll.Faces + 1))
+        //                                 .ToList()
+        //                         };
+        //                     })
+        //                 .ToList();
+        //
+        //             var rollContent = new RollMessageContent()
+        //             {
+        //                 Rolls = rolls,
+        //                 DmRoll = message.DmRoll,
+        //             };
+        //             var proxy = db.CreateProxy<Message>();
+        //
+        //             proxy.UserId = user.GetId();
+        //             proxy.SourceId = message.SourceId;
+        //             proxy.CampaignId = input.CampaignId;
+        //             proxy.Content = JsonConvert.SerializeObject(rollContent);
+        //             proxy.Type = MessageType.Roll;
+        //             return proxy;
+        //         })
+        //     .ToList();
+        //
+        // await db.AddRangeAsync(created);
+        //
+        // await db.SaveChangesAsync();
+        //
+        // await sender.SendAsync(
+        //     MessageSubscription.GetTopic(input.CampaignId),
+        //     new MessageEvent() { Messages = created });
+        //
+        // return created;
+        return null;
     }
 }
 

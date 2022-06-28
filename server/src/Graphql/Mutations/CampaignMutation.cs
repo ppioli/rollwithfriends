@@ -18,20 +18,21 @@ public class CampaignMutation
         string name,
         string description)
     {
-        var userId = user.GetId();
-        var created = new Campaign(
-            name: name,
-            description: description,
-            dungeonMasterId: userId);
+        // TODO redo
+        // var userId = user.GetId();
+        // var created = new Campaign(
+        //     name: name,
+        //     description: description,
+        //     dungeonMasterId: userId);
+        //
+        // var enrollment = new CampaignEnrollment(userId: userId);
+        //
+        // created.Participants.Add(enrollment);
+        //
+        // await context.AddAsync(created);
+        //
+        // await context.SaveChangesAsync();
 
-        var enrollment = new CampaignEnrollment(userId: userId);
-
-        created.Participants.Add(enrollment);
-
-        await context.AddAsync(created);
-
-        await context.SaveChangesAsync();
-
-        return created;
+        return null;
     }
 }

@@ -19,21 +19,23 @@ public class NonPlayerCharacterMutation
         Npcs5EAdd input
         )
     {
-        var source = await db.Sources.FindAsync(input.SourceId);
+        // var source = await db.Sources.FindAsync(input.SourceId);
+        //
+        // if (source == null)
+        // {
+        //     throw new EntityNotFound(input.SourceId);
+        // }
+        //
+        // if (source.OwnerId != user.GetId())
+        // {
+        //     throw new NotAuthorizedException();
+        // }
+        //
+        // var addedCharacters = await characterService.AddNonPlayerCharacters(source, input.Characters);
+        //
+        // return addedCharacters;
 
-        if (source == null)
-        {
-            throw new EntityNotFound(input.SourceId);
-        }
-
-        if (source.OwnerId != user.GetId())
-        {
-            throw new NotAuthorizedException();
-        }
-
-        var addedCharacters = await characterService.AddNonPlayerCharacters(source, input.Characters);
-
-        return addedCharacters;
+        return null;
     }
 }
 

@@ -47,10 +47,11 @@ public class EnrollmentService
         
         if (!_cache.TryGetValue(key, out CampaignCacheEntry entry))
         {
-            var campaign = _db.Campaigns.Include( c => c.Participants)
-                .FirstOrDefault( c => c.Id == campaignId) ?? throw new NotAuthorizedException();
+            // TODO redo
+            // var campaign = _db.Campaigns.Include( c => c.Participants)
+            //     .FirstOrDefault( c => c.Id == campaignId) ?? throw new NotAuthorizedException();
 
-            entry = new CampaignCacheEntry(campaign.DungeonMasterId, campaign.Participants);
+            // entry = new CampaignCacheEntry(campaign.DungeonMasterId, campaign.Participants);
 
             // Save data in cache and set the relative expiration time to one day
             _cache.Set(key, entry, TimeSpan.FromMinutes(30));
@@ -62,17 +63,18 @@ public class EnrollmentService
     private CampaignCacheEntry GetEntryFromScene( int sceneId )
     {
         
-        var key = SceneEntryKey(sceneId);
-        if (!_cache.TryGetValue(key, out int campaignId))
-        {
-            campaignId = _db.Scenes
-                .FirstOrDefault( c => c.Id == sceneId)?.CampaignId ?? throw new NotAuthorizedException();
-            
-            // Save data in cache and set the relative expiration time to one day
-            _cache.Set(key, campaignId, TimeSpan.FromMinutes(30));
-        }
-
-        return GetEntry(campaignId);
+        // var key = SceneEntryKey(sceneId);
+        // if (!_cache.TryGetValue(key, out int campaignId))
+        // {
+        //     campaignId = _db.Scenes
+        //         .FirstOrDefault( c => c.Id == sceneId)?.CampaignId ?? throw new NotAuthorizedException();
+        //     
+        //     // Save data in cache and set the relative expiration time to one day
+        //     _cache.Set(key, campaignId, TimeSpan.FromMinutes(30));
+        // }
+        //
+        // return GetEntry(campaignId);
+        return null;
     }
 
     internal class CampaignCacheEntry

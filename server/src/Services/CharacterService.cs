@@ -48,9 +48,9 @@ public class CharacterService
                 input.Type))
             .ToList();
 
-        await _db.AddRangeAsync(createdNpcs);
-
-        await _db.SaveChangesAsync();
+        // await _db.AddRangeAsync(createdNpcs);
+        //
+        // await _db.SaveChangesAsync();
         
         return createdNpcs;
     }

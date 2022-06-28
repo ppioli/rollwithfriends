@@ -18,16 +18,17 @@ public class SceneMutations
         string name)
     {
 
-        var scene = new Scene(name)
-        {
-            CampaignId = campaignId
-        };
-
-        await context.AddAsync(scene);
-
-        await context.SaveChangesAsync();
-
-        return scene;
+        // var scene = new Scene(name)
+        // {
+        //     CampaignId = campaignId
+        // };
+        //
+        // await context.AddAsync(scene);
+        //
+        // await context.SaveChangesAsync();
+        //
+        // return scene;
+        return null;
     }
     
     [Authorize]
@@ -36,13 +37,14 @@ public class SceneMutations
         [ID] int sceneId)
     {
 
-        var value = await context.Scenes.FindAsync(sceneId) ?? throw new EntityNotFound(sceneId);
-
-        context.Remove(value);
-        
-        await context.SaveChangesAsync();
-
-        return value;
+        // var value = await context.Scenes.FindAsync(sceneId) ?? throw new EntityNotFound(sceneId);
+        //
+        // context.Remove(value);
+        //
+        // await context.SaveChangesAsync();
+        //
+        // return value;
+        return null;
     }
     
     [Authorize]
@@ -52,12 +54,13 @@ public class SceneMutations
         string name)
     {
 
-        var value = await context.Scenes.FindAsync(sceneId) ?? throw new EntityNotFound(sceneId);
-
-        value.Name = name; 
-        
-        await context.SaveChangesAsync();
-
-        return value;
+        // var value = await context.Scenes.FindAsync(sceneId) ?? throw new EntityNotFound(sceneId);
+        //
+        // value.Name = name; 
+        //
+        // await context.SaveChangesAsync();
+        //
+        // return value;
+        return null;
     }
 }

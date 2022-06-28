@@ -1,6 +1,8 @@
+using Api.Services;
+using AspNetCore.Identity.Mongo;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using OpenIddict.Abstractions;
 using OpenIddict.Server;
 using OpenIddict.Validation.AspNetCore;
@@ -28,30 +30,23 @@ var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration)
     .CreateLogger();
 
+var dbContext = new RwfDbContext(configuration);
+
 builder.Logging.ClearProviders();
 
 builder.Logging.AddSerilog(logger);
 
-builder.Services
-    .AddDbContext<RwfDbContext>(
-        options =>
-        {
-            options
-                .UseLazyLoadingProxies()
-                .UseNpgsql(configuration.GetConnectionString("DefaultDatabase"));
-
-            if (environment.IsDevelopment())
-            {
-                options.EnableSensitiveDataLogging();
-            }
-
-            options.UseOpenIddict();
-        });
+builder.Services.AddSingleton(dbContext);
 
 
-builder.Services.AddIdentity<User, ApplicationRole>()
-    .AddEntityFrameworkStores<RwfDbContext>()
-    .AddDefaultTokenProviders();
+
+builder.Services.AddIdentityMongoDbProvider<User>(
+    mongo =>
+    {
+        mongo.ConnectionString = dbContext.ConnectionString;
+    });
+
+
 
 // Configure Identity to use the same JWT claims as OpenIddict instead
 // of the legacy WS-Federation claims it uses by default (ClaimTypes),
@@ -86,8 +81,8 @@ builder.Services.AddOpenIddict()
         {
             // Configure OpenIddict to use the Entity Framework Core stores and models.
             // Note: call ReplaceDefaultEntities() to replace the default OpenIddict entities.
-            options.UseEntityFrameworkCore()
-                .UseDbContext<RwfDbContext>();
+            options.UseMongoDb()
+                .UseDatabase( dbContext.Database);
             
             // Enable Quartz.NET integration.
             options.UseQuartz();
@@ -149,7 +144,6 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services
     .AddGraphQLServer()
-    .RegisterDbContext<RwfDbContext>()
     .AddSubscriptionType(e => e.Name("Subscription"))
     .AddTypeExtension<MapEntityChangeSubscription>()
     .AddTypeExtension<FileLoadingSubscription>()
@@ -221,11 +215,11 @@ if (builder.Environment.IsDevelopment())
 builder.Services
     .AddAutoMapper(typeof(Program));
 
+
 builder.Services.AddServices();
 
 var app = builder.Build();
 
-await app.InitializeDatabase();
 // app.UseSerilogRequestLogging();
 app.UseWebSockets();
 app.UseCors();

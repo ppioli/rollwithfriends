@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using Server.EFModels.Messages;
 using server.Infraestructure;
@@ -35,26 +36,26 @@ public class Campaign
     public virtual ICollection<Message> Messages { get; set; } = default!;
 
     // TODO This used to work as a projection
-    [UsePaging(IncludeTotalCount = true)]
-    public IQueryable<Message> GetMessages(RwfDbContext context) => context.Messages
-        .Where(m => m.CampaignId == Id)
-        .OrderBy(s => s.CreatedAt);
+    // [UsePaging(IncludeTotalCount = true)]
+    // public IQueryable<Message> GetMessages(RwfDbContext context) => context.Messages
+    //     .Where(m => m.CampaignId == Id)
+    //     .OrderBy(s => s.CreatedAt);
 
     [GraphQLIgnore]
     public virtual ICollection<CampaignEnrollment> Participants { get; set; } = new List<CampaignEnrollment>();
 
-    public ICollection<Participant> GetParticipants([Service()] RwfDbContext db) => (db.Campaigns
-                .Include(c => c.Participants)
-                .ThenInclude(p => p.User)
-                .FirstOrDefault(c => c.Id == Id) ??
-            throw new Exception($"Could not find participants for campaign #{Id}"))
-        .Participants.Select(
-            p => new Participant(
-                p.Id,
-                p.UserId,
-                p.User.UserName,
-                p.UserId == DungeonMasterId ? CampaignRoll.DungeonMaster : CampaignRoll.Player))
-        .ToList();
+    // public ICollection<Participant> GetParticipants([Service()] RwfDbContext db) => (db.Campaigns
+    //             .Include(c => c.Participants)
+    //             .ThenInclude(p => p.User)
+    //             .FirstOrDefault(c => c.Id == Id) ??
+    //         throw new Exception($"Could not find participants for campaign #{Id}"))
+    //     .Participants.Select(
+    //         p => new Participant(
+    //             p.Id,
+    //             p.UserId,
+    //             p.User.UserName,
+    //             p.UserId == DungeonMasterId ? CampaignRoll.DungeonMaster : CampaignRoll.Player))
+    //     .ToList();
 
     public Campaign(string name, string description, string dungeonMasterId)
     {
@@ -70,16 +71,7 @@ public class Campaign
 
     public static Campaign Get(int id, RwfDbContext context)
     {
-        var item = context.Campaigns.FirstOrDefault(c => c.Id == id) ?? throw new EntityNotFound(id);
-        //TODO HACK
-        var serialized = JsonConvert.SerializeObject(
-            item,
-            new JsonSerializerSettings()
-            {
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            });
-
-        return JsonConvert.DeserializeObject<Campaign>(serialized);
+        throw new NotImplementedException();
     }
 
     public bool IsDungeonMaster(ClaimsPrincipal user)
@@ -94,10 +86,13 @@ public class Campaign
         [ID] int? sceneId,
         ClaimsPrincipal user)
     {
-        var isDm = IsDungeonMaster(user);
-        var dmSceneId = sceneId ?? SelectedSceneId;
+        // TODO redo
+        // var isDm = IsDungeonMaster(user);
+        // var dmSceneId = sceneId ?? SelectedSceneId;
+        //
+        // return context.Scenes.Where(s => (isDm && (s.Id == dmSceneId)) || (!isDm && (sceneId) == SelectedSceneId));
 
-        return context.Scenes.Where(s => (isDm && (s.Id == dmSceneId)) || (!isDm && (sceneId) == SelectedSceneId));
+        return null;
     }
 }
 

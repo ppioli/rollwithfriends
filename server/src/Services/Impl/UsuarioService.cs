@@ -1,87 +1,62 @@
+using AspNetCore.Identity.Mongo.Model;
 using Server.EFModels;
 using server.Infraestructure;
 using Server.Models;
 
 namespace Api.Services.Impl
 {
-    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    
     using System.Threading.Tasks;
-    using AutoMapper;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.Extensions.Configuration;
 
 
     public class UsuarioService : IUsuarioService
     {
-        private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly RoleManager<MongoRole> _roleManager;
         private readonly UserManager<User> _userManager;
-        private readonly RwfDbContext _dbContext;
+        private readonly IConfiguration _configuration;
 
-        public UsuarioService(RoleManager<ApplicationRole> roleManager,
+        public UsuarioService(
+            RoleManager<MongoRole> roleManager,
             UserManager<User> userManager,
-            RwfDbContext dbContext)
+            IConfiguration configuration)
         {
             _roleManager = roleManager;
             _userManager = userManager;
-            _dbContext = dbContext;
+            _configuration = configuration;
         }
 
-        public IQueryable<User> Users => _dbContext.Users;
 
-        public async Task<User> CreateUser( UsuarioInput input )
+        public async Task<User> CreateUser(UsuarioInput input)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
-            try
-            {
-
-                var user = await _createUser(input);
-                await transaction.CommitAsync();
-                
-                return user;
-            }
-            catch ( Exception )
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+            var user = await _createUser(input);
+            return user;
         }
 
         public async Task<ICollection<User>> CreateUser(ICollection<UsuarioInput> input)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
-            try
+            var users = new List<User>();
+            foreach (var usuario in input)
             {
-                var users = new List<User>();
-                foreach (var usuario in input)
-                {
-                    var user = await _createUser(usuario);
+                var user = await _createUser(usuario);
 
-                    users.Add(user);
-                }
-                
-                await transaction.CommitAsync();
-                
-                return users;
+                users.Add(user);
             }
-            catch ( Exception )
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+
+
+            return users;
         }
 
         private async Task<User> _createUser(UsuarioInput input)
         {
             var existingUser = await _userManager.FindByEmailAsync(input.Email);
-            
-            if ( existingUser != null)
+
+            if (existingUser != null)
             {
                 throw new ValidationException($"Ya existe un usuario con email {input.Email}");
             }
-            
+
             var user = new User()
             {
                 UserName = input.Username,
@@ -104,15 +79,39 @@ namespace Api.Services.Impl
             {
                 throw new ValidationException($"El rol {role} ya existe");
             }
-            
-            await _roleManager.CreateAsync(new ApplicationRole(role));
+
+            await _roleManager.CreateAsync(new MongoRole(role));
         }
 
         public async Task<User?> FindByNameAsync(string userName)
         {
             return await _userManager.FindByNameAsync(userName);
         }
+
+        public async Task Seed()
+        {
+            var adminData = _configuration.GetSection("Admin") ??
+                            throw new Exception("You must provide AdminUserSection on config to initialize the db");
+            
+            var admin = new UsuarioInput(
+                Email: adminData["Email"],
+                Password: adminData["Password"],
+                Username: adminData["Username"],
+                Roles: new[] { "admin" });
+
+            var adminUser = await FindByNameAsync(admin.Username);
+            
+            if (adminUser == null )
+            {
+                // TODO this will explode if configuration changes
+                await CreateRole("admin");
+                await CreateRole("user");
+                await CreateUser(admin);
+            }
+            
+            
+
+            
+        }
     }
-    
-    
 }

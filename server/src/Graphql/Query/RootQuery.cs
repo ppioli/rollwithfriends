@@ -28,9 +28,11 @@ public class RootQuery
         ClaimsPrincipal user
     )
     {
-        var id = user.GetId();
+        // var id = user.GetId();
+        //
+        // return db.Campaigns.Where( c => c.Participants.Any( p => p.UserId == id));
 
-        return db.Campaigns.Where( c => c.Participants.Any( p => p.UserId == id));
+        return null;
     }
     
     [UsePaging(IncludeTotalCount = true)]
@@ -41,7 +43,8 @@ public class RootQuery
         ClaimsPrincipal user
     )
     {
-        return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId());
+        // return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId());
+        return null;
     }
     
     [Authorize()]
@@ -52,7 +55,8 @@ public class RootQuery
         [ID]int? id
     )
     {
-        return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId() && c.Id == id);
+        // return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId() && c.Id == id);
+        return null;
     }
     
     
@@ -67,6 +71,7 @@ public class RootQuery
     )
     {
         // TODO validate code & hide the rest of the campaign
-        return db.Campaigns.Where( c => c.Id == code);
+        // return db.Campaigns.Where( c => c.Id == code);
+        return null;
     }
 }

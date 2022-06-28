@@ -70,11 +70,12 @@ public class FileStorageService
 
     public AppFile LoadFile(int fileId)
     {
-        using var scope = _serviceProvider.CreateScope();
-        var db = scope.ServiceProvider.GetService<RwfDbContext>();
-
-        Debug.Assert(db != null, nameof(db) + " != null");
-        return db.Files.Find(fileId) ?? throw new EntityNotFound(fileId);
+        // using var scope = _serviceProvider.CreateScope();
+        // var db = scope.ServiceProvider.GetService<RwfDbContext>();
+        //
+        // Debug.Assert(db != null, nameof(db) + " != null");
+        // return db.Files.Find(fileId) ?? throw new EntityNotFound(fileId);
+        return null;
     }
 
     public bool IsLoading(int fileId)
@@ -94,32 +95,33 @@ public class FileStorageService
 
     public async Task Complete(int fileId)
     {
-        if (!_uploads.ContainsKey(fileId))
-        {
-            throw new ClientException("The upload has been cancelled");
-        }
-        
-        using var scope = _serviceProvider.CreateScope();
-        var db = scope.ServiceProvider.GetService<RwfDbContext>();
-
-        Debug.Assert(db != null, nameof(db) + " != null");
-        
-        var handle = _uploads[fileId];
-
-        var file = await db.Files.FindAsync(fileId) ?? throw new EntityNotFound(fileId);
-        var dir = GetFileDirectory(file);
-        if (!Directory.Exists(dir))
-        {
-            Directory.CreateDirectory(dir);
-        }
-        
-        file.SetLoaded(handle.Extension, handle.ContentType);
-        File.Copy(handle.TempFileName, GetFilePath(file));
-        
-
-        _uploads.Remove(fileId);
-
-        await db.SaveChangesAsync();
+        // TODO redo
+        // if (!_uploads.ContainsKey(fileId))
+        // {
+        //     throw new ClientException("The upload has been cancelled");
+        // }
+        //
+        // using var scope = _serviceProvider.CreateScope();
+        // var db = scope.ServiceProvider.GetService<RwfDbContext>();
+        //
+        // Debug.Assert(db != null, nameof(db) + " != null");
+        //
+        // var handle = _uploads[fileId];
+        //
+        // var file = await db.Files.FindAsync(fileId) ?? throw new EntityNotFound(fileId);
+        // var dir = GetFileDirectory(file);
+        // if (!Directory.Exists(dir))
+        // {
+        //     Directory.CreateDirectory(dir);
+        // }
+        //
+        // file.SetLoaded(handle.Extension, handle.ContentType);
+        // File.Copy(handle.TempFileName, GetFilePath(file));
+        //
+        //
+        // _uploads.Remove(fileId);
+        //
+        // await db.SaveChangesAsync();
     }
 
     public string GetFileDirectory(AppFile file)

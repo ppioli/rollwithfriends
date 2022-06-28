@@ -18,21 +18,21 @@ public class EnrollmentMutation
         [ID] int code )
     {
         //TODO validate code. For now, the code is just the campaign id
-        var campaign = db.Campaigns
-            .Include( c => c.Participants)
-            .FirstOrDefault(c => c.Id == code) ?? throw new EntityNotFound(code);
-        
-        var userId = user.GetId();
+        // var campaign = db.Campaigns
+        //     .Include( c => c.Participants)
+        //     .FirstOrDefault(c => c.Id == code) ?? throw new EntityNotFound(code);
+        //
+        // var userId = user.GetId();
+        //
+        // if (campaign.Participants.Any(p => p.UserId == userId))
+        // {
+        //     return campaign;
+        // }
+        //
+        // campaign.Participants.Add( new CampaignEnrollment(userId));
+        //
+        // await db.SaveChangesAsync();
 
-        if (campaign.Participants.Any(p => p.UserId == userId))
-        {
-            return campaign;
-        }
-        
-        campaign.Participants.Add( new CampaignEnrollment(userId));
-
-        await db.SaveChangesAsync();
-
-        return campaign;
+        return null;
     }
 }

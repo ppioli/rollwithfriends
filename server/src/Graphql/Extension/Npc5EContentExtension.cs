@@ -10,6 +10,7 @@ public class Npc5EContentExtension
     public NonPlayerCharacter5E GetNpc( [Parent] Npc5EContent content, RwfDbContext db )
     {
         // TODO Add data loader
-        return db.NonPlayerCharacters5E.First(e => e.Id == content.NpcId);
+        // return db.NonPlayerCharacters5E.First(e => e.Id == content.NpcId);
+        return null;
     }
 }

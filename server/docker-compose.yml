@@ -13,15 +13,12 @@ services:
     profiles:
       - backend
   db:
-    container_name: rwf-db
-    image: postgres
+    image: mongo
     restart: always
-    environment:
-      POSTGRES_PASSWORD: 'rollwithfriends'
-      POSTGRES_USER: 'rollwithfriends'
-      POSTGRES_DB: 'rollwithfriends'
     ports:
-      - "5444:5432"
+      - "27017:27017"
+    volumes:
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
   elasticsearch:
     container_name: rwf-elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.2
