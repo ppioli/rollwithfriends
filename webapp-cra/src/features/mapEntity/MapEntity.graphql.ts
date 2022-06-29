@@ -1,17 +1,7 @@
 import { useCallback, useMemo } from "react";
 
-import { useMutation, useSubscription } from "react-relay";
-
-import {
-  MapEntityUpdateMutation,
-  MapEntityUpdateMutation$variables,
-} from "features/mapEntity/__generated__/MapEntityUpdateMutation.graphql";
+import { commitMutation, useMutation, useSubscription } from "react-relay";
 import { RecordSourceSelectorProxy } from "relay-runtime";
-import {
-  MapEntityAddMutation,
-  MapEntityAddMutation$data,
-  MapEntityAddMutation$variables,
-} from "features/mapEntity/__generated__/MapEntityAddMutation.graphql";
 import {
   MapEntityChangeSubscription,
   MapEntityChangeSubscription$variables,
@@ -22,10 +12,9 @@ import {
   MapEntityDeleteMutation,
   MapEntityDeleteMutation$variables,
 } from "features/mapEntity/__generated__/MapEntityDeleteMutation.graphql";
-import {
-  MapEntityNpcAddMutation,
-  MapEntityNpcAddMutation$variables,
-} from "features/mapEntity/__generated__/MapEntityNpcAddMutation.graphql";
+import { RelayEnvironment } from "lib/getRelayClientEnvironment";
+import { CommitMutationFunction } from "utils/mutationPromise";
+import { MapEntityPositionUpdateMutation } from "features/mapEntity/__generated__/MapEntityPositionUpdateMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -68,108 +57,31 @@ export const MapEntityFragment = graphql`
   }
 `;
 
-export function useMapEntityUpdateMutation() {
-  const [commit] = useMutation<MapEntityUpdateMutation>(graphql`
-    mutation MapEntityUpdateMutation($input: MapEntitiesUpdateInput!) {
-      mapEntityUpdate(input: $input) {
-        mapEntity {
-          id
-          ...MapEntityPositionFragment
-        }
-      }
-    }
-  `);
-
-  return useCallback(
-    (variables: MapEntityUpdateMutation$variables) => {
-      commit({
-        variables,
-        optimisticResponse: {
-          mapEntityUpdate: { mapEntity: variables.input.entities },
-        },
-      });
-    },
-    [commit]
-  );
-}
-
-export function useMapEntityAddMutation() {
-  const [_commit] = useMutation<MapEntityAddMutation>(graphql`
-    mutation MapEntityAddMutation($input: MapEntitiesAddInput!) {
-      mapEntityAdd(input: $input) {
-        mapEntity {
-          id
-          name
-          content {
-            ... on ImageContent {
-              fileId
-            }
-          }
-          ...MapEntityFragment
-        }
-      }
-    }
-  `);
-
-  const commit = useCallback(
-    (
-      variables: MapEntityAddMutation$variables,
-      onComplete?: (result: MapEntityAddMutation$data) => void
-    ) => {
-      _commit({
-        variables: variables,
-        onCompleted: onComplete,
-        updater: (store: RecordSourceSelectorProxy) => {
-          const payload = store.getRootField("mapEntityAdd")!;
-          const added = payload.getLinkedRecords("mapEntity")!;
-          // added.forEach((added, ix) => added.setValue(images[ix].src, "href"));
-          const scene = store.get(variables.input.sceneId)!;
-          const existing = scene.getLinkedRecords("entities") || [];
-          scene.setLinkedRecords([...existing, ...added], "entities");
-        },
-      });
-    },
-    [_commit]
-  );
-
-  return commit;
-}
-
-export function useMapEntityNpcAddMutation() {
-  const [_commit] = useMutation<MapEntityNpcAddMutation>(graphql`
-    mutation MapEntityNpcAddMutation($input: MapEntitiesNpcAddInput!) {
-      mapEntityNpcAdd(input: $input) {
-        mapEntity {
-          id
-          name
-          ...MapEntityFragment
-          content {
-            ... on Npc5EContent {
-              npcId
-            }
+export const mapEntityPositionUpdateMutation: CommitMutationFunction<
+  MapEntityPositionUpdateMutation
+> = (variables, onCompleted) => {
+  commitMutation<MapEntityPositionUpdateMutation>(RelayEnvironment, {
+    mutation: graphql`
+      mutation MapEntityPositionUpdateMutation(
+        $input: MapEntitiesPositionUpdateInput!
+      ) @raw_response_type {
+        mapEntityPositionUpdate(input: $input) {
+          mapEntity {
+            id
+            ...MapEntityPositionFragment
           }
         }
       }
-    }
-  `);
-
-  const commit = useCallback(
-    (variables: MapEntityNpcAddMutation$variables) =>
-      _commit({
-        variables: variables,
-        updater: (store: RecordSourceSelectorProxy) => {
-          const payload = store.getRootField("mapEntityNpcAdd")!;
-          const added = payload.getLinkedRecords("mapEntity")!;
-          // added.forEach((added, ix) => added.setValue(images[ix].src, "href"));
-          const scene = store.get(variables.input.sceneId)!;
-          const existing = scene.getLinkedRecords("entities") || [];
-          scene.setLinkedRecords([...existing, ...added], "entities");
-        },
-      }),
-    [_commit]
-  );
-  return commit;
-}
+    `,
+    variables,
+    onCompleted,
+    optimisticResponse: {
+      mapEntityPositionUpdate: {
+        mapEntity: variables.input.entities,
+      },
+    },
+  });
+};
 
 export function useMapEntityDeleteMutation() {
   const [commit] = useMutation<MapEntityDeleteMutation>(graphql`
@@ -224,8 +136,6 @@ export function useMapEntitySubscription(
       `,
       variables: variables,
       onCompleted: () => console.log("Subscription established"),
-      // onError: (error: any) => {} /* Subscription errored */,
-      // onNext: (response: any) => {} /* Subscription payload received */,
       updater: (store: RecordSourceSelectorProxy) => {
         const result = store.getRootField("mapEntityChanged")!;
         const type = result.getValue("type");

@@ -22,6 +22,7 @@ export const MessageBodyFragment = graphql`
   fragment MessageBody_message on Message {
     userId
     createdAt
+    isNew
     source {
       name
     }
@@ -94,6 +95,12 @@ export function useTextMessageAddMutation(
           connections: [connectionID],
         },
         onCompleted,
+        updater: (store, data) => {
+          data.textMessageAdd.message?.forEach((m) => {
+            const message = store.get(m.id)!;
+            message.setValue(true, "isNew");
+          });
+        },
       });
     },
     [_commit, connectionID, onCompleted]
@@ -102,15 +109,10 @@ export function useTextMessageAddMutation(
   return [commit, isInFlight];
 }
 
-export function useRollMessageAddMutation(
-  campaignId: string,
-  onCompleted?: () => void
-): [(input: RollMessagesAddInput) => Disposable, boolean] {
-  const connectionID = ConnectionHandler.getConnectionID(
-    campaignId, // passed as input to the mutation/subscription
-    "CampaignFragment_messages"
-  );
-
+export function useRollMessageAddMutation(): [
+  (input: RollMessagesAddInput, onComplete?: () => void) => Disposable,
+  boolean
+] {
   const [_commit, isInFlight] = useMutation<MessageRollAddMutation>(graphql`
     mutation MessageRollAddMutation(
       $input: RollMessagesAddInput!
@@ -127,16 +129,26 @@ export function useRollMessageAddMutation(
   `);
 
   const commit = useCallback(
-    (input: RollMessagesAddInput) => {
+    (input: RollMessagesAddInput, onCompleted?: () => void) => {
+      const connectionID = ConnectionHandler.getConnectionID(
+        input.campaignId, // passed as input to the mutation/subscription
+        "CampaignFragment_messages"
+      );
       return _commit({
         variables: {
           input,
           connections: [connectionID],
         },
         onCompleted,
+        updater: (store, data) => {
+          data.rollMessageAdd.message?.forEach((m) => {
+            const message = store.get(m.id)!;
+            message.setValue(true, "isNew");
+          });
+        },
       });
     },
-    [_commit, connectionID, onCompleted]
+    [_commit]
   );
 
   return [commit, isInFlight];
@@ -170,6 +182,12 @@ export function useMessageSubscription(campaignId: string) {
       variables: {
         campaignId,
         connections: [connectionID],
+      },
+      updater: (store, data) => {
+        data.messageSub.messages.forEach((m) => {
+          const message = store.get(m.id)!;
+          message.setValue(true, "isNew");
+        });
       },
     }),
     [campaignId, connectionID]

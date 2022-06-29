@@ -7,8 +7,8 @@ public class AppFile
     public int Id { get; set; }
 
     [GraphQLIgnore]
-    public virtual User Owner { get; set; } = default!;
-    public string OwnerId { get; set; }
+    public virtual ApplicationUser Owner { get; set; } = default!;
+    public Guid OwnerId { get; set; }
     
     public string Subdirectory { get; set; }
     public string Accepts { get; set; }
@@ -22,12 +22,12 @@ public class AppFile
 
     protected AppFile()
     {
-        OwnerId = "";
+        OwnerId = Guid.Empty;
         Subdirectory = "subdirectory";
         Accepts = "";
     }
 
-    public AppFile(string ownerId, string subdirectory, string expectedType )
+    public AppFile(Guid ownerId, string subdirectory, string expectedType )
     {
         OwnerId = ownerId;
         Subdirectory = subdirectory;

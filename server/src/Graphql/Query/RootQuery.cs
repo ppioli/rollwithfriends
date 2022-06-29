@@ -1,7 +1,9 @@
 using System.Security.Claims;
 using AutoMapper;
 using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Data.MongoDb;
 using HotChocolate.Resolvers;
+using MongoDB.Driver;
 using Server.EFModels;
 using Server.EFModels.Character5E;
 using server.Infraestructure;
@@ -23,23 +25,20 @@ public class RootQuery
     [UseProjection()]
     [UseFiltering()]
     [Authorize()]
-    public IQueryable<Campaign> Campaigns(
-        RwfDbContext db,
+    public IExecutable<Campaign> Campaigns(
+        [Service()]RwfDbContext db,
         ClaimsPrincipal user
     )
     {
-        // var id = user.GetId();
-        //
-        // return db.Campaigns.Where( c => c.Participants.Any( p => p.UserId == id));
-
-        return null;
+        return db.Campaigns.Find( x => x.DungeonMasterId == user.GetId())
+            .AsExecutable();
     }
     
     [UsePaging(IncludeTotalCount = true)]
     [UseFiltering()]
     [Authorize()]
     public IQueryable<NonPlayerCharacter5E> Entries(
-        RwfDbContext db,
+        [Service()]RwfDbContext db,
         ClaimsPrincipal user
     )
     {
@@ -50,7 +49,7 @@ public class RootQuery
     [Authorize()]
     [UseFirstOrDefault()]
     public IQueryable<NonPlayerCharacter5E> Entry(
-        RwfDbContext db,
+        [Service()]RwfDbContext db,
         ClaimsPrincipal user,
         [ID]int? id
     )
@@ -65,7 +64,7 @@ public class RootQuery
     [UseFiltering()]
     [Authorize()]
     public IQueryable<Campaign> Enrollment(
-        RwfDbContext db,
+        [Service()]RwfDbContext db,
         ClaimsPrincipal user,
         [ID] int code
     )

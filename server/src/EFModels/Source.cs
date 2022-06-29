@@ -6,24 +6,22 @@ namespace Server.EFModels;
 public class Source
 {
     [ID]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     public string Name { get; set; } = null!;
     public string Description { get; set; } = null!;
 
     public string ShortName { get; set; } = null!;
 
-    public string OwnerId { get; set; } = null!;
+    public Guid OwnerId { get; set; }
     
-    [GraphQLIgnore]
-    public virtual User Owner { get; set; } = null!;
 
     protected Source()
     {
         
     }
     
-    public Source(string ownerId, string name, string description, string? shortName)
+    public Source(Guid ownerId, string name, string description, string? shortName)
     {
         Name = name;
         OwnerId = ownerId;
@@ -38,7 +36,7 @@ public class Source
 
     public string GetSubdirectory()
     {
-        return Path.Join(OwnerId, Id.ToString());
+        return Path.Join(OwnerId.ToString(), Id.ToString());
     }
     
     private string CreateShortName()

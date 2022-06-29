@@ -12,8 +12,7 @@ public class NonPlayerCharacter5E : CharacterBase5E
 {
     public int Page { get; set; }
 
-    public int SourceId { get; set; }
-    public virtual Source Source { get; set; } = null!;
+    public Guid SourceId { get; set; }
 
     public NpcType5E Type { get; set; } = null!;
 
@@ -22,6 +21,7 @@ public class NonPlayerCharacter5E : CharacterBase5E
 
     public ArmorClassOption5E[] ArmorClasses { get; set; } = null!;
 
+    // TODO Fix typo
     public double ChallangeRating { get; set; }
 
     public Alignment5E[] Alignments { get; set; } = null!;
@@ -45,7 +45,7 @@ public class NonPlayerCharacter5E : CharacterBase5E
         int wisdom,
         int charisma,
         int page,
-        int sourceId,
+        Guid sourceId,
         string hitPointsFormula,
         int hitPointsAverage,
         double challangeRating,

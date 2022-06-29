@@ -4,6 +4,8 @@ import {
   SceneSelector_campaign$data,
   SceneSelector_campaign$key,
 } from "pages/scene/__generated__/SceneSelector_campaign.graphql";
+import { useNavigation } from "yarr";
+import { useCampaignContext } from "features/participant/CampaignContext";
 
 const graphql = require("babel-plugin-relay/macro");
 
@@ -17,43 +19,59 @@ export const SceneSelector_campaign = graphql`
 `;
 
 interface SceneSelectorProps {
-  campaignId: string;
-  campaign: SceneSelector_campaign$key;
-  onSceneChange: (sceneId: string) => void;
+  query: SceneSelector_campaign$key;
 }
 
-export function SceneSelector({
-  campaignId,
-  campaign,
-  onSceneChange,
-}: SceneSelectorProps) {
+export function SceneSelector({ query }: SceneSelectorProps) {
   const [commit, inFlight] = useSceneAddMutation();
+  const { replace } = useNavigation();
+
+  const { campaignId } = useCampaignContext();
+
   const data: SceneSelector_campaign$data = useFragment(
     SceneSelector_campaign,
-    campaign
+    query
   );
 
+  const selectScene = (sceneId: string) => () => {
+    replace({
+      pathname: `/campaign/${campaignId}`,
+      search: `selectedScene=${encodeURIComponent(sceneId)}`,
+    });
+  };
+
   return (
-    <div className={"flex flex-row w-full justify-center"}>
-      {data.scenes.map((s) => (
-        <button
-          className={"btn btn-primary"}
-          onClick={() => onSceneChange(s.id)}
-          type={"button"}
-          key={s.id}
-        >
-          {s.name}
-        </button>
+    <div className="s-full flex flex-row gap-4 p-4 justify-center items-center">
+      {data.scenes.map((s, ix) => (
+        <SceneButton key={ix} label={s.name} onClick={selectScene(s.id)} />
       ))}
-      <div>
-        <button
-          disabled={inFlight}
-          onClick={() => commit(campaignId)}
-          className={"btn btn-primary"}
-        >
-          Add
-        </button>
-      </div>
+
+      <SceneButton
+        disabled={inFlight}
+        label={"Add new scene"}
+        onClick={() => commit(campaignId)}
+      />
     </div>
+  );
+}
+
+function SceneButton({
+  onClick,
+  label,
+  disabled,
+}: {
+  onClick: () => void;
+  label: string;
+  disabled?: boolean;
+}) {
+  return (
+    <button
+      className={"btn btn-menu w-24 h-24 border-light border-2"}
+      disabled={disabled}
+      onClick={onClick}
+      type={"button"}
+    >
+      <div className={"s-full flex justify-center items-center"}>{label}</div>
+    </button>
   );
 }

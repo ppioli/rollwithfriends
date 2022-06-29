@@ -1,6 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using server.Infraestructure;
-
 namespace Server.EFModels.Map;
 
 
@@ -11,17 +13,18 @@ namespace Server.EFModels.Map;
 public class MapEntity
 {
     [ID]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     
     public string Name { get; set; }
     
     public int X { get; set; }
     public int Y { get; set; }
 
-    public int Width => GetContent().Width;
-    public int Height => GetContent().Height;
+    public int Width => Content.Width;
+    public int Height => Content.Height;
 
     [GraphQLIgnore]
+    [JsonIgnore]
     public virtual Scene Scene { get; set; } = null!;
     public int SceneId { get; set; }
     
@@ -29,18 +32,19 @@ public class MapEntity
 
     
     [GraphQLIgnore]
-    public string Content { get; private set; }
+    [Column("Content")]
+    public string ContentString {  get; private set; }
     
     [UseProjection()]
-    public IMapEntityContent GetContent()
-    {
-        return Type switch
+    public IMapEntityContent Content =>
+    
+         Type switch
         {
-            MapEntityType.Image => JsonConvert.DeserializeObject<ImageContent>(Content),
-            MapEntityType.Npc5E => JsonConvert.DeserializeObject<Npc5EContent>(Content),
+            MapEntityType.Image => JsonConvert.DeserializeObject<ImageContent>(ContentString)!,
+            MapEntityType.Npc5E => JsonConvert.DeserializeObject<Npc5EContent>(ContentString)!,
             _ => throw new ArgumentOutOfRangeException()
         };
-    }
+    
 
     [GraphQLIgnore]
     public ImageContent GetImageContent()
@@ -50,7 +54,7 @@ public class MapEntity
             throw new ClientException("Invalid object state");
         }
         
-        return (GetContent() as ImageContent)!;
+        return (Content as ImageContent)!;
     }
     
     [GraphQLIgnore]
@@ -61,28 +65,34 @@ public class MapEntity
             throw new ClientException("Invalid object state");
         }
         
-        return (GetContent() as Npc5EContent)!;
+        return (Content as Npc5EContent)!;
     }
 
 
     public void SetContent( ImageContent content)
     {
         Type = MapEntityType.Image;
-        Content = JsonConvert.SerializeObject(content);
+        ContentString = JsonConvert.SerializeObject(content);
     }
     
     public void SetContent( Npc5EContent content)
     {
         Type = MapEntityType.Npc5E;
-        Content = JsonConvert.SerializeObject(content);
+        ContentString = JsonConvert.SerializeObject(content);
     }
 
-    public static MapEntity Get(int id)
+    public static MapEntity Get(
+        ClaimsPrincipal user,
+        RwfDbContext context,
+        [ID]int id)
     {
+
         throw new NotImplementedException();
+
     }
 
-    protected MapEntity()
+    
+    public MapEntity()
     {
         
     }
@@ -115,6 +125,18 @@ public class MapEntity
         ret.SetContent(content);
 
         return ret;
+    }
+
+    public void Resize(int width, int height)
+    {
+        if (Type == MapEntityType.Image)
+        {
+            var content = GetImageContent();
+            content.Width = width;
+            content.Height = height;
+
+            SetContent(content);
+        }
     }
 }
 

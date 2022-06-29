@@ -35,12 +35,7 @@ export function ChatInput({ campaignId }: ChatInputProps) {
     }
   );
 
-  const [addRollMessage, rollInFlight] = useRollMessageAddMutation(
-    campaignId,
-    () => {
-      reset();
-    }
-  );
+  const [addRollMessage, rollInFlight] = useRollMessageAddMutation();
 
   const onSubmit = ({ content }: ChatInputForm) => {
     if (content.startsWith("/roll ")) {
@@ -52,16 +47,21 @@ export function ChatInput({ campaignId }: ChatInputProps) {
             count: v,
           })
         );
-        addRollMessage({
-          campaignId,
-          messages: [
-            {
-              sourceId: null,
-              dmRoll: false,
-              rolls: messageContent,
-            },
-          ],
-        });
+        addRollMessage(
+          {
+            campaignId,
+            messages: [
+              {
+                sourceId: null,
+                dmRoll: false,
+                rolls: messageContent,
+              },
+            ],
+          },
+          () => {
+            reset();
+          }
+        );
       } catch (e) {
         console.log(e);
       }

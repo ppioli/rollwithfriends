@@ -1,7 +1,11 @@
 using Api.Services;
 using AspNetCore.Identity.Mongo;
+using AspNetCore.Identity.Mongo.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using OpenIddict.Abstractions;
 using OpenIddict.Server;
@@ -15,6 +19,7 @@ using Server.Graphql;
 using Server.Graphql.Extension;
 using Server.Graphql.Mutations;
 using Server.Graphql.Query;
+using Server.Graphql.Resolvers;
 using Server.Graphql.Subscriptions;
 using server.Infraestructure;
 using Server.Services;
@@ -22,13 +27,20 @@ using Server.Services;
 
 var builder = WebApplication
     .CreateBuilder(args);
-
+BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
+BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 var configuration = builder.Configuration;
 var environment = builder.Environment;
 
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration)
     .CreateLogger();
+
+
+
+
+
+
 
 var dbContext = new RwfDbContext(configuration);
 
@@ -40,10 +52,10 @@ builder.Services.AddSingleton(dbContext);
 
 
 
-builder.Services.AddIdentityMongoDbProvider<User>(
+builder.Services.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, Guid>(
     mongo =>
     {
-        mongo.ConnectionString = dbContext.ConnectionString;
+        mongo.ConnectionString = dbContext.FullConnectionString;
     });
 
 
@@ -144,29 +156,38 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services
     .AddGraphQLServer()
-    .AddSubscriptionType(e => e.Name("Subscription"))
-    .AddTypeExtension<MapEntityChangeSubscription>()
-    .AddTypeExtension<FileLoadingSubscription>()
-    .AddTypeExtension<MessageSubscription>()
+    // .AddSubscriptionType(e => e.Name("Subscription"))
+    // .AddTypeExtension<MapEntityChangeSubscription>()
+    // .AddTypeExtension<FileLoadingSubscription>()
+    // .AddTypeExtension<MessageSubscription>()
     .AddQueryType<RootQuery>()
+    
+    //Mutation
     .AddMutationType(e => e.Name("Mutation"))
     .AddTypeExtension<CampaignMutation>()
-    .AddTypeExtension<EnrollmentMutation>()
-    .AddTypeExtension<MapEntityMutation>()
     .AddTypeExtension<SceneMutations>()
-    .AddTypeExtension<MessageMutation>()
-    .AddTypeExtension<SourceMutation>()
-    .AddTypeExtension<NonPlayerCharacterMutation>()
-    .AddType<TextMessageContent>()
-    .AddType<RollMessageContent>()
-    .AddType<ImageContent>()
-    .AddType<Npc5EContent>()
-    .AddTypeExtension<Npc5EContentExtension>()
+    
+    //Resolvers
+    .AddTypeExtension<CampaignResolver>()
+    .AddTypeExtension<SceneResolver>()
+    // .AddTypeExtension<EnrollmentMutation>()
+    // .AddTypeExtension<SceneMutations>()
+    // .AddTypeExtension<SourceMutation>()
+    // .AddTypeExtension<NonPlayerCharacterMutation>()
+    // .AddType<TextMessageContent>()
+    // .AddType<ImageContent>()
+    // .AddType<Npc5EContent>()
+    // .AddTypeExtension<Npc5EContentExtension>()
     .AddMutationConventions()
-    .AddProjections()
-    .AddFiltering()
-    .AddSorting()
     .AddGlobalObjectIdentification()
+    // Registers the filter convention of MongoDB
+    .AddMongoDbFiltering()
+    // Registers the sorting convention of MongoDB
+    .AddMongoDbSorting()
+    // Registers the projection convention of MongoDB
+    .AddMongoDbProjections()
+    // Registers the paging providers of MongoDB
+    .AddMongoDbPagingProviders()
     .AddAuthorization()
     .AddMutationConventions(applyToAllMutations: true)
     .AddSocketSessionInterceptor<SocketSessionInterceptor>()

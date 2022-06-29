@@ -14,7 +14,7 @@ public class Npc5EContent : IMapEntityContent {
 
     public int Width => Size.GetEditorSize();
     public int Height => Size.GetEditorSize();
-
+    
     protected Npc5EContent()
     {
         

@@ -1,6 +1,6 @@
 using Api.Services;
-using Api.Services.Impl;
 using server.Infraestructure;
+using Server.Services.Impl;
 
 namespace Server.Services
 {
@@ -8,7 +8,7 @@ namespace Server.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddTransient<IUsuarioService, UsuarioService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddSingleton<GoogleTokenValidator>();
             services.AddSingleton<FileStorageService>();
             services.AddSingleton<OidcExtractTokenHandler>();

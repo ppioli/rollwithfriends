@@ -20,40 +20,27 @@ public class UserInfo
 [Route("/api/claims")]
 public class TestController : Controller
 {
-    private readonly IUsuarioService _usuarioService;
+    private readonly IUserService _userService;
     
-    public TestController(IUsuarioService usuarioService)
+    public TestController(IUserService userService)
     {
-        _usuarioService = usuarioService;
+        _userService = userService;
     }
 
     [HttpGet]
     [Route("/seed")]
     public async Task<IActionResult> Seed()
     {
-        await _usuarioService.Seed();
+        await _userService.Seed();
 
         return new OkObjectResult("Ok");
     }
 
-    [HttpGet]
-    [Authorize()]
-    [Route("/userInfo")]
-    public UserInfo Get()
-    {
-        return new UserInfo()
-        {
-            Id = User.GetId(),
-            Claims = User.Claims.Select( c => new Tuple<string, string>(c.Type, c.Value)).ToList()
-        };
-    }
     
     [HttpPost]
     [Route("/test")]
     public Npcs5EAdd Test([FromBody] Npcs5EAdd input )
     {
-
-
         return input;
     }
 }

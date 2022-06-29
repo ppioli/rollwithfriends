@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using MongoDB.Driver;
 using Server.EFModels;
 using server.Infraestructure;
 
@@ -11,86 +12,81 @@ public class EnrollmentService
     private readonly RwfDbContext _db;
     private readonly IMemoryCache _cache;
 
-    private string CampaingEntryKey(int camapaignId) => $"{nameof(Campaign)}_{camapaignId}"; 
-    private string SceneEntryKey(int sceneId) => $"{nameof(Scene)}_{sceneId}"; 
-    
-    
     public EnrollmentService(RwfDbContext db, IMemoryCache cache)
     {
         _db = db;
         _cache = cache;
     }
 
-    public CampaignRoll? GetRollInCampaign(ClaimsPrincipal user, int campaignId)
+    public CampaignRoll? GetRollInCampaign(ClaimsPrincipal user, Guid campaignId)
     {
         return GetRollInCampaign(user.GetId(), campaignId);
     }
     
-    public CampaignRoll? GetRollInCampaign(string userId, int campaignId)
+    public CampaignRoll? GetRollInCampaign(Guid userId, Guid campaignId)
     {
         return GetEntry(campaignId).GetRol(userId);
     }
     
-    public CampaignRoll? GetRollInScene(ClaimsPrincipal user, int sceneId)
+    public CampaignRoll? GetRollInScene(ClaimsPrincipal user, Guid sceneId)
     {
         return GetRollInScene(user.GetId(), sceneId);
     }
     
-    public CampaignRoll? GetRollInScene(string userId, int sceneId)
+    public CampaignRoll? GetRollInScene(Guid userId, Guid sceneId)
     {
         return GetEntryFromScene(sceneId).GetRol(userId);
     }
 
-    private CampaignCacheEntry GetEntry( int campaignId )
+    private CampaignCacheEntry GetEntry( Guid campaignId )
     {
-        var key = CampaingEntryKey(campaignId);
         
-        if (!_cache.TryGetValue(key, out CampaignCacheEntry entry))
+        if (!_cache.TryGetValue(campaignId, out CampaignCacheEntry entry))
         {
             // TODO redo
-            // var campaign = _db.Campaigns.Include( c => c.Participants)
-            //     .FirstOrDefault( c => c.Id == campaignId) ?? throw new NotAuthorizedException();
+            var campaign = _db.Campaigns.AsQueryable()
+                .FirstOrDefault( c => c.Id == campaignId) ?? throw new NotAuthorizedException(nameof(Campaign));
 
-            // entry = new CampaignCacheEntry(campaign.DungeonMasterId, campaign.Participants);
+            entry = new CampaignCacheEntry(campaign.DungeonMasterId, campaign.Participants);
 
             // Save data in cache and set the relative expiration time to one day
-            _cache.Set(key, entry, TimeSpan.FromMinutes(30));
+            _cache.Set(campaignId, entry, TimeSpan.FromMinutes(30));
         }
 
         return entry;
     }
     
-    private CampaignCacheEntry GetEntryFromScene( int sceneId )
+    private CampaignCacheEntry GetEntryFromScene( Guid sceneId )
     {
         
-        // var key = SceneEntryKey(sceneId);
-        // if (!_cache.TryGetValue(key, out int campaignId))
-        // {
-        //     campaignId = _db.Scenes
-        //         .FirstOrDefault( c => c.Id == sceneId)?.CampaignId ?? throw new NotAuthorizedException();
-        //     
-        //     // Save data in cache and set the relative expiration time to one day
-        //     _cache.Set(key, campaignId, TimeSpan.FromMinutes(30));
-        // }
-        //
-        // return GetEntry(campaignId);
-        return null;
+        
+        if (!_cache.TryGetValue(sceneId, out Guid campaignId))
+        {
+            campaignId = _db.Scenes
+                .Find( c => c.Id == sceneId)
+                .FirstOrDefault()?.CampaignId ?? throw new NotAuthorizedException(nameof(Scene));
+            
+            // Save data in cache and set the relative expiration time to one day
+            _cache.Set(sceneId, campaignId, TimeSpan.FromMinutes(30));
+        }
+        
+        return GetEntry(campaignId);
     }
 
     internal class CampaignCacheEntry
     {
-        private Dictionary<string, CampaignRoll> Participants { get; set; }
+        private Dictionary<Guid, CampaignRoll> Participants { get; set; }
         
-        public CampaignCacheEntry( string dmId, ICollection<CampaignEnrollment> participants)
+        public CampaignCacheEntry( Guid dmId, ICollection<CampaignEnrollment> participants)
         {
-            Participants = new Dictionary<string, CampaignRoll>();
+            Participants = new Dictionary<Guid, CampaignRoll>();
             foreach (var participant in participants)
             {
                 Participants[participant.UserId] = participant.UserId == dmId ? CampaignRoll.DungeonMaster : CampaignRoll.Player;
             }
         }
 
-        public CampaignRoll? GetRol(string userId)
+        public CampaignRoll? GetRol(Guid userId)
         {
             if (Participants.ContainsKey(userId))
             {

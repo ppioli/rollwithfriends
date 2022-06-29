@@ -8,11 +8,7 @@ import { useResizeDetector } from "react-resize-detector";
 import Grid from "features/battleMap/grid/Grid";
 import MapEntityLayer from "features/battleMap/mapEntityLayer/MapEntityLayer";
 import useMapControl from "features/battleMap/useMapControl";
-import {
-  useMapEntityAddMutation,
-  useMapEntityNpcAddMutation,
-  useMapEntitySubscription,
-} from "features/mapEntity/MapEntity.graphql";
+import { useMapEntitySubscription } from "features/mapEntity/MapEntity.graphql";
 import classNames from "classnames";
 import { loadImages } from "utils/imageLoader";
 import { FileUploadDefinition, uploadBatch } from "utils/HttpHelpers";
@@ -21,44 +17,37 @@ import {
   SelectedSceneContextProvider,
 } from "pages/scene/SelectedSceneContext";
 import { commitSelectionBoxSet } from "features/battleMap/mapEntityLayer/Selection.graphql";
-import { Toolbar } from "features/toolbar/Toolbar";
-import { MapEntityNpcAddInput } from "features/mapEntity/__generated__/MapEntityNpcAddMutation.graphql";
+import { mapEntityImageAddMutation } from "features/mapEntity/image/MapEntityImage.graphql";
+import { mapEntityNpc5eAddMutation } from "modules/dnd5e/mapEntity/MapEntityNpc5e.graphql";
+import { MapEntityNpc5EAddInput } from "modules/dnd5e/mapEntity/__generated__/MapEntityNpc5eAddMutation.graphql";
 
 const graphql = require("babel-plugin-relay/macro");
 
 export interface SceneProps {
-  id: string;
-  campaignId: string;
   scene: SelectedScene_scene$key;
   className: string;
 }
 
-export function SelectedScene({
-  id,
-  scene,
-  className,
-  campaignId,
-}: SceneProps) {
+export function SelectedScene({ scene, className }: SceneProps) {
   console.info(
     " ++++++++ ++++++++ ++++++++ ++++++++ Redrawing scene ++++++++ ++++++++ ++++++++ ++++++++ "
   );
-  useMapEntitySubscription({ sceneId: id });
-  const selectBoxRef = useRef<HTMLDivElement>(null);
   const data: SelectedScene_scene$data = useFragment(
     graphql`
       fragment SelectedScene_scene on Scene {
+        id
         name
         ...MapEntityLayer_scene
-        ...Toolbar_scene
       }
     `,
     scene
   );
+  const sceneId = data.id;
+  useMapEntitySubscription({ sceneId });
+  const selectBoxRef = useRef<HTMLDivElement>(null);
 
   const { ref, width, height } = useResizeDetector();
   const containerRef = useRef<HTMLDivElement>(null);
-  const commit = useMapEntityAddMutation();
-  const commitNpc = useMapEntityNpcAddMutation();
 
   const cellSize = 60;
   const getEntitySize: (entity: EntityData) => [number, number] = useCallback(
@@ -94,10 +83,10 @@ export function SelectedScene({
           name: files[ix].name,
         }));
 
-        const input = { sceneId: id, entities };
+        const input = { sceneId, entities };
 
-        commit({ input }, (data) => {
-          const result = data.mapEntityAdd.mapEntity;
+        mapEntityImageAddMutation({ input }, (data) => {
+          const result = data.mapEntityImageAdd.mapEntity;
           if (!result) {
             return;
           }
@@ -119,7 +108,7 @@ export function SelectedScene({
         const x = Math.round((-offsetX + entry.x) / scale);
         const y = Math.round((-offsetY + entry.y) / scale);
         const content = entry.content;
-        const entity: MapEntityNpcAddInput = {
+        const entity: MapEntityNpc5EAddInput = {
           x: Math.round(x / cellSize) * cellSize,
           y: Math.round(y / cellSize) * cellSize,
           npcId: content.id,
@@ -128,9 +117,9 @@ export function SelectedScene({
           maxHp: content.hitPointsAverage,
           ac: content.armorClasses[0].armorClass,
         };
-        commitNpc({
+        mapEntityNpc5eAddMutation({
           input: {
-            sceneId: id,
+            sceneId,
             entities: [entity],
           },
         });
@@ -143,7 +132,7 @@ export function SelectedScene({
       selectionBox.height = selectionBox.height / scale;
 
       commitSelectionBoxSet({
-        sceneId: id,
+        sceneId,
         add: false,
         selectionBox,
         getEntitySize,
@@ -161,9 +150,8 @@ export function SelectedScene({
 
   return (
     <SelectedSceneContextProvider
-      sceneId={id}
+      sceneId={sceneId}
       cellSize={cellSize}
-      campaignId={campaignId}
       getEntitySize={getEntitySize}
     >
       <div ref={ref} className={className}>
@@ -202,10 +190,7 @@ export function SelectedScene({
               </div>
             </div>
           )}
-          <Toolbar
-            className={"absolute bottom-0 left-0 editor-width"}
-            query={data}
-          />
+
           <div className={"absolute"} ref={selectBoxRef}>
             <div className={"w-full h-full border-2 border-primary absolute"} />
             <div className={"w-full h-full bg-primary opacity-30 absolute"} />

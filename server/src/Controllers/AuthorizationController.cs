@@ -20,14 +20,14 @@ using static OpenIddictConstants;
 
 public class AuthorizationController : Controller
 {
-    private readonly SignInManager<User> _signInManager;
-    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly GoogleTokenValidator _googleTokenValidator;
     private readonly ILogger<AuthorizationController> _logger;
 
     public AuthorizationController(
-        SignInManager<User> signInManager,
-        UserManager<User> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager,
         GoogleTokenValidator googleTokenValidator,
         ILogger<AuthorizationController> logger)
     {
@@ -142,7 +142,7 @@ public class AuthorizationController : Controller
             if (user == null)
             {
                 var result = await _userManager.CreateAsync(
-                    new User()
+                    new ApplicationUser()
                     {
                         UserName = username,
                         Email = email,
@@ -171,11 +171,11 @@ public class AuthorizationController : Controller
         throw new NotImplementedException("The specified grant type is not implemented.");
     }
 
-    private async Task<IActionResult> SignInAsync(User user)
+    private async Task<IActionResult> SignInAsync(ApplicationUser applicationUser)
     {
         // Create a new ClaimsPrincipal containing the claims that
         // will be used to create an id_token, a token or a code.
-        var principal = await _signInManager.CreateUserPrincipalAsync(user);
+        var principal = await _signInManager.CreateUserPrincipalAsync(applicationUser);
 
         // Set the list of scopes granted to the client application.
         // Note: the offline_access scope must be granted

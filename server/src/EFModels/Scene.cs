@@ -1,30 +1,30 @@
-using System.ComponentModel.DataAnnotations;
-using Server.EFModels.Map;
+using Server.Graphql.Resolvers;
+using server.Infraestructure.MongoHelper;
 
 namespace Server.EFModels;
 
-[Node]
-public class Scene
+[Node(NodeResolverType = typeof(SceneResolver), NodeResolver = nameof(SceneResolver.Get))]
+public class Scene : IDocument
 {
     [ID]
-    public int Id { get; set; }
+    public Guid Id { get; set; }
+    
+    [ID]
+    public Guid CampaignId { get; set; }
+
+    public bool Stored { get; set; } = false;
+
+    public string Description { get; set; } = "";
 
     public string Name { get; set; } = null!;
     
-    public virtual Campaign Campaign { get; set; } = null!;
-    public int CampaignId { get; set; }
-    
-    public virtual ICollection<MapEntity> Entities { get; set; } = new List<MapEntity>();
-    
+    // public ICollection<MapEntity> Entities { get; set; } = new List<MapEntity>();
+
     protected Scene() {}
 
-    public Scene(string name)
+    public Scene(string name, Guid campaignId)
     {
         Name = name;
-    }
-
-    public static Scene Get(int id)
-    {
-        throw new NotImplementedException();
+        CampaignId = campaignId;
     }
 }

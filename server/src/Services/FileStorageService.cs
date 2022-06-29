@@ -29,7 +29,7 @@ public class FileStorageService
         _uploads = new Dictionary<int, UploadHandle>();
     }
 
-    public string StartUpload(string userId, int fileId, IFormFile formFile)
+    public string StartUpload(Guid userId, int fileId, IFormFile formFile)
     {
         if (_uploads.ContainsKey(fileId))
         {

@@ -1,8 +1,8 @@
-import { NpcCard5e } from "components/fiveEdition/NpcCard5e";
 import { EntryViewerEditor_rootQuery$key } from "features/entryEditor/__generated__/EntryViewerEditor_rootQuery.graphql";
 import { useRefetchableFragment } from "react-relay";
 import { EntryViewerEditorSelected } from "features/entryEditor/__generated__/EntryViewerEditorSelected.graphql";
 import { useEffect } from "react";
+import { NpcCard5e } from "modules/dnd5e/entries/npc/NpcCard5e";
 
 const graphql = require("babel-plugin-relay/macro");
 

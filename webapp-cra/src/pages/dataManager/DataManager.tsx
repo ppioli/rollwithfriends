@@ -1,14 +1,15 @@
 import { Input } from "components/form/Input";
 import { TitlePanel } from "components/panel/TitlePanel";
 import { useMemo, useState } from "react";
-import { SourceAddInput } from "pages/dataManager/__generated__/SourceAddMutation.graphql";
-import { useSourceAddMutation } from "pages/dataManager/Source.graphql";
-import {
-  findImage,
-  useNpc5EAddPromise,
-} from "components/fiveEdition/Npc5e.graphql";
 import { FileUploadDefinition, uploadBatch } from "utils/HttpHelpers";
-import { Npc5EAddInput } from "components/fiveEdition/__generated__/Npc5eAddMutation.graphql";
+import {
+  entryNpc5eAddMutation,
+  findImage,
+} from "modules/dnd5e/entries/npc/Npc5e.graphql";
+import { wrapInPromise } from "utils/mutationPromise";
+import { sourceAddMutation } from "features/sourceManager/Source.graphql";
+import { SourceAddInput } from "features/sourceManager/__generated__/SourceAddMutation.graphql";
+import { Npc5EAddInput } from "modules/dnd5e/entries/npc/__generated__/Npc5eAddMutation.graphql";
 
 export function DataManagerPage() {
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>();
@@ -55,9 +56,6 @@ interface UploadDataListProps {
 }
 
 function UploadDataList({ files }: UploadDataListProps) {
-  const commitSource = useSourceAddMutation();
-  const commitNpcs = useNpc5EAddPromise();
-
   const [parsedFiles, images] = useMemo<
     [File[], Record<string, File[]>]
   >(() => {
@@ -92,23 +90,35 @@ function UploadDataList({ files }: UploadDataListProps) {
 
       const bundle = await loadJson(file);
 
-      const sourceId = await commitSource(bundle.source);
-      //
-      const result = await commitNpcs(sourceId, bundle.npcs);
+      try {
+        const data = await wrapInPromise(sourceAddMutation)({
+          input: bundle.source,
+        });
+        const sourceId = data.sourceAdd.source?.id!;
+        const result = await wrapInPromise(entryNpc5eAddMutation)({
+          input: {
+            sourceId,
+            characters: bundle.npcs,
+          },
+        });
 
-      if (result.npcs5EAdd.nonPlayerCharacter5E === null) {
-        continue;
-      }
-
-      const avatars: FileUploadDefinition[] = [];
-      result.npcs5EAdd.nonPlayerCharacter5E.forEach((npc) => {
-        const upload = findImage(npc.avatarId, npc.name, images[fileName]);
-        if (upload !== null) {
-          avatars.push(upload);
+        if (result.npcs5EAdd.nonPlayerCharacter5E === null) {
+          continue;
         }
-      });
 
-      await uploadBatch(avatars, 1);
+        const avatars: FileUploadDefinition[] = [];
+        result.npcs5EAdd.nonPlayerCharacter5E.forEach((npc) => {
+          const upload = findImage(npc.avatarId, npc.name, images[fileName]);
+          if (upload !== null) {
+            avatars.push(upload);
+          }
+        });
+
+        await uploadBatch(avatars, 1);
+      } catch (e) {
+        // TODO manage errors
+        throw e;
+      }
     }
   };
 

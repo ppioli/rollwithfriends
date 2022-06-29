@@ -5,7 +5,7 @@ import {
 } from "features/chat/Message.graphql";
 import { CampaignQuery as CampaignQueryType } from "pages/campaign/__generated__/CampaignQuery.graphql";
 import { MessageList_campaign$key } from "./__generated__/MessageList_campaign.graphql";
-import { HTMLProps, useCallback, useState } from "react";
+import { HTMLProps, useCallback, useEffect, useRef, useState } from "react";
 import { useResizeDetector } from "react-resize-detector";
 import { Virtuoso } from "react-virtuoso";
 import { ChatMessage } from "features/chat/ChatMessage";
@@ -15,7 +15,9 @@ interface ChatProps extends HTMLProps<HTMLDivElement> {
   campaignId: string;
   messages: MessageList_campaign$key;
 }
+
 const LOAD_COUNT = 20;
+
 export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
   //TODO Invert list, handle message added count, item size
   const { data, loadPrevious, hasPrevious } = usePaginationFragment<
@@ -26,14 +28,15 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
   useMessageSubscription(campaignId);
 
   const { ref, width, height } = useResizeDetector();
-
-  const items = data.messages?.edges ?? [];
+  const virtuoso = useRef<any>(null);
+  const items = data.messages?.edges;
   const rowCount = data.messages?.totalCount ?? 0;
-  const [firstItemIndex, setFirstItemIndex] = useState(rowCount - 1);
+  const [atBottom, setAtBottom] = useState(false);
 
-  console.info("firstItem", firstItemIndex);
+  const [firstItemIndex, setFirstItemIndex] = useState(rowCount);
 
   const prependItems = useCallback(() => {
+    debugger;
     if (!hasPrevious) {
       return;
     }
@@ -44,20 +47,39 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
     });
   }, [hasPrevious, loadPrevious]);
 
-  const render = width && height && rowCount > 0;
+  useEffect(() => {
+    if (data.messages?.edges?.length === null || virtuoso.current === null) {
+      return;
+    }
+    console.log("effect", data.messages?.edges?.length);
+    virtuoso.current.scrollToIndex({
+      index: data.messages?.edges?.length! - 1,
+      align: "bottom",
+      behavior: "smooth",
+    });
+  }, [atBottom, data, virtuoso]);
+
+  const render = width && height && items;
   return (
     <div {...divProps}>
       <div className={"h-full w-full flex flex-col bg-dark"}>
         <div ref={ref} className={"w-full grow flex flex-col"}>
-          {render && (
+          {render && items.length === 0 && (
+            <div className={"w-full h-full flex justify-center items-center"}>
+              No messages
+            </div>
+          )}
+          {render && items.length > 0 && (
             <Virtuoso
               className={"w-full h-full scroll-none"}
               data={items}
+              ref={virtuoso}
               startReached={prependItems}
               overscan={200}
               firstItemIndex={firstItemIndex}
               initialTopMostItemIndex={items.length - 1}
-              followOutput={"smooth"}
+              atBottomStateChange={(bottom) => setAtBottom(bottom)}
+              followOutput={"auto"}
               itemContent={(index, data) => {
                 return <ChatMessage query={data.node} />;
               }}
@@ -76,15 +98,14 @@ export function Chat({ campaignId, messages, ...divProps }: ChatProps) {
 }
 
 const Header = ({ hasPrevious }: { hasPrevious: boolean }) => {
+  if (!hasPrevious) {
+    return null;
+  }
   return (
-    <div
-      style={{
-        padding: "2rem",
-        display: "flex",
-        justifyContent: "center",
-      }}
-    >
-      {hasPrevious ? "Loading..." : "End of times"}
+    <div className={"w-full p-2 flex justify-center"}>
+      <div className={"p-2 w-32 bg-darkest rounded-full text-center"}>
+        Loading...
+      </div>
     </div>
   );
 };

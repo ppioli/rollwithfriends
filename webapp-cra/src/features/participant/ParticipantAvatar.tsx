@@ -1,11 +1,11 @@
-import { useParticipantContext } from "features/participant/ParticipantsContext";
+import { useCampaignContext } from "features/participant/CampaignContext";
 
 interface ParticipantAvatarProps {
   id: string;
 }
 
 export function ParticipantAvatar({ id }: ParticipantAvatarProps) {
-  const { getById } = useParticipantContext();
+  const { getById } = useCampaignContext();
 
   const user = getById(id);
 

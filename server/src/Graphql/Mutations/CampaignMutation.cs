@@ -13,26 +13,24 @@ public class CampaignMutation
     
     [Authorize]
     public async Task<Campaign> CampaignAdd(
+        [Service()] RwfDbContext dbContext,
         ClaimsPrincipal user,
-        RwfDbContext context,
         string name,
         string description)
     {
-        // TODO redo
-        // var userId = user.GetId();
-        // var created = new Campaign(
-        //     name: name,
-        //     description: description,
-        //     dungeonMasterId: userId);
-        //
-        // var enrollment = new CampaignEnrollment(userId: userId);
-        //
-        // created.Participants.Add(enrollment);
-        //
-        // await context.AddAsync(created);
-        //
-        // await context.SaveChangesAsync();
+        
+        var userId = user.GetId();
+        var created = new Campaign(
+            name: name,
+            description: description,
+            dungeonMasterId: userId);
+        
+        var enrollment = new CampaignEnrollment(userId: userId);
+        
+        created.Participants.Add(enrollment);
+        
+        await dbContext.Campaigns.InsertOneAsync(created);
 
-        return null;
+        return created;
     }
 }

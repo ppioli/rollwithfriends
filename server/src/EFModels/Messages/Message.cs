@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Server.EFModels.Map;
+using Server.EFModels.Messages.Roll;
 
 namespace Server.EFModels.Messages;
 
@@ -10,21 +11,21 @@ public class Message
     public int Id { get; set; }
 
     [GraphQLIgnore]
-    public virtual User User { get; set; } = null!;
-    
+    public virtual ApplicationUser ApplicationUser { get; set; } = null!;
+
     [IsProjected]
     public string UserId { get; set; }
-    
+
     [IsProjected(true)]
     public string Content { get; set; }
 
     public virtual Campaign Campaign { get; set; } = null!;
     public int CampaignId { get; set; }
-    
+
     public DateTime CreatedAt { get; set; }
-    
+
     public MessageType Type { get; set; }
-    
+
     public virtual MapEntity? Source { get; set; }
     public int? SourceId { get; set; }
 
@@ -33,7 +34,7 @@ public class Message
         return Type switch
         {
             MessageType.Text => JsonSerializer.Deserialize<TextMessageContent>(Content)!,
-            MessageType.Roll =>  JsonSerializer.Deserialize<RollMessageContent>(Content)!,
+            MessageType.Roll => JsonSerializer.Deserialize<RollMessageContent>(Content)!,
             _ => throw new ArgumentOutOfRangeException()
         };
     }
@@ -53,7 +54,7 @@ public class Message
     {
         return new Message(userId, sourceId, campaignId, MessageType.Text, JsonSerializer.Serialize(content));
     }
-    
+
     public static Message CreateRollMessage(string userId, int? sourceId, int campaignId, RollMessageContent info)
     {
         return new Message(userId, sourceId, campaignId, MessageType.Roll, JsonSerializer.Serialize(info));
@@ -70,28 +71,4 @@ public class Message
     {
         throw new NotImplementedException();
     }
-}
-
-[UnionType("MessageContent")]
-public interface IMessageContent
-{
-}
-
-
-public class RollMessageContent : IMessageContent
-{
-    public bool DmRoll { get; set; }
-    public List<Roll> Rolls { get; set; }
-}
-
-public class TextMessageContent : IMessageContent
-{
-    public string Text { get; set; } = default!;
-}
-
-public class Roll
-{
-    public int Faces { get; set; }
-    public int Count { get; set; }
-    public List<int>? Result { get; set; } = default;
 }

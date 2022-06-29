@@ -2,6 +2,60 @@
   "name": "webapp-cra",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "relay": "yarn run relay-compiler $@",
+    "relay-clean": "find ./src -name __generated__ -type d -exec rm -rf {} \\;",
+    "sdl": "npx get-graphql-schema \"http://localhost:5289/graphql?sdl\" > schema.graphql"
+  },
+  "relay": {
+    "language": "typescript",
+    "schema": "./schema.graphql",
+    "schemaExtensions": [
+      "./graphql"
+    ],
+    "src": "./src"
+  },
+  "eslintConfig": {
+    "ignorePatterns": [
+      "node_modules/**"
+    ],
+    "extends": [
+      "react-app",
+      "react-app/jest",
+      "prettier"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
+  },
+  "babel": {
+    "plugins": [
+      "relay"
+    ]
+  },
   "dependencies": {
     "@hookform/resolvers": "^2.8.10",
     "@react-oauth/google": "^0.2.5",
@@ -52,58 +106,5 @@
     "lint-staged": "^12.4.2",
     "prettier": "^2.6.2",
     "relay-compiler": "^13.2.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "relay": "yarn run relay-compiler $@",
-    "sdl": "npx get-graphql-schema \"http://localhost:5289/graphql?sdl\" > schema.graphql"
-  },
-  "relay": {
-    "language": "typescript",
-    "schema": "./schema.graphql",
-    "schemaExtensions": [
-      "./graphql"
-    ],
-    "src": "./src"
-  },
-  "eslintConfig": {
-    "ignorePatterns": [
-      "node_modules/**"
-    ],
-    "extends": [
-      "react-app",
-      "react-app/jest",
-      "prettier"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
-    ]
-  },
-  "babel": {
-    "plugins": [
-      "relay"
-    ]
   }
 }

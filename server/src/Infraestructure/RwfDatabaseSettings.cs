@@ -10,22 +10,23 @@ public class RwfDbContext
     public readonly IMongoDatabase Database;
     
     public string ConnectionString { get; private set; }
+    public string DatabaseName { get; set; }
+
+    public string FullConnectionString => $"{ConnectionString}/{DatabaseName}";
     
     public RwfDbContext( IConfiguration configuration)
     {
         
-        var connectionString = configuration["RwfDatabase:ConnectionString"] ??
-                               throw new Exception("RwfDatabase:ConnectionString required in conf");
+        
+        DatabaseName = configuration["RwfDatabase:DatabaseName"] ??
+                               throw new Exception("RwfDatabase:DatabaseName required in conf");
 
 
-        ConnectionString = connectionString;
+        ConnectionString = configuration["RwfDatabase:ConnectionString"] ??
+                           throw new Exception("RwfDatabase:ConnectionString required in conf");;
         
         var mongoConnectionUrl = new MongoUrl(ConnectionString);
         var mongoClientSettings = MongoClientSettings.FromUrl(mongoConnectionUrl);
-        
-        
-// comment this line below if your mongo doesn't run on secured mode
-        
         
         // mongoClientSettings.ClusterConfigurator = cb =>
         // {
@@ -37,8 +38,10 @@ public class RwfDbContext
         // };
         var client = new MongoClient(mongoClientSettings);
 
-        Database = client.GetDatabase("rollwithfriends");
+        Database = client.GetDatabase(DatabaseName);
     }
 
-    public IMongoCollection<User> Users => Database.GetCollection<User>("users");
+    public IMongoCollection<ApplicationUser> Users => Database.GetCollection<ApplicationUser>("users");
+    public IMongoCollection<Campaign> Campaigns => Database.GetCollection<Campaign>("campaigns");
+    public IMongoCollection<Scene> Scenes => Database.GetCollection<Scene>("scenes");
 }
