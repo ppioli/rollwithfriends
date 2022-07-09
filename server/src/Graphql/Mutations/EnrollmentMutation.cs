@@ -2,6 +2,9 @@ using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using Server.EFModels;
 using server.Infraestructure;
 
@@ -11,28 +14,39 @@ namespace Server.Graphql.Mutations;
 [ExtendObjectType("Mutation")]
 public class EnrollmentMutation
 {
+    
     [Authorize]
-    public async Task<Campaign> EnrollmentAdd(
-        RwfDbContext db,
+    public Task<string> EnrollmentCode(
+        [Service()]RwfDbContext db,
+        [Service] IdSerializer serializer,
         ClaimsPrincipal user,
-        [ID] int code )
+        [ID] Guid campaingId )
     {
-        //TODO validate code. For now, the code is just the campaign id
-        // var campaign = db.Campaigns
-        //     .Include( c => c.Participants)
-        //     .FirstOrDefault(c => c.Id == code) ?? throw new EntityNotFound(code);
-        //
-        // var userId = user.GetId();
-        //
-        // if (campaign.Participants.Any(p => p.UserId == userId))
-        // {
-        //     return campaign;
-        // }
-        //
-        // campaign.Participants.Add( new CampaignEnrollment(userId));
-        //
-        // await db.SaveChangesAsync();
+        // TODO create and store a invitation link with expiration
+        return Task.FromResult(campaingId.ToString());
+    }
+    
+    [Authorize]
+    public async Task<CampaignEnrollment> EnrollmentAdd(
+        [Service()] IdSerializer serializer,
+        [Service()] RwfDbContext db,
+        ClaimsPrincipal user,
+        string code )
+    {
+        var id = serializer.Deserialize(code);
 
-        return null;
+        var userId = user.GetId();
+        var filter = Builders<Campaign>.Filter.Eq(c => c.Id, (Guid)id.Value);
+        var enrollment = new CampaignEnrollment(userId);
+        var update = Builders<Campaign>.Update.AddToSet( f=> f.Participants, enrollment );
+        
+        var result = await db.Campaigns.UpdateOneAsync(filter, update);
+
+        if (result.ModifiedCount != 1)
+        {
+            throw new DbException();
+        }
+
+        return enrollment;
     }
 }

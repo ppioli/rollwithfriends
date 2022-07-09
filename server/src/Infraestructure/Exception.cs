@@ -67,3 +67,10 @@ public class ApiException : Exception
         DisplayMessage = displayMessage;
     }
 }
+
+public class DbException : ApiException
+{
+    public DbException(string? displayMessage = null) : base(displayMessage ?? "The result didn't match the expected value")
+    {
+    }
+}

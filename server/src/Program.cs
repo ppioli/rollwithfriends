@@ -1,29 +1,22 @@
-using Api.Services;
 using AspNetCore.Identity.Mongo;
-using AspNetCore.Identity.Mongo.Model;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
-using MongoDB.Driver;
 using OpenIddict.Abstractions;
 using OpenIddict.Server;
 using OpenIddict.Validation.AspNetCore;
 using Quartz;
 using Serilog;
 using Server.EFModels;
-using Server.EFModels.Map;
-using Server.EFModels.Messages;
 using Server.Graphql;
-using Server.Graphql.Extension;
 using Server.Graphql.Mutations;
 using Server.Graphql.Query;
 using Server.Graphql.Resolvers;
-using Server.Graphql.Subscriptions;
+using Server.Graphql.Types;
 using server.Infraestructure;
 using Server.Services;
-
 
 var builder = WebApplication
     .CreateBuilder(args);
@@ -35,12 +28,6 @@ var environment = builder.Environment;
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration)
     .CreateLogger();
-
-
-
-
-
-
 
 var dbContext = new RwfDbContext(configuration);
 
@@ -161,16 +148,17 @@ builder.Services
     // .AddTypeExtension<FileLoadingSubscription>()
     // .AddTypeExtension<MessageSubscription>()
     .AddQueryType<RootQuery>()
-    
+    //Types
+    .AddType<UserType>()
     //Mutation
     .AddMutationType(e => e.Name("Mutation"))
     .AddTypeExtension<CampaignMutation>()
     .AddTypeExtension<SceneMutations>()
-    
     //Resolvers
     .AddTypeExtension<CampaignResolver>()
     .AddTypeExtension<SceneResolver>()
-    // .AddTypeExtension<EnrollmentMutation>()
+    .AddTypeExtension<EnrollmentMutation>()
+    .AddTypeExtension<UserMutation>()
     // .AddTypeExtension<SceneMutations>()
     // .AddTypeExtension<SourceMutation>()
     // .AddTypeExtension<NonPlayerCharacterMutation>()
