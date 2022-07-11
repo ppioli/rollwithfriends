@@ -8,7 +8,6 @@ using server.Infraestructure;
 
 namespace Server.EFModels;
 
-[Node( NodeResolverType = typeof(CampaignResolver), NodeResolver = nameof(CampaignResolver.Get))]
 public class Campaign
 {
     [ID]
@@ -18,22 +17,20 @@ public class Campaign
     public string Description { get; set; }
     
     [ID]
-    public Guid DungeonMasterId { get; set; }
-    
-    [ID]
     public Guid? SelectedSceneId { get; set; }
 
     public ICollection<CampaignEnrollment> Participants { get; set; } = new List<CampaignEnrollment>();
-
-    public Campaign(string name, string description, Guid dungeonMasterId)
-    {
-        Name = name;
-        Description = description;
-        DungeonMasterId = dungeonMasterId;
-    }
 
     protected Campaign()
     {
     }
 
+    public static Campaign Craete(string name, string description)
+    {
+        return new Campaign()
+        {
+            Name = name,
+            Description = description
+        };
+    }
 }

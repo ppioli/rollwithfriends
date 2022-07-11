@@ -1,6 +1,8 @@
 
 using MongoDB.Driver;
 using Server.EFModels;
+using Server.EFModels.Map;
+using Server.EFModels.Messages;
 
 namespace server.Infraestructure;
 
@@ -44,4 +46,5 @@ public class RwfDbContext
     public IMongoCollection<ApplicationUser> Users => Database.GetCollection<ApplicationUser>("users");
     public IMongoCollection<Campaign> Campaigns => Database.GetCollection<Campaign>("campaigns");
     public IMongoCollection<Scene> Scenes => Database.GetCollection<Scene>("scenes");
+    public IMongoCollection<Message> Messages => Database.GetCollection<Message>("messages");
 }

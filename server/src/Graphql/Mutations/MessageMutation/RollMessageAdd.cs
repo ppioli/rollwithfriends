@@ -19,7 +19,7 @@ public class RollMessageAdd
     /// <summary>
     /// Map entity sending the message
     /// </summary>
-    [ID] public int? SourceId { get; set; }
+    [ID] public Guid? SourceId { get; set; }
 
     /// <summary>
     /// If true, only the DM will see this roll
@@ -31,21 +31,13 @@ public class RollMessageAdd
     /// </summary>
     public List<RollInfo> Rolls { get; set; } = null!;
 
-    public void Apply(EFModels.Messages.Message source, int campaignId, string userId)
+    public Message Create(Guid campaignId, Guid userId, string source)
     {
-        
+
         var rolls = Rolls.Select(Roll.Create)
             .ToList();
 
-        var rollContent = new RollMessageContent(DmRoll, rolls);
-
-
-        source.UserId = userId;
-        source.SourceId = SourceId;
-        source.CampaignId = campaignId;
-        source.Content = JsonConvert.SerializeObject(rollContent);
-        source.Type = MessageType.Roll;
-        source.CreatedAt = DateTime.UtcNow;
+        return Message.Create(userId, SourceId, campaignId, source, RollMessageContent.Create(rolls, DmRoll));
     }
 }
 

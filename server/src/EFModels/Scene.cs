@@ -1,9 +1,9 @@
+using Server.EFModels.Map;
 using Server.Graphql.Resolvers;
 using server.Infraestructure.MongoHelper;
 
 namespace Server.EFModels;
 
-[Node(NodeResolverType = typeof(SceneResolver), NodeResolver = nameof(SceneResolver.Get))]
 public class Scene : IDocument
 {
     [ID]
@@ -17,8 +17,8 @@ public class Scene : IDocument
     public string Description { get; set; } = "";
 
     public string Name { get; set; } = null!;
-    
-    // public ICollection<MapEntity> Entities { get; set; } = new List<MapEntity>();
+
+    public ICollection<MapEntity> Entities { get; set; } = default!;
 
     protected Scene() {}
 

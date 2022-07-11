@@ -37,6 +37,11 @@ public class EnrollmentService
     {
         return GetEntryFromScene(sceneId).GetRol(userId);
     }
+    
+    public string? GetPlayerName( ClaimsPrincipal user, Guid campaignId )
+    {
+        return GetEntry(campaignId).GetPlayerName(user.GetId());
+    }
 
     private CampaignCacheEntry GetEntry( Guid campaignId )
     {
@@ -47,7 +52,7 @@ public class EnrollmentService
             var campaign = _db.Campaigns.AsQueryable()
                 .FirstOrDefault( c => c.Id == campaignId) ?? throw new NotAuthorizedException(nameof(Campaign));
 
-            entry = new CampaignCacheEntry(campaign.DungeonMasterId, campaign.Participants);
+            entry = new CampaignCacheEntry(campaign.Participants);
 
             // Save data in cache and set the relative expiration time to one day
             _cache.Set(campaignId, entry, TimeSpan.FromMinutes(30));
@@ -58,8 +63,6 @@ public class EnrollmentService
     
     private CampaignCacheEntry GetEntryFromScene( Guid sceneId )
     {
-        
-        
         if (!_cache.TryGetValue(sceneId, out Guid campaignId))
         {
             campaignId = _db.Scenes
@@ -75,25 +78,26 @@ public class EnrollmentService
 
     internal class CampaignCacheEntry
     {
-        private Dictionary<Guid, CampaignRoll> Participants { get; set; }
+        private Dictionary<Guid, CampaignEnrollment> Participants { get; set; }
         
-        public CampaignCacheEntry( Guid dmId, ICollection<CampaignEnrollment> participants)
+        public CampaignCacheEntry( ICollection<CampaignEnrollment> participants)
         {
-            Participants = new Dictionary<Guid, CampaignRoll>();
-            foreach (var participant in participants)
-            {
-                Participants[participant.UserId] = participant.UserId == dmId ? CampaignRoll.DungeonMaster : CampaignRoll.Player;
-            }
+            Participants = participants.ToDictionary(p => p.UserId);
         }
 
         public CampaignRoll? GetRol(Guid userId)
         {
-            if (Participants.ContainsKey(userId))
+            if (!Participants.ContainsKey(userId))
             {
-                return Participants[userId];
+                return null;
             }
 
-            return null;
+            return Participants[userId].Roll;
+        }
+        
+        public string? GetPlayerName(Guid userId)
+        {
+            return !Participants.ContainsKey(userId) ? null : Participants[userId].PlayerName;
         }
     }
 }

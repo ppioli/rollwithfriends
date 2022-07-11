@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using HotChocolate.AspNetCore.Authorization;
 using RollWithFriends.Models.Characters;
-using Server.EFModels.Character5E;
+using Server.EFModels.Entries;
 using server.Infraestructure;
 using Server.Services;
 
@@ -12,7 +12,7 @@ public class NonPlayerCharacterMutation
 {
     
     [Authorize]
-    public async Task<ICollection<NonPlayerCharacter5E>> Npcs5EAdd(
+    public async Task<ICollection<Npc5E>> Npcs5EAdd(
         ClaimsPrincipal user,
         RwfDbContext db,
         [Service()] CharacterService characterService,
@@ -44,5 +44,5 @@ public class Npcs5EAdd
     [ID]
     public int SourceId { get; set; }
 
-    public Npc5EAdd[] Characters { get; set; } = null!;
+    public Npc5E[] Characters { get; set; } = null!;
 }

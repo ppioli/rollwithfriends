@@ -16,16 +16,17 @@ public class CampaignMutation
         [Service()] RwfDbContext dbContext,
         ClaimsPrincipal user,
         string name,
-        string description)
+        string description,
+        string playerName)
     {
         
         var userId = user.GetId();
-        var created = new Campaign(
-            name: name,
-            description: description,
-            dungeonMasterId: userId);
         
-        var enrollment = new CampaignEnrollment(userId: userId);
+        var created = Campaign.Craete(
+            name: name,
+            description: description);
+        
+        var enrollment = CampaignEnrollment.Create(userId, CampaignRoll.DungeonMaster, playerName);
         
         created.Participants.Add(enrollment);
         

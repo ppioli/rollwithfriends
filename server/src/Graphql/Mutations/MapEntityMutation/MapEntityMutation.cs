@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using HotChocolate.Subscriptions;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
+using MongoDB.Driver;
 using Server.EFModels;
 using Server.EFModels.Map;
 using Server.Graphql.Subscriptions;
@@ -37,40 +39,32 @@ public class MapEntityMutation
         var result = new List<MapEntity>();
 
         // TODO Should check payload size 
-        // var ids = input.Entities
-        //     .Select(s => s.Id)
-        //     .ToArray();
-        //
-        // var updatedDict = db.MapEntities.Where(e => ids.Contains(e.Id) && e.SceneId == input.SceneId)
-        //     .ToDictionary(e => e.Id, e => e);
-        //
-        // foreach (var e in input.Entities)
-        // {
-        //     if (!updatedDict.ContainsKey(e.Id))
-        //     {
-        //         throw new EntityNotFound(e.Id);
-        //     }
-        //
-        //     var updated = updatedDict[e.Id];
-        //     updated.X = e.X;
-        //     updated.Y = e.Y;
-        //
-        //     if ( updated.Type.Resizable())
-        //     {
-        //         updated.Resize(e.Width, e.Height);
-        //     }
-        //     
-        //
-        //     result.Add(updated);
-        // }
-        //
-        // await db.SaveChangesAsync();
-        // await sender.SendAsync(
-        //     MapEntityChangeSubscription.GetTopic(input.SceneId),
-        //     new MapEntityChangeMessage(ChangeMessageType.Update, user.GetId(), result));
-        // return result;
+        var ids = input.Entities
+            .Select(s => s.Id)
+            .ToArray();
 
-        return null;
+        var f = Builders<MapEntity>.Filter;
+        
+        var updateOperations = db.Scenes.AsQueryable()
+            .Where( s => s.Id == input.SceneId)
+            .SelectMany( s => s.Entities)
+            .Where( s => ids.Contains(s.Id))
+            .ToList()
+            .Select(
+                s =>
+                {
+                    var vm = input.Entities.First(e => e.Id == s.Id);
+                    vm.Apply(s);
+
+                    return s;
+                })
+            .Select( s =>  new ReplaceOneModel<MapEntity>( f.Eq( e => e.Id, s.Id), s ))
+            .ToArray();
+        
+        await sender.SendAsync(
+            MapEntityChangeSubscription.GetTopic(input.SceneId),
+            new MapEntityChangeMessage(ChangeMessageType.Update, user.GetId(), result));
+        return result;
     }
 
 
@@ -78,31 +72,29 @@ public class MapEntityMutation
     /// Delete a group of map entities
     /// </summary>
     [Authorize]
-    public async Task<ICollection<MapEntity>> MapEntityDelete(
+    public async Task<ICollection<Guid>> MapEntityDelete(
         ClaimsPrincipal user,
-        RwfDbContext db,
+        [Service] RwfDbContext db,
         [Service] ITopicEventSender sender,
         [Service()] EnrollmentService enrollmentService,
-        [ID] int sceneId,
-        [ID] ICollection<int> deleted)
+        [ID] Guid sceneId,
+        [ID] ICollection<Guid> deleted)
     {
-        // if (enrollmentService.GetRollInScene(user, sceneId) != CampaignRoll.DungeonMaster)
-        // {
-        //     throw new EntityNotFound(sceneId);
-        // }
-        //
-        // // TODO Should check payload size
+        if (enrollmentService.GetRollInScene(user, sceneId) != CampaignRoll.DungeonMaster)
+        {
+            throw new EntityNotFound(sceneId);
+        }
+        
+        // TODO Should check payload size
         // var deletedList = db.MapEntities.Where(e => deleted.Contains(e.Id) && e.SceneId == sceneId)
         //     .ToList();
-        //
-        // db.RemoveRange(deletedList);
-        // await db.SaveChangesAsync();
+        
         // await sender.SendAsync(
         //     MapEntityChangeSubscription.GetTopic(sceneId),
-        //     new MapEntityChangeMessage(ChangeMessageType.Delete, user.GetId(), deletedList));
-        // return deletedList;
+        //     new MapEntityChangeMessage(ChangeMessageType.Delete, user.GetId(), deleted));
+        
+        return deleted;
 
-        return null;
     }
 }
 

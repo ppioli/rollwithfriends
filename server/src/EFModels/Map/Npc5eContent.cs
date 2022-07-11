@@ -1,19 +1,34 @@
 using RollWithFriends.Models.Characters;
-using Server.EFModels.Character5E;
+using Server.EFModels.Entries;
 
 namespace Server.EFModels.Map;
 
-public class Npc5EContent : IMapEntityContent {
-    [ID(nameof(NonPlayerCharacter5E))]
-    public int NpcId { get; set; }
+public class Npc5EContent : MapEntityContent {
+    
+    [ID(nameof(Npc5E))]
+    public Guid NpcId { get; set; }
     public Size5E Size { get; set; }
     public int MaximumHp { get; set; }
     public int CurrentHp { get; set; }
     public int TemporaryHp { get; set; }
     public int Ac { get; set; }
 
-    public int Width => Size.GetEditorSize();
-    public int Height => Size.GetEditorSize();
+    public float Width => GetEditorSize();
+    public float Height => GetEditorSize();
+
+    public float GetEditorSize()
+    {
+        return Size switch
+        {
+            Size5E.Tiny => 1f,
+            Size5E.Small => 1f,
+            Size5E.Medium => 1f,
+            Size5E.Large => 2f,
+            Size5E.Huge => 3f,
+            Size5E.Gargantuan => 4f,
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    } 
     
     protected Npc5EContent()
     {
@@ -21,7 +36,7 @@ public class Npc5EContent : IMapEntityContent {
     }
     
     
-    public Npc5EContent(int npcId, Size5E size, int maximumHp, int ac)
+    public Npc5EContent(Guid npcId, Size5E size, int maximumHp, int ac)
     {
         NpcId = npcId;
         Size = size;

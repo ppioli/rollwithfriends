@@ -2,7 +2,7 @@ using Path = System.IO.Path;
 
 namespace Server.EFModels;
 
-[Node]
+
 public class Source
 {
     [ID]

@@ -14,6 +14,7 @@ namespace Server.Services
             services.AddSingleton<OidcExtractTokenHandler>();
             services.AddTransient<EnrollmentService>();
             services.AddTransient<CharacterService>();
+            services.AddTransient<SceneService>();
 
             return services;
         }

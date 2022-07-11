@@ -1,24 +1,28 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
+using HotChocolate.AspNetCore.Authorization;
 using Server.EFModels;
 using server.Infraestructure;
 using Path = System.IO.Path;
 
 namespace Server.Services;
 
+[Authorize]
 public class FileStorageService
 {
     // Base dir where to store files
     private string BasePath { get; set; }
 
-    private readonly IDictionary<int, UploadHandle> _uploads;
+    private readonly ILogger<FileStorageService> _logger;
+    private readonly IDictionary<Guid, UploadHandle> _uploads;
 
-    private readonly IServiceProvider _serviceProvider;
-
-    public FileStorageService(IConfiguration configuration, IServiceProvider serviceProvider)
+    public FileStorageService(
+        IConfiguration configuration,
+        ILogger<FileStorageService> logger)
     {
-        // TODO should clean uploads
-        _serviceProvider = serviceProvider;
+        // TODO Should create a worker to clean uploads
+        _logger = logger;
         BasePath = configuration["FileStorage:BasePath"] ??
                    throw new Exception("The configuration FileStorage:BasePath is required");
         if (!Directory.Exists(BasePath))
@@ -26,103 +30,43 @@ public class FileStorageService
             Directory.CreateDirectory(BasePath);
         }
 
-        _uploads = new Dictionary<int, UploadHandle>();
+        _uploads = new Dictionary<Guid, UploadHandle>();
     }
 
-    public string StartUpload(Guid userId, int fileId, IFormFile formFile)
+    public async Task<string> StartUpload(IFormFile file)
     {
-        if (_uploads.ContainsKey(fileId))
-        {
-            return _uploads[fileId].TempFileName;
-        }
-        
-        var file = LoadFile(fileId);
-        
-        if (file == null || file.OwnerId != userId)
-        {
-            throw new ClientException("You don't have permission to modify these files");
-        }
+        var fileExtension = Path.GetExtension(file.FileName);
 
-        var fileExtension = Path.GetExtension(formFile.FileName);
-        
-        var expectedExtensionRegEx = new Regex(file.Accepts);
-
-        if (!expectedExtensionRegEx.IsMatch(formFile.ContentType))
-        {
-            throw new ClientException($"The provided file does not match the expected file type {file.Accepts}");
-        }
-            
         var handle = new UploadHandle()
         {
-            FileId = fileId,
             TempFileName = Path.GetTempFileName(),
             Extension = fileExtension,
-            ContentType = formFile.ContentType,
-            Created = DateTime.UtcNow,
-            Progress = 0,
+            ContentType = file.ContentType,
+            Created = DateTime.UtcNow
         };
-            
-        _uploads.Add(file.Id, handle);
 
-        return handle.TempFileName;
+        {
+            await using FileStream output = File.Create(handle.TempFileName);
+            await using Stream input = file.OpenReadStream();
 
-    }
-
-    public AppFile LoadFile(int fileId)
-    {
-        // using var scope = _serviceProvider.CreateScope();
-        // var db = scope.ServiceProvider.GetService<RwfDbContext>();
-        //
-        // Debug.Assert(db != null, nameof(db) + " != null");
-        // return db.Files.Find(fileId) ?? throw new EntityNotFound(fileId);
-        return null;
-    }
-
-    public bool IsLoading(int fileId)
-    {
-        return _uploads.ContainsKey(fileId);
+            int readBytes;
+            var buffer = new byte[16 * 1024];
+            while ((readBytes = await input.ReadAsync(buffer)) > 0)
+            {
+                await output.WriteAsync(buffer, 0, readBytes);
+            }
+        }
+        var id = new Guid();
+        _uploads[id] = handle;
+        return id.ToString();
     }
     
-    public void SetProgress(int fileId, decimal progress)
+    
+    public UploadHandle? GetFileHandle(Guid uploadId)
     {
-        if (!_uploads.ContainsKey(fileId))
-        {
-            throw new ClientException("The upload has been cancelled");
-        }
-
-        _uploads[fileId].Progress = progress;
+        return _uploads.ContainsKey(uploadId) ? _uploads[uploadId] : null;
     }
 
-    public async Task Complete(int fileId)
-    {
-        // TODO redo
-        // if (!_uploads.ContainsKey(fileId))
-        // {
-        //     throw new ClientException("The upload has been cancelled");
-        // }
-        //
-        // using var scope = _serviceProvider.CreateScope();
-        // var db = scope.ServiceProvider.GetService<RwfDbContext>();
-        //
-        // Debug.Assert(db != null, nameof(db) + " != null");
-        //
-        // var handle = _uploads[fileId];
-        //
-        // var file = await db.Files.FindAsync(fileId) ?? throw new EntityNotFound(fileId);
-        // var dir = GetFileDirectory(file);
-        // if (!Directory.Exists(dir))
-        // {
-        //     Directory.CreateDirectory(dir);
-        // }
-        //
-        // file.SetLoaded(handle.Extension, handle.ContentType);
-        // File.Copy(handle.TempFileName, GetFilePath(file));
-        //
-        //
-        // _uploads.Remove(fileId);
-        //
-        // await db.SaveChangesAsync();
-    }
 
     public string GetFileDirectory(AppFile file)
     {
@@ -131,6 +75,7 @@ public class FileStorageService
             file.Subdirectory);
     }
 
+
     public string GetFilePath(AppFile file)
     {
         return Path.Join(GetFileDirectory(file), $"{file.Id}{file.Extension}");
@@ -138,24 +83,63 @@ public class FileStorageService
 
     public Stream ReadStream(AppFile file)
     {
+        if (file.Id == Guid.Empty)
+        {
+            throw new Exception("The given file does not have an id");
+        }
         var path = GetFilePath(file);
         return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
     }
-}
+    
+    public AppFile CreateFromUpload( ClaimsPrincipal user, Guid uploadId, string subdirectory, string accepts )
+    {
+        //TODO maybe add user and check that the upload belongs to it? 
+        var upload = GetFileHandle(uploadId) ??
+                     throw new ClientException("The provided upload no longer exists");
+        
+        var expectedExtensionRegEx = new Regex(accepts);
 
-public class FileResult
-{
-    public FileStream Stream { get; set; } = null!;
-    public string ContentType { get; set; } = null!;
+        if (!expectedExtensionRegEx.IsMatch(upload.ContentType))
+        {
+            throw new ClientException($"The provided file does not match the expected file type {accepts}");
+        }
+
+        var appFile = AppFile.Create(subdirectory, upload.Extension, user);
+        
+        var dir = GetFileDirectory(appFile);
+        if (!Directory.Exists(dir))
+        {
+            Directory.CreateDirectory(dir);
+        }
+
+        File.Move(upload.TempFileName, GetFilePath(appFile));
+        
+        return appFile;
+    }
+    
+    public bool TryCreateFromUpload( ClaimsPrincipal user, Guid uploadId, string subdirectory, string accepts, out AppFile? file)
+    {
+        
+        try
+        {
+            file = CreateFromUpload(user, uploadId, subdirectory, accepts);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while copying the temp file to it's final destination");
+        }
+
+        file = null;
+        return false;
+    }
 }
 
 public class UploadHandle
 {
     public Guid Id { get; set; }
-    public int FileId { get; set; }
     public string TempFileName { get; set; } = null!;
     public DateTime Created { get; set; }
-    public decimal Progress { get; set; }
     public string Extension { get; set; } = null!;
     public string ContentType { get; set; } = null!;
 }

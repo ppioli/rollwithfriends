@@ -8,13 +8,13 @@ namespace Server.Graphql.Subscriptions;
 [ExtendObjectType("Subscription")]
 public class MapEntityChangeSubscription
 {
-    public static string GetTopic(int sceneId)
+    public static string GetTopic(Guid sceneId)
     {
         return $"{sceneId}_EntityUpdate";
     }
 
     public ValueTask<ISourceStream<MapEntityChangeMessage>> SubscribeToMapEntity(
-        int sceneId,
+        Guid sceneId,
         [Service] ITopicEventReceiver receiver)
     
     {
@@ -25,7 +25,7 @@ public class MapEntityChangeSubscription
     [Subscribe(With = nameof(SubscribeToMapEntity))]
     public MapEntityChangeMessage MapEntityChanged(
         ClaimsPrincipal user,
-        [ID] int sceneId,
+        [ID] Guid sceneId,
         [EventMessage] MapEntityChangeMessage changeEvent)
     {
         return changeEvent;

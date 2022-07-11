@@ -1,25 +1,30 @@
-using AspNetCore.Identity.Mongo;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
-using OpenIddict.Abstractions;
-using OpenIddict.Server;
-using OpenIddict.Validation.AspNetCore;
-using Quartz;
 using Serilog;
 using Server.EFModels;
+using Server.EFModels.Entries;
+using Server.EFModels.Map;
+using Server.EFModels.Messages;
+using Server.EFModels.Messages.Roll;
 using Server.Graphql;
 using Server.Graphql.Mutations;
+using Server.Graphql.Mutations.MapEntityMutation;
+using Server.Graphql.Mutations.MapEntityMutation.Image;
+using Server.Graphql.Mutations.MessageMutation;
 using Server.Graphql.Query;
 using Server.Graphql.Resolvers;
 using Server.Graphql.Types;
 using server.Infraestructure;
+using Server.Infraestructure;
+using Server.Infraestructure.Authentication;
 using Server.Services;
 
 var builder = WebApplication
     .CreateBuilder(args);
+
+
 BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
 BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 var configuration = builder.Configuration;
@@ -37,109 +42,10 @@ builder.Logging.AddSerilog(logger);
 
 builder.Services.AddSingleton(dbContext);
 
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
-
-builder.Services.AddIdentityMongoDbProvider<ApplicationUser, ApplicationRole, Guid>(
-    mongo =>
-    {
-        mongo.ConnectionString = dbContext.FullConnectionString;
-    });
-
-
-
-// Configure Identity to use the same JWT claims as OpenIddict instead
-// of the legacy WS-Federation claims it uses by default (ClaimTypes),
-// which saves you from doing the mapping in your authorization controller.
-builder.Services.Configure<IdentityOptions>(
-    options =>
-    {
-        options.ClaimsIdentity.UserNameClaimType = OpenIddictConstants.Claims.Name;
-        options.ClaimsIdentity.UserIdClaimType = OpenIddictConstants.Claims.Subject;
-        options.ClaimsIdentity.RoleClaimType = OpenIddictConstants.Claims.Role;
-        options.ClaimsIdentity.EmailClaimType = OpenIddictConstants.Claims.Email;
-    });
-
-// OpenIddict offers native integration with Quartz.NET to perform scheduled tasks
-// (like pruning orphaned authorizations/tokens from the database) at regular intervals.
-builder.Services.AddQuartz(
-    options =>
-    {
-        options.UseMicrosoftDependencyInjectionJobFactory();
-        options.UseSimpleTypeLoader();
-        options.UseInMemoryStore();
-    });
-
-// Register the Quartz.NET service and configure it to block shutdown until jobs are complete.
-builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-
-builder.Services.AddOpenIddict()
-
-    // Register the OpenIddict core components.
-    .AddCore(
-        options =>
-        {
-            // Configure OpenIddict to use the Entity Framework Core stores and models.
-            // Note: call ReplaceDefaultEntities() to replace the default OpenIddict entities.
-            options.UseMongoDb()
-                .UseDatabase( dbContext.Database);
-            
-            // Enable Quartz.NET integration.
-            options.UseQuartz();
-        })
-
-    // Register the OpenIddict server components.
-    .AddServer(
-        options =>
-        {
-            // Enable the token endpoint.
-            options.SetTokenEndpointUris("/connect/token");
-
-            // Enable the password and the refresh token flows.
-            options.AllowPasswordFlow()
-                .AllowRefreshTokenFlow()
-                .AllowCustomFlow(AuthConstants.OpenIdTokenGrant);
-
-            options.DisableAccessTokenEncryption();
-            // Accept anonymous clients (i.e clients that don't send a client_id).
-            options.AcceptAnonymousClients();
-            
-            // Register the signing and encryption credentials.
-            options.AddDevelopmentEncryptionCertificate()
-                .AddDevelopmentSigningCertificate();
-
-            // Register the ASP.NET Core host and configure the ASP.NET Core-specific options.
-            options.UseAspNetCore()
-                .DisableTransportSecurityRequirement()
-                .EnableTokenEndpointPassthrough();
-            
-            // Register the event handler responsible for populating userinfo responses.
-            options.AddEventHandler<OpenIddictServerEvents.ProcessRequestContext>(
-                configuration =>
-                {
-                    configuration
-                        .UseSingletonHandler<OidcExtractTokenHandler>();
-                });
-
-        })
-
-    // Register the OpenIddict validation components.
-    .AddValidation(
-        options =>
-        {
-            // Import the configuration from the local OpenIddict server instance.
-            options.UseLocalServer();
-            
-            // Register the ASP.NET Core host.
-            options.UseAspNetCore();
-        });
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-    options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
-});
-
+builder.Services.AddOidcServer(dbContext);
 
 builder.Services
     .AddGraphQLServer()
@@ -148,25 +54,32 @@ builder.Services
     // .AddTypeExtension<FileLoadingSubscription>()
     // .AddTypeExtension<MessageSubscription>()
     .AddQueryType<RootQuery>()
-    //Types
-    .AddType<UserType>()
     //Mutation
     .AddMutationType(e => e.Name("Mutation"))
     .AddTypeExtension<CampaignMutation>()
     .AddTypeExtension<SceneMutations>()
-    //Resolvers
-    .AddTypeExtension<CampaignResolver>()
-    .AddTypeExtension<SceneResolver>()
-    .AddTypeExtension<EnrollmentMutation>()
     .AddTypeExtension<UserMutation>()
-    // .AddTypeExtension<SceneMutations>()
+    .AddTypeExtension<EnrollmentMutation>()
+    .AddTypeExtension<MessageMutation>()
+    .AddTypeExtension<MapEntityMutation>()
+    .AddTypeExtension<NonPlayerCharacterMutation>()
+    .AddTypeExtension<MapEntityImageMutation>()
     // .AddTypeExtension<SourceMutation>()
+    // Types
+    .AddType<UserType>()
+    .AddTypeExtension<CampaignType>()
+    .AddTypeExtension<SceneType>()
+    .AddTypeExtension<MapEntityType>()
+    .AddTypeExtension<UserType>()
+    .AddTypeExtension<MessageType>()
     // .AddTypeExtension<NonPlayerCharacterMutation>()
     // .AddType<TextMessageContent>()
-    // .AddType<ImageContent>()
-    // .AddType<Npc5EContent>()
+    .AddType<ImageContent>()
+    .AddType<Npc5EContent>()
+    .AddType<RollMessageContent>()
+    .AddType<TextMessageContent>()
+    .AddType<Npc5E>()
     // .AddTypeExtension<Npc5EContentExtension>()
-    .AddMutationConventions()
     .AddGlobalObjectIdentification()
     // Registers the filter convention of MongoDB
     .AddMongoDbFiltering()
@@ -179,6 +92,8 @@ builder.Services
     .AddAuthorization()
     .AddMutationConventions(applyToAllMutations: true)
     .AddSocketSessionInterceptor<SocketSessionInterceptor>()
+    //Services
+    .RegisterService<RwfDbContext>()
     .ModifyRequestOptions(
         opt =>
         {
@@ -193,8 +108,6 @@ builder.Services
         });
 
 builder.Services.AddInMemorySubscriptions();
-
-builder.Services.AddControllersWithViews();
 
 if (builder.Environment.IsDevelopment())
 {
@@ -228,16 +141,23 @@ builder.Services
 builder.Services.AddServices();
 
 var app = builder.Build();
-
+app.UseMiddleware<ExceptionMiddleware>();
 // app.UseSerilogRequestLogging();
 app.UseWebSockets();
 app.UseCors();
+
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapDefaultControllerRoute();
+    endpoints.MapRazorPages();
+});
+
 app.MapGraphQL();
 
 app.Run();

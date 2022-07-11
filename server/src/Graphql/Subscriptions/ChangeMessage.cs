@@ -2,7 +2,7 @@ namespace Server.Graphql.Subscriptions;
 
 public class ChangeMessage<T>
 {
-    public ChangeMessage(ChangeMessageType type, string userId, T payload)
+    public ChangeMessage(ChangeMessageType type, Guid userId, T payload)
     {
         Type = type;
         UserId = userId;
@@ -10,6 +10,6 @@ public class ChangeMessage<T>
     }
 
     public ChangeMessageType Type { get; set; }
-    public string UserId { get; set; }
+    public Guid UserId { get; set; }
     public T Payload { get; set; }
 }

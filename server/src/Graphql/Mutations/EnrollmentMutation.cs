@@ -28,16 +28,17 @@ public class EnrollmentMutation
     
     [Authorize]
     public async Task<CampaignEnrollment> EnrollmentAdd(
-        [Service()] IdSerializer serializer,
+        [Service()] IIdSerializer serializer,
         [Service()] RwfDbContext db,
         ClaimsPrincipal user,
-        string code )
+        string code,
+        string playerName )
     {
         var id = serializer.Deserialize(code);
 
         var userId = user.GetId();
         var filter = Builders<Campaign>.Filter.Eq(c => c.Id, (Guid)id.Value);
-        var enrollment = new CampaignEnrollment(userId);
+        var enrollment = CampaignEnrollment.Create(userId, CampaignRoll.Player, playerName);
         var update = Builders<Campaign>.Update.AddToSet( f=> f.Participants, enrollment );
         
         var result = await db.Campaigns.UpdateOneAsync(filter, update);

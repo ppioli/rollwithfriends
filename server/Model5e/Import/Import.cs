@@ -7,14 +7,14 @@ namespace RollWithFriends.Models.Import;
 
 public class Import5E
 {
-    public SourceAdd Source { get; set; } = null!;
+    public Source Source { get; set; } = null!;
 
-    public ICollection<Npc5EAdd> NonPlayerCharacters { get; set; } = default!;
+    public ICollection<Npc5EExport> NonPlayerCharacters { get; set; } = default!;
 
-    public Import5E(SourceAdd source, ICollection<Npc5EAdd>? nonPlayerCharacters = null)
+    public Import5E(Source source, ICollection<Npc5EExport>? nonPlayerCharacters = null)
     {
         Source = source;
-        NonPlayerCharacters = nonPlayerCharacters ?? new List<Npc5EAdd>();
+        NonPlayerCharacters = nonPlayerCharacters ?? new List<Npc5EExport>();
     }
 
     public void SerializeToFile( string outputFilePath)

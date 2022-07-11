@@ -1,9 +1,7 @@
 using System.Security.Claims;
 using HotChocolate.AspNetCore.Authorization;
-using RollWithFriends.Models.Characters;
-using RollWithFriends.Models.Import;
-using Server.EFModels;
 using server.Infraestructure;
+using Source = RollWithFriends.Models.Source;
 
 namespace Server.Graphql.Mutations;
 
@@ -12,7 +10,7 @@ public class SourceMutation
 {
     [Authorize]
     public async Task<Source> SourceAdd(
-        RwfDbContext db,
+        [Service()] RwfDbContext db,
         ClaimsPrincipal user,
         SourceAdd input)
     {
@@ -27,4 +25,9 @@ public class SourceMutation
 
         return null;
     }
+}
+
+public class SourceAdd
+{
+    
 }

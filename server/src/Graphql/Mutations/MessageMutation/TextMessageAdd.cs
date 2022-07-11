@@ -19,22 +19,16 @@ public class TextMessageAdd
     /// <summary>
     /// Map entity sending the message
     /// </summary>
-    [ID] public int? SourceId { get; set; }
+    [ID] public Guid? SourceId { get; set; }
 
     /// <summary>
     /// Message
     /// </summary>
     public string Content { get; set; } = null!;
     
-    public void Apply(EFModels.Messages.Message source, int campaignId, string userId)
+    public Message Create(Guid campaignId, Guid userId, string sourceName)
     {
-
-        var textContent = new TextMessageContent(Content);
-        source.UserId = userId;
-        source.SourceId = SourceId;
-        source.CampaignId = campaignId;
-        source.Content = JsonConvert.SerializeObject(textContent);
-        source.Type = MessageType.Text;
-        source.CreatedAt = DateTime.UtcNow;
+        return Message.Create(userId, SourceId, campaignId, sourceName, TextMessageContent.Create(Content));
+        
     }
 }

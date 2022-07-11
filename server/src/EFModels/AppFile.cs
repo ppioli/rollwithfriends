@@ -1,43 +1,36 @@
+using System.Security.Claims;
+using server.Infraestructure;
+using Server.Services;
 using Path = System.IO.Path;
 
 namespace Server.EFModels;
 
 public class AppFile
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
-    [GraphQLIgnore]
-    public virtual ApplicationUser Owner { get; set; } = default!;
     public Guid OwnerId { get; set; }
     
     public string Subdirectory { get; set; }
-    public string Accepts { get; set; }
-    
-    public string? Extension { get; private set; }
-    public string? ContentType { get; private set; }
 
-    public bool Loaded => Extension != null && ContentType != null;
-    
+    public string Extension { get; private set; }
+
     public DateTime Created { get; set; }
 
     protected AppFile()
     {
         OwnerId = Guid.Empty;
         Subdirectory = "subdirectory";
-        Accepts = "";
     }
 
-    public AppFile(Guid ownerId, string subdirectory, string expectedType )
+    public static AppFile Create( string subdirectory, string extension,  ClaimsPrincipal user )
     {
-        OwnerId = ownerId;
-        Subdirectory = subdirectory;
-        Created = DateTime.UtcNow;
-        Accepts = expectedType;
-    }
-
-    public void SetLoaded(string extension, string contentType)
-    {
-        Extension = extension;
-        ContentType = contentType;
+        return new AppFile()
+        {
+            Subdirectory = $"{user.GetId()}/{subdirectory}",
+            OwnerId = user.GetId(),
+            Extension = extension,
+            Created = DateTime.UtcNow,
+        };
     }
 }

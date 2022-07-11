@@ -1,8 +1,11 @@
+using MongoDB.Bson.Serialization.Attributes;
+using Server.EFModels.Map;
+
 namespace Server.EFModels;
 
-[UnionType("MapEntityContent")]
-public interface IMapEntityContent
+[UnionType(nameof(MapEntityContent))]
+[BsonKnownTypes(typeof(ImageContent), typeof(Npc5EContent))]
+public class MapEntityContent
 {
-    public int Width { get; }
-    public int Height { get; }
+    
 }
