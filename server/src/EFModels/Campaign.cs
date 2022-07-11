@@ -25,7 +25,7 @@ public class Campaign
     {
     }
 
-    public static Campaign Craete(string name, string description)
+    public static Campaign Create(string name, string description)
     {
         return new Campaign()
         {

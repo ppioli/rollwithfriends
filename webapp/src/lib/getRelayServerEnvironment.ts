@@ -10,24 +10,6 @@ import {
 import { createClient } from "graphql-ws";
 import WebSocket from "ws";
 
-const wsClient = createClient({
-  webSocketImpl: WebSocket,
-  url: "http://localhost:5289/graphql",
-});
-
-const subscribe = (operation, variables) => {
-  return Observable.create((sink) => {
-    return wsClient.subscribe(
-      {
-        operationName: operation.name,
-        query: operation.text,
-        variables,
-      },
-      sink
-    );
-  });
-};
-
 // your-app-name/src/fetchGraphQL.js
 async function fetchGraphQL(text, variables) {
   // Fetch data from GitHub's GraphQL API:
@@ -53,10 +35,11 @@ async function fetchRelay(params, variables) {
 }
 
 // Export a singleton instance of Relay Environment configured with our network function:
-export default function getServerEnvironment() {
+export default function getRelayServerEnvironment() {
   console.log("Executing on server");
   return new Environment({
-    network: Network.create(fetchRelay, subscribe),
+    network: Network.create(fetchRelay),
     store: new Store(new RecordSource()),
+    isServer: true,
   });
 }

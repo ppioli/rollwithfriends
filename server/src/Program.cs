@@ -24,17 +24,17 @@ using Server.Services;
 var builder = WebApplication
     .CreateBuilder(args);
 
-
-BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
-BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
 var configuration = builder.Configuration;
 var environment = builder.Environment;
+
+var dbContext = new RwfDbContext(configuration);
+
 
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(configuration)
     .CreateLogger();
 
-var dbContext = new RwfDbContext(configuration);
+
 
 builder.Logging.ClearProviders();
 

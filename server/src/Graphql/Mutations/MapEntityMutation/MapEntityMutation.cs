@@ -43,8 +43,8 @@ public class MapEntityMutation
             .Select(s => s.Id)
             .ToArray();
 
-        var f = Builders<MapEntity>.Filter;
-        
+        var fb = Builders<MapEntity>.Filter;
+
         var updateOperations = db.Scenes.AsQueryable()
             .Where( s => s.Id == input.SceneId)
             .SelectMany( s => s.Entities)
@@ -58,7 +58,7 @@ public class MapEntityMutation
 
                     return s;
                 })
-            .Select( s =>  new ReplaceOneModel<MapEntity>( f.Eq( e => e.Id, s.Id), s ))
+            .Select( s =>  new ReplaceOneModel<MapEntity>( fb.Eq( e => e.Id, s.Id), s ))
             .ToArray();
         
         await sender.SendAsync(

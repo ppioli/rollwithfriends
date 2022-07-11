@@ -1,8 +1,12 @@
 
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Server.EFModels;
 using Server.EFModels.Map;
 using Server.EFModels.Messages;
+using Server.EFModels.Messages.Roll;
 
 namespace server.Infraestructure;
 
@@ -41,6 +45,9 @@ public class RwfDbContext
         var client = new MongoClient(mongoClientSettings);
 
         Database = client.GetDatabase(DatabaseName);
+        
+        BsonDefaults.GuidRepresentationMode = GuidRepresentationMode.V3;
+        BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
     }
 
     public IMongoCollection<ApplicationUser> Users => Database.GetCollection<ApplicationUser>("users");

@@ -1,7 +1,9 @@
 using System.Security.Claims;
+using HotChocolate.Data.MongoDb;
 using Microsoft.AspNetCore.Authorization;
 using MongoDB.Driver;
 using Server.EFModels;
+using Server.EFModels.Messages;
 using server.Infraestructure;
 using Server.Services;
 
@@ -79,5 +81,17 @@ public class CampaignType
     {
         return service.GetRollInCampaign(user, campaign.Id) == CampaignRoll.DungeonMaster;
     }
-    
+
+    [Authorize]
+    [UsePaging()]
+    [UseFiltering()]
+    public async Task<MongoDbExecutable<Message>> Messages( [Parent] Campaign campaign, RwfDbContext context, CancellationToken ct)
+    {
+        return context
+            .Messages
+            .Find(s => s.CampaignId == campaign.Id)
+            .AsExecutable();
+
+    } 
+
 }

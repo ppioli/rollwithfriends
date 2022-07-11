@@ -8,27 +8,32 @@
     "start": "yarn run relay && next start",
     "lint": "next lint",
     "relay": "yarn run relay-compiler $@",
-    "sdl": "yarn run get-graphql-schema http://localhost:5289/graphql?sdl > ./schema.graphql"
+    "sdl": "npx get-graphql-schema \"http://localhost:5289/graphql?sdl\" > ./schema.graphql"
   },
   "relay": {
     "src": "./src",
     "schema": "./schema.graphql",
-    "language": "typescript"
+    "language": "typescript",
+    "artifactDirectory": "src/__generated__"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.5",
     "@reduxjs/toolkit": "^1.8.1",
     "@types/lodash": "^4.14.182",
     "@use-gesture/react": "^10.2.15",
     "autoprefixer": "^10.4.7",
+    "classnames": "^2.3.1",
     "get-graphql-schema": "^2.1.2",
     "graphql-ws": "^5.8.2",
     "immer": "^9.0.14",
     "lodash": "^4.17.21",
     "next": "12.1.6",
+    "next-auth": "^4.9.0",
     "postcss": "^8.4.14",
     "prettier": "^2.6.2",
     "react": "18.1.0",
     "react-dom": "18.1.0",
+    "react-hook-form": "^7.33.1",
     "react-quick-pinch-zoom": "^4.4.1",
     "react-redux": "^8.0.2",
     "react-relay": "^13.2.0",
@@ -36,7 +41,8 @@
     "relay-nextjs": "^0.8.0",
     "relay-runtime": "^13.2.0",
     "tailwindcss": "^3.0.24",
-    "ws": "^8.7.0"
+    "ws": "^8.7.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/node": "^17.0.35",

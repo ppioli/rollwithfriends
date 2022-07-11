@@ -22,7 +22,7 @@ public class CampaignMutation
         
         var userId = user.GetId();
         
-        var created = Campaign.Craete(
+        var created = Campaign.Create(
             name: name,
             description: description);
         

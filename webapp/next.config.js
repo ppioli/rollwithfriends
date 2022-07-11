@@ -4,10 +4,11 @@ const nextConfig = {
   compiler: {
     relay: {
       // This should match relay.config.js
-      src: './src',
-      language: 'typescript'
-    }
-  }
-}
+      src: "./src",
+      language: "typescript",
+      artifactDirectory: "src/__generated__",
+    },
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

@@ -1,7 +1,6 @@
 schema {
   query: RootQuery
-  mutation: TokenMutation
-  subscription: Subscription
+  mutation: Mutation
 }
 
 """
@@ -45,12 +44,112 @@ directive @stream(
   if: Boolean
 ) on FIELD
 
+"""
+The `@specifiedBy` directive is used within the type system definition language
+to provide a URL for specifying the behavior of custom scalar definitions.
+"""
+directive @specifiedBy(
+  """
+  The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types.
+  """
+  url: String!
+) on SCALAR
+
+enum Ability5E {
+  STRENGTH
+  DEXTERITY
+  CONSTITUTION
+  INTELLIGENCE
+  WISDOM
+  CHARISMA
+}
+
+enum Alignment5E {
+  ANY
+  UNALIGNED
+  CHAOTIC_GOOD
+  NEUTRAL_GOOD
+  LAWFUL_GOOD
+  CHAOTIC_NEUTRAL
+  TRUE_NEUTRAL
+  LAWFUL_NEUTRAL
+  CHAOTIC_EVIL
+  NEUTRAL_EVIL
+  LAWFUL_EVIL
+}
+
+type AppFile {
+  id: UUID!
+  ownerId: UUID!
+  subdirectory: String!
+  extension: String!
+  created: DateTime!
+}
+
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+}
+
+type ArmorClassOption5E {
+  armorClass: Int!
+  description: String!
+}
+
+input ArmorClassOption5EInput {
+  armorClass: Int!
+  description: String!
+}
+
 type Campaign implements Node {
   id: ID!
   name: String!
   description: String!
-  selectedScene: Scene
+  selectedSceneId: ID
+  participants: [CampaignEnrollment!]!
+  selectedScene(sceneId: ID): Scene
   scenes: [Scene!]!
+  isDungeonMaster: Boolean!
+  messages(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: MessageFilterInput
+  ): MessagesConnection
+}
+
+input CampaignAddInput {
+  name: String!
+  description: String!
+  playerName: String!
+}
+
+type CampaignAddPayload {
+  campaign: Campaign
+}
+
+type CampaignEnrollment {
+  userId: ID!
+  playerName: String!
+  roll: CampaignRoll!
+}
+
+input CampaignEnrollmentFilterInput {
+  and: [CampaignEnrollmentFilterInput!]
+  or: [CampaignEnrollmentFilterInput!]
+  userId: IdOperationFilterInput
+  playerName: StringOperationFilterInput
+  roll: CampaignRollOperationFilterInput
 }
 
 input CampaignFilterInput {
@@ -59,24 +158,117 @@ input CampaignFilterInput {
   id: IdOperationFilterInput
   name: StringOperationFilterInput
   description: StringOperationFilterInput
-  selectedScene: SceneFilterInput
-  scenes: ListFilterInputTypeOfSceneFilterInput
+  selectedSceneId: IdOperationFilterInput
+  participants: ListFilterInputTypeOfCampaignEnrollmentFilterInput
 }
 
-input ComparableInt32OperationFilterInput {
-  eq: Int
-  neq: Int
-  in: [Int!]
-  nin: [Int!]
-  gt: Int
-  ngt: Int
-  gte: Int
-  ngte: Int
-  lt: Int
-  nlt: Int
-  lte: Int
-  nlte: Int
+enum CampaignRoll {
+  DUNGEON_MASTER
+  PLAYER
 }
+
+input CampaignRollOperationFilterInput {
+  eq: CampaignRoll
+  neq: CampaignRoll
+  in: [CampaignRoll!]
+  nin: [CampaignRoll!]
+}
+
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input ComparableGuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID!]
+  nin: [UUID!]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+input ComparableNullableOfGuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID]
+  nin: [UUID]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+enum DamageType5E {
+  BLUDGEONING
+  PIERCING
+  SLASHING
+  ACID
+}
+
+"""The `DateTime` scalar represents an ISO-8601 compliant date time type."""
+scalar DateTime
+
+input EnrollmentAddInput {
+  code: String!
+  playerName: String!
+}
+
+type EnrollmentAddPayload {
+  campaignEnrollment: CampaignEnrollment
+}
+
+input EnrollmentCodeInput {
+  campaingId: ID!
+}
+
+type EnrollmentCodePayload {
+  string: String
+}
+
+"""A connection to a list of items."""
+type EntriesConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [EntriesEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [Entry!]
+  totalCount: Int!
+}
+
+"""An edge in a connection."""
+type EntriesEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Entry!
+}
+
+union Entry = Npc5E
 
 input IdOperationFilterInput {
   eq: ID
@@ -85,83 +277,172 @@ input IdOperationFilterInput {
   nin: [ID]
 }
 
-input ListFilterInputTypeOfMapEntityFilterInput {
-  all: MapEntityFilterInput
-  none: MapEntityFilterInput
-  some: MapEntityFilterInput
+input IEntryFilterInput {
+  and: [IEntryFilterInput!]
+  or: [IEntryFilterInput!]
+  id: ComparableGuidOperationFilterInput
+}
+
+type ImageContent {
+  file: AppFile
+  width: Float!
+  height: Float!
+}
+
+type KeyValuePairOfAbility5EAndInt32 {
+  key: Ability5E!
+  value: Int!
+}
+
+input KeyValuePairOfAbility5EAndInt32Input {
+  key: Ability5E!
+  value: Int!
+}
+
+type KeyValuePairOfSkillAndInt32 {
+  key: Skill!
+  value: Int!
+}
+
+input KeyValuePairOfSkillAndInt32Input {
+  key: Skill!
+  value: Int!
+}
+
+type Language5E {
+  name: String!
+}
+
+input Language5EInput {
+  name: String!
+}
+
+input ListFilterInputTypeOfCampaignEnrollmentFilterInput {
+  all: CampaignEnrollmentFilterInput
+  none: CampaignEnrollmentFilterInput
+  some: CampaignEnrollmentFilterInput
   any: Boolean
 }
 
-input ListFilterInputTypeOfSceneFilterInput {
-  all: SceneFilterInput
-  none: SceneFilterInput
-  some: SceneFilterInput
-  any: Boolean
+input MapEntitiesImageAddInput {
+  sceneId: ID!
+  entities: [MapEntityImageAddInput!]!
+}
+
+input MapEntitiesPositionUpdateInput {
+  sceneId: ID!
+  entities: [MapEntityPositionUpdateInput!]!
 }
 
 type MapEntity implements Node {
   id: ID!
-  x: Int!
-  y: Int!
-  width: Int!
-  height: Int!
+  name: String!
+  x: Float!
+  y: Float!
+  content: MapEntityContent!
 }
 
-input MapEntityAddInput {
-  mapEntity: MapEntityInput!
-}
-
-type MapEntityAddPayload {
-  mapEntity: MapEntity
-}
-
-type MapEntityChangeEvent {
-  type: MapEntityChangeEventType!
-  payload: MapEntityPayload
-}
-
-enum MapEntityChangeEventType {
-  ADDED
-  UPDATED
-  DELETED
-}
+union MapEntityContent = ImageContent | Npc5EContent
 
 input MapEntityDeleteInput {
-  id: ID!
+  sceneId: ID!
+  deleted: [ID!]!
 }
 
 type MapEntityDeletePayload {
-  mapEntity: MapEntity
+  uUID: [UUID!]
 }
 
-input MapEntityFilterInput {
-  and: [MapEntityFilterInput!]
-  or: [MapEntityFilterInput!]
-  id: IdOperationFilterInput
-  x: ComparableInt32OperationFilterInput
-  y: ComparableInt32OperationFilterInput
-  width: ComparableInt32OperationFilterInput
-  height: ComparableInt32OperationFilterInput
+input MapEntityImageAddInput {
+  name: String!
+  x: Int!
+  y: Int!
+  uploadId: UUID!
+  fileName: String!
+  width: Int!
+  height: Int!
 }
 
-input MapEntityInput {
+type MapEntityImageAddPayload {
+  mapEntity: [MapEntity!]
+}
+
+input MapEntityPositionUpdateInput {
+  id: ID!
   x: Int!
   y: Int!
   width: Int!
   height: Int!
 }
 
-type MapEntityPayload {
-  mapEntity: MapEntity!
+type MapEntityPositionUpdatePayload {
+  mapEntity: [MapEntity!]
 }
 
-input MapEntityUpdateInput {
+type Message implements Node {
   id: ID!
-  mapEntity: MapEntityInput!
+  userId: UUID!
+  content: MessageContent!
+  campaignId: UUID!
+  createdAt: DateTime!
+  sourceName: String!
+  sourceId: UUID
 }
 
-type MapEntityUpdatePayload {
-  mapEntity: MapEntity
+union MessageContent = RollMessageContent | TextMessageContent
+
+input MessageContentFilterInput {
+  and: [MessageContentFilterInput!]
+  or: [MessageContentFilterInput!]
+}
+
+input MessageFilterInput {
+  and: [MessageFilterInput!]
+  or: [MessageFilterInput!]
+  id: ComparableGuidOperationFilterInput
+  userId: ComparableGuidOperationFilterInput
+  content: MessageContentFilterInput
+  campaignId: ComparableGuidOperationFilterInput
+  createdAt: ComparableDateTimeOperationFilterInput
+  sourceName: StringOperationFilterInput
+  sourceId: ComparableNullableOfGuidOperationFilterInput
+}
+
+"""A connection to a list of items."""
+type MessagesConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MessagesEdge!]
+
+  """A flattened list of the nodes."""
+  nodes: [Message!]
+}
+
+"""An edge in a connection."""
+type MessagesEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+
+  """The item at the end of the edge."""
+  node: Message!
+}
+
+type Mutation {
+  campaignAdd(input: CampaignAddInput!): CampaignAddPayload!
+  sceneAdd(input: SceneAddInput!): SceneAddPayload!
+  sceneDelete(input: SceneDeleteInput!): SceneDeletePayload!
+  sceneUpdate(input: SceneUpdateInput!): SceneUpdatePayload!
+  userAdd(input: UserAddInput!): UserAddPayload!
+  enrollmentCode(input: EnrollmentCodeInput!): EnrollmentCodePayload!
+  enrollmentAdd(input: EnrollmentAddInput!): EnrollmentAddPayload!
+  textMessageAdd(input: TextMessagesAddInput!): TextMessageAddPayload!
+  rollMessageAdd(input: RollMessagesAddInput!): RollMessageAddPayload!
+  mapEntityPositionUpdate(input: MapEntitiesPositionUpdateInput!): MapEntityPositionUpdatePayload!
+  mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
+  npcs5EAdd(input: Npcs5EAddInput!): Npcs5EAddPayload!
+  mapEntityImageAdd(input: MapEntitiesImageAddInput!): MapEntityImageAddPayload!
 }
 
 """
@@ -169,6 +450,150 @@ The node interface is implemented by entities that have a global unique identifi
 """
 interface Node {
   id: ID!
+}
+
+type Npc5E {
+  id: ID!
+  page: Int!
+  type: NpcType5E!
+  hitPointsFormula: String!
+  hitPointsAverage: Int!
+  armorClasses: [ArmorClassOption5E!]!
+  challangeRating: Float!
+  alignments: [Alignment5E!]!
+  sizes: [Size5E!]!
+  savingThrows: [KeyValuePairOfAbility5EAndInt32!]!
+  skills: [KeyValuePairOfSkillAndInt32!]!
+  name: String!
+  languages: [Language5E!]!
+  senses: [Sense5E!]!
+  passivePerception: Int!
+  resistances: [Resistance5E!]!
+  speeds: Speed5E!
+  strength: Int!
+  dexterity: Int!
+  constitution: Int!
+  intelligence: Int!
+  wisdom: Int!
+  charisma: Int!
+}
+
+type Npc5EContent {
+  editorSize: Float!
+  npcId: ID!
+  size: Size5E!
+  maximumHp: Int!
+  currentHp: Int!
+  temporaryHp: Int!
+  ac: Int!
+  width: Float!
+  height: Float!
+}
+
+input Npc5EInput {
+  id: ID!
+  page: Int!
+  type: NpcType5EInput!
+  hitPointsFormula: String!
+  hitPointsAverage: Int!
+  armorClasses: [ArmorClassOption5EInput!]!
+  challangeRating: Float!
+  alignments: [Alignment5E!]!
+  sizes: [Size5E!]!
+  savingThrows: [KeyValuePairOfAbility5EAndInt32Input!]!
+  skills: [KeyValuePairOfSkillAndInt32Input!]!
+  name: String!
+  languages: [Language5EInput!]!
+  senses: [Sense5EInput!]!
+  passivePerception: Int!
+  resistances: [Resistance5EInput!]!
+  speeds: Speed5EInput!
+  strength: Int!
+  dexterity: Int!
+  constitution: Int!
+  intelligence: Int!
+  wisdom: Int!
+  charisma: Int!
+}
+
+input Npcs5EAddInput {
+  sourceId: ID!
+  characters: [Npc5EInput!]!
+}
+
+type Npcs5EAddPayload {
+  npc5E: [Npc5E!]
+}
+
+type NpcType5E {
+  label: String!
+  tags: [String!]
+}
+
+input NpcType5EInput {
+  label: String!
+  tags: [String!]
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """
+  Indicates whether more edges exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+
+  """
+  Indicates whether more edges exist prior the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type Resistance5E {
+  types: [DamageType5E!]!
+  condition: String
+}
+
+input Resistance5EInput {
+  types: [DamageType5E!]!
+  condition: String
+}
+
+type Roll {
+  faces: Int!
+  count: Int!
+  result: [Int!]
+}
+
+input RollInfoInput {
+  faces: Int!
+  count: Int!
+}
+
+input RollMessageAddInput {
+  sourceId: ID
+  dmRoll: Boolean!
+  rolls: [RollInfoInput!]!
+}
+
+type RollMessageAddPayload {
+  message: [Message!]
+}
+
+type RollMessageContent {
+  dmRoll: Boolean!
+  rolls: [Roll!]!
+}
+
+input RollMessagesAddInput {
+  campaignId: ID!
+  sceneId: ID
+  messages: [RollMessageAddInput!]!
 }
 
 type RootQuery {
@@ -184,20 +609,112 @@ type RootQuery {
     ids: [ID!]!
   ): [Node]!
   campaigns(where: CampaignFilterInput): [Campaign!]!
+  entries(
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: IEntryFilterInput
+  ): EntriesConnection
+  entry(id: ID): Npc5E
+  enrollment(code: ID!, where: CampaignFilterInput): Campaign
 }
 
 type Scene implements Node {
   id: ID!
+  campaignId: ID!
+  stored: Boolean!
+  description: String!
   name: String!
   entities: [MapEntity!]!
 }
 
-input SceneFilterInput {
-  and: [SceneFilterInput!]
-  or: [SceneFilterInput!]
-  id: IdOperationFilterInput
-  name: StringOperationFilterInput
-  entities: ListFilterInputTypeOfMapEntityFilterInput
+input SceneAddInput {
+  campaignId: ID!
+  name: String!
+}
+
+type SceneAddPayload {
+  scene: Scene
+}
+
+input SceneDeleteInput {
+  sceneId: ID!
+}
+
+type SceneDeletePayload {
+  uUID: UUID
+}
+
+input SceneUpdateInput {
+  sceneId: UUID!
+  name: String!
+  description: String!
+}
+
+type SceneUpdatePayload {
+  scene: Scene
+}
+
+type Sense5E {
+  description: String!
+  range: Int!
+}
+
+input Sense5EInput {
+  description: String!
+  range: Int!
+}
+
+enum Size5E {
+  TINY
+  SMALL
+  MEDIUM
+  LARGE
+  HUGE
+  GARGANTUAN
+}
+
+enum Skill {
+  ACROBATICS
+  ANIMAL_HANDLING
+  ARCANA
+  ATHLETICS
+  DECEPTION
+  HISTORY
+  INSIGHT
+  INTIMIDATION
+  INVESTIGATION
+  MEDICINE
+  NATURE
+  PERCEPTION
+  PERFORMANCE
+  PERSUASION
+  RELIGION
+  SLEIGHT_OF_HAND
+  STEALTH
+  SURVIVAL
+}
+
+type Speed5E {
+  walk: Int
+  swim: Int
+  fly: Int
+}
+
+input Speed5EInput {
+  walk: Int
+  swim: Int
+  fly: Int
 }
 
 input StringOperationFilterInput {
@@ -215,13 +732,39 @@ input StringOperationFilterInput {
   nendsWith: String
 }
 
-type Subscription {
-  mapEntitySubscription: MapEntityChangeEvent!
+input TextMessageAddInput {
+  sourceId: ID
+  content: String!
 }
 
-type TokenMutation {
-  mapEntityUpdate(input: MapEntityUpdateInput!): MapEntityUpdatePayload!
-  mapEntityAdd(input: MapEntityAddInput!): MapEntityAddPayload!
-  mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
+type TextMessageAddPayload {
+  message: [Message!]
 }
+
+type TextMessageContent {
+  text: String!
+}
+
+input TextMessagesAddInput {
+  campaignId: ID!
+  sceneId: ID
+  messages: [TextMessageAddInput!]!
+}
+
+type User {
+  userName: String
+  email: String
+}
+
+input UserAddInput {
+  userName: String!
+  password: String!
+  email: String!
+}
+
+type UserAddPayload {
+  user: User
+}
+
+scalar UUID
 
