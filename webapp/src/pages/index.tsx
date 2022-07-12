@@ -1,10 +1,12 @@
 import Head from "next/head";
 import { useResizeDetector } from "react-resize-detector";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function Home() {
   const { ref, width, height } = useResizeDetector();
+  const session = useSession();
 
+  console.log("Session ", session);
   return (
     <div className={"container"}>
       <Head>

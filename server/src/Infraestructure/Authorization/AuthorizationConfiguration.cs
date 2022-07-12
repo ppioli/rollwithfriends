@@ -1,6 +1,7 @@
 using AspNetCore.Identity.Mongo;
 using Microsoft.AspNetCore.Identity;
 using OpenIddict.Abstractions;
+using OpenIddict.Validation.AspNetCore;
 using Quartz;
 using Server.EFModels;
 using server.Infraestructure;
@@ -96,6 +97,13 @@ public static class AuthorizationConfiguration
         // Note: in a real world application, this step should be part of a setup script.
         services.AddHostedService<Worker>();
 
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+            options.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+        });
+        
         return services;
 
         /*

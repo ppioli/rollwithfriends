@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { SchemaOf } from "yup";
 import { Input } from "components/form/Input";
-
+import { graphql } from "relay-runtime";
 import { TitlePanel } from "components/panel/TitlePanel";
 import { Card } from "components/panel/Card";
 import { useMutation } from "react-relay";
@@ -57,6 +57,11 @@ export function CampaignCreate() {
             {...register("description")}
             name={"description"}
             label={"Description"}
+          />
+          <Input
+            {...register("playerName")}
+            name={"playerName"}
+            label={"Player name"}
           />
           <div className={"w-full text-right"}>
             <button disabled={isInFlight} className={"btn btn-primary"}>

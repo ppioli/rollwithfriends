@@ -1,13 +1,12 @@
-import { usePreloadedQuery } from "react-relay";
-import { Card } from "components/panel/Card";
-import Link from "next/link";
-import { RelayProps, withRelay } from "relay-nextjs";
 import { CampaignSelectQuery } from "__generated__/CampaignSelectQuery.graphql";
-import { Loading } from "components/Loading";
-import getRelayClientEnvironment from "lib/getRelayClientEnvironment";
-import getRelayServerEnvironment from "lib/getRelayServerEnvironment";
+import { Card } from "components/panel/Card";
 import { CampaignCreate } from "features/campaing/CampaignCreate";
+import { withAppRelay } from "lib/withRelay";
 import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePreloadedQuery } from "react-relay";
+import { RelayProps } from "relay-nextjs";
+import { graphql } from "relay-runtime";
 
 export const Index = graphql`
   query CampaignSelectQuery {
@@ -25,6 +24,7 @@ const CampaignSelectPage = ({
   const session = useSession();
   const data = usePreloadedQuery<CampaignSelectQuery>(Index, preloadedQuery);
 
+  console.log("session ", session);
   if (!session) {
     return (
       <>
@@ -59,24 +59,7 @@ const CampaignSelectPage = ({
   );
 };
 
-export default withRelay(CampaignSelectPage, Index, {
-  // Fallback to render while the page is loading.
-  // This property is optional.
-  fallback: <Loading />,
-  // Create a Relay environment on the client-side.
-  // Note: This function must always return the same value.
-  createClientEnvironment: () => getRelayClientEnvironment()!,
-  // Gets server side props for the page.
-  serverSideProps: async (ctx) => ({}),
-  // Server-side props can be accessed as the second argument
-  // to this function.
-  createServerEnvironment: async (
-    ctx,
-    // The object returned from serverSideProps. If you don't need a token
-    // you can remove this argument.
-    { token }: { token: string }
-  ) => getRelayServerEnvironment(),
-});
+export default withAppRelay(CampaignSelectPage, Index);
 
 interface CampaignCard {
   id: string;

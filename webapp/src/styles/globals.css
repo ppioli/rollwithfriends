@@ -1,25 +1,118 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
 
 * {
-  box-sizing: border-box;
+  touch-action: none;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}
+
+.scroll-none {
+  -ms-overflow-style: none; /* Edge, Internet Explorer */
+  scrollbar-width: none; /* Firefox */
+  overflow-y: scroll;
+}
+
+.scroll-none::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+  width: 0.5rem;
+  height: 0px;
+}
+
+@layer base {
+
+  body {
+    @apply text-foreground font-light
+  }
+
+  .h1 {
+    @apply text-3xl font-medium leading-6
+  }
+
+  h1 {
+    @apply h1
+  }
+
+  .h2 {
+    @apply text-2xl font-medium leading-6
+  }
+
+  h2 {
+    @apply h2
+  }
+
+  .h3 {
+    @apply text-xl font-medium leading-6
+  }
+
+  .h4 {
+    @apply text-lg font-medium leading-6
+  }
+
+  h4 {
+    @apply h4
+  }
+
+  .input-label {
+    @apply text-sm font-medium
+  }
+
+  .focus-primary {
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2
+  }
+
+  .navbar {
+    @apply h-16
+  }
+
+  .content-area {
+    height: calc(100vh - theme('spacing.16'));
+  }
+
+  .s-full {
+    @apply w-full h-full
+  }
 }
 
 @layer components {
-  .btn-primary {
-    @apply py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75;
+  .badge {
+    @apply text-sm font-medium px-2.5 py-0.5 rounded
   }
+
+  .badge-primary {
+    @apply text-primary bg-primary-light
+  }
+
+  .btn {
+    @apply inline-flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white
+  }
+
+  .btn-menu {
+    @apply hover:bg-darker
+  }
+
+  .btn-menu.active {
+    @apply bg-dark
+  }
+
+  .btn-primary {
+    @apply bg-primary focus-primary hover:bg-primary-dark
+  }
+
+  .input {
+    @apply mt-1 block w-full sm:text-sm rounded-md bg-darkest border-0 focus:border-darker ring-0
+  }
+
+  .side-menu {
+
+    @apply w-96 h-full bg-dark flex flex-col p-1 gap-1
+  }
+
+  /* ... */
 }
