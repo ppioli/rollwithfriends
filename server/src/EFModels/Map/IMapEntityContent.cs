@@ -3,9 +3,12 @@ using Server.EFModels.Map;
 
 namespace Server.EFModels;
 
-[UnionType(nameof(MapEntityContent))]
-[BsonKnownTypes(typeof(ImageContent), typeof(Npc5EContent))]
-public class MapEntityContent
+[UnionType("MapEntityContent")]
+[InterfaceType()]
+public interface IMapEntityContent
 {
-    
+    public float Width { get; } 
+    public float Height { get; }
+    public bool Resizable { get; }
+    public void Resize(float width, float height);
 }

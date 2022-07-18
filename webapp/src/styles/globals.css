@@ -78,6 +78,18 @@
   .s-full {
     @apply w-full h-full
   }
+
+  .chat-width {
+    @apply w-96
+  }
+
+  .editor-width {
+    width: calc(100vw - theme('spacing.96'));
+  }
+
+  body {
+    @apply bg-light
+  }
 }
 
 @layer components {

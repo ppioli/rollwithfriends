@@ -1,6 +1,9 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
+using MongoDB.Driver;
 using Server.EFModels;
+using Server.Graphql.Types;
 using server.Infraestructure;
 using Server.Services;
 
@@ -25,33 +28,27 @@ public class ImageController : Controller
     [Route("[controller]/[action]/{mapEntityId}")]
     public IActionResult Token( string mapEntityId )
     {
-        // var id = (int)_idSerializer.Deserialize(mapEntityId).Value;
-        // var entity = _db.MapEntities.First(f => f.Id == id);
-        //
-        // AppFile? file = null;
-        // if (entity.Type  == MapEntityType.Image)
-        // {
-        //     var content = entity.GetImageContent();
-        //     file = _db.Files.Find(content.FileId) ?? throw new EntityNotFound(mapEntityId);
-        // }
-        //
-        // if (entity.Type == MapEntityType.Npc5E)
-        // {
-        //     var content = entity.GetNpc5EContent();
-        //     file = _db.NonPlayerCharacters5E.Find(content.NpcId)?.Avatar ??
-        //            throw new EntityNotFound(mapEntityId);
-        // }
-        // if (file == null || !file.Loaded)
-        // {
-        //     return NotFound();
-        // }
-        //
-        // var stream = _fileStorageService.ReadStream(file);
-        //
-        // return File(stream, file.ContentType!);
+        var id = (Guid)_idSerializer.Deserialize(mapEntityId).Value;
+        var entity = _db.Scenes.AsQueryable()
+            .SelectMany(s => s.Entities)
+            .First(f => f.Id == id);
 
-        return null;
+        AppFile? file = null;
+        if (entity.Content is ImageContent content)
+        {
+            file = content.File;
+        }
 
+        if (file == null)
+        {
+            return NotFound();
+        }
+        var contentType = _fileStorageService.GetFileContentType(file);
+
+        var stream = _fileStorageService.ReadStream(file);
+        
+
+        return File(stream, contentType );
     }
     
     [Route("[controller]/[action]/{npcId}")]

@@ -19,7 +19,7 @@ public class SceneMutations
         [ID] Guid campaignId,
         string name)
     {
-        var scene = new Scene(name, campaignId);
+        var scene = Scene.Create(name, campaignId);
 
         await context.Scenes.InsertOneAsync(scene);
 

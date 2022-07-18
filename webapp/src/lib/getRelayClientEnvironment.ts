@@ -8,10 +8,22 @@ import {
 
 import { getRelaySerializedState } from "relay-nextjs";
 import { createClient } from "graphql-ws";
+import { appFetch, ServerUrl } from "lib/appFetch";
+
+const createFetchGql = () => async (params, variables) => {
+  return appFetch({
+    url: "graphql",
+    method: "POST",
+    payload: {
+      query: params.text,
+      variables,
+    },
+  });
+};
 
 function createSubscription() {
   const wsClient = createClient({
-    url: "http://localhost:5289/graphql",
+    url: `${ServerUrl}/graphql`,
   });
 
   return (operation, variables) => {
@@ -28,37 +40,14 @@ function createSubscription() {
   };
 }
 
-// your-app-name/src/fetchGraphQL.js
-const createFetchGql = (token?: string) => async (params, variables) => {
-  // Fetch data from GitHub's GraphQL API:
-  const headers = {
-    "Content-Type": "application/json",
-  };
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-  const response = await fetch("http://localhost:5289/graphql", {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      query: params.text,
-      variables,
-    }),
-  });
-
-  // Get the response as JSON
-  return await response.json();
-};
-
 // Export a singleton instance of Relay Environment configured with our network function:
 let clientEnv: Environment | undefined;
-export default function getRelayClientEnvironment(token?: string) {
+export default function getRelayClientEnvironment() {
   if (typeof window === "undefined") return null;
 
   if (clientEnv == null) {
-    console.log("Creating client environment", token);
     clientEnv = new Environment({
-      network: Network.create(createFetchGql(token), createSubscription()),
+      network: Network.create(createFetchGql(), createSubscription()),
       store: new Store(new RecordSource(getRelaySerializedState()?.records)),
       isServer: false,
     });

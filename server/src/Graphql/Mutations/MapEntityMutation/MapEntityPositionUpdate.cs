@@ -27,9 +27,9 @@ public class MapEntityPositionUpdate
         entity.X = X;
         entity.Y = Y;
 
-        if (entity.Content is IResizable resizable)
+        if (entity.Content.Resizable)
         {
-            resizable.Resize(Width, Height);
+            entity.Content.Resize(Width, Height);
         }
     }
 }

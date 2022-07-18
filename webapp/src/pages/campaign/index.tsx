@@ -1,38 +1,20 @@
-import { CampaignSelectQuery } from "__generated__/CampaignSelectQuery.graphql";
+import { CampaignSelectQuery as CampaignSelectQueryType } from "__generated__/CampaignSelectQuery.graphql";
 import { Card } from "components/panel/Card";
 import { CampaignCreate } from "features/campaing/CampaignCreate";
-import { withAppRelay } from "lib/withRelay";
+import { withAppRelay } from "lib/withAppRelay";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePreloadedQuery } from "react-relay";
 import { RelayProps } from "relay-nextjs";
-import { graphql } from "relay-runtime";
-
-export const Index = graphql`
-  query CampaignSelectQuery {
-    campaigns {
-      id
-      name
-      description
-    }
-  }
-`;
+import { CampaignSelectQuery } from "pages/campaign/Campaign.graphql";
 
 const CampaignSelectPage = ({
   preloadedQuery,
-}: RelayProps<{}, CampaignSelectQuery>) => {
-  const session = useSession();
-  const data = usePreloadedQuery<CampaignSelectQuery>(Index, preloadedQuery);
-
-  console.log("session ", session);
-  if (!session) {
-    return (
-      <>
-        Not signed in <br />
-        <button onClick={() => signIn()}>Sign in</button>
-      </>
-    );
-  }
+}: RelayProps<{}, CampaignSelectQueryType>) => {
+  const data = usePreloadedQuery<CampaignSelectQueryType>(
+    CampaignSelectQuery,
+    preloadedQuery
+  );
 
   return (
     <div className={"mx-auto container mt-4"}>
@@ -59,7 +41,7 @@ const CampaignSelectPage = ({
   );
 };
 
-export default withAppRelay(CampaignSelectPage, Index);
+export default withAppRelay(CampaignSelectPage, CampaignSelectQuery);
 
 interface CampaignCard {
   id: string;

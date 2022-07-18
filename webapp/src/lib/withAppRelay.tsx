@@ -11,10 +11,17 @@ export const withAppRelay = (Page, Query) =>
     // Fallback to render while the page is loading.
     // This property is optional.
     fallback: <Loading />,
+    variablesFromContext: (ctx) => {
+      return ctx.query;
+    },
+    clientSideProps: (ctx) => {
+      console.log("Client side props ", ctx.query);
+      return {};
+    },
     // Create a Relay environment on the client-side.
     // Note: This function must always return the same value.
     createClientEnvironment: () => {
-      return getRelayClientEnvironment("asdf")!;
+      return getRelayClientEnvironment()!;
     },
     // Gets server side props for the page.
     serverSideProps: async (ctx): Promise<any> => {
@@ -31,20 +38,18 @@ export const withAppRelay = (Page, Query) =>
         };
       }
 
-      return { token: session.accessToken! };
+      return { session };
     },
     // Server-side props can be accessed as the second argument
     // to this function.
-    createServerEnvironment: async (
-      ctx,
-      // The object returned from serverSideProps. If you don't need a token
-      // you can remove this argument.
-      { token }: { token: string }
-    ) => {
+    createServerEnvironment: async (ctx, { session }) => {
+      console.log(ctx);
+      console.log(session);
+
       const { default: createServerEnvironment } = await import(
         "lib/server/getRelayServerEnvironment"
       );
 
-      return createServerEnvironment(token);
+      return createServerEnvironment(session.accessToken);
     },
   });

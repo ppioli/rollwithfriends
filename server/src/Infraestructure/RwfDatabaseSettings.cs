@@ -4,9 +4,8 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using Server.EFModels;
-using Server.EFModels.Map;
+using Server.EFModels.Entries;
 using Server.EFModels.Messages;
-using Server.EFModels.Messages.Roll;
 
 namespace server.Infraestructure;
 
@@ -54,4 +53,5 @@ public class RwfDbContext
     public IMongoCollection<Campaign> Campaigns => Database.GetCollection<Campaign>("campaigns");
     public IMongoCollection<Scene> Scenes => Database.GetCollection<Scene>("scenes");
     public IMongoCollection<Message> Messages => Database.GetCollection<Message>("messages");
+    public IMongoCollection<IEntry> Entries => Database.GetCollection<IEntry>("entries");
 }

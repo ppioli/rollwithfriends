@@ -22,9 +22,9 @@ public class UploadController : Controller
 
     [HttpPost]
     [Authorize]
-    [Route("Upload/{fileId}")]
+    [Route("Upload")]
     public async Task<string> Upload(IFormFile data)
     {
-        return await _fileStorageService.StartUpload(data);
+        return await _fileStorageService.Upload(data);
     }
 }

@@ -32,10 +32,7 @@ export const CampaignQuery = graphql`
 export const CampaignPage = ({ preloaded }: any) => {
   const { replace } = useNavigation();
 
-  const data = usePreloadedQuery<CampaignQueryType>(
-    CampaignQuery,
-    preloaded.query
-  );
+  const data = usePreloadedQuery<CampaignQueryType>(CampaignQuery, preloaded);
 
   const campaign = data.campaigns[0]!;
 

@@ -1,7 +1,7 @@
-using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using HotChocolate.AspNetCore.Authorization;
+using Microsoft.AspNetCore.StaticFiles;
 using Server.EFModels;
 using server.Infraestructure;
 using Path = System.IO.Path;
@@ -17,6 +17,8 @@ public class FileStorageService
     private readonly ILogger<FileStorageService> _logger;
     private readonly IDictionary<Guid, UploadHandle> _uploads;
 
+    private readonly FileExtensionContentTypeProvider _contentTypeProvider;
+    
     public FileStorageService(
         IConfiguration configuration,
         ILogger<FileStorageService> logger)
@@ -25,6 +27,8 @@ public class FileStorageService
         _logger = logger;
         BasePath = configuration["FileStorage:BasePath"] ??
                    throw new Exception("The configuration FileStorage:BasePath is required");
+        
+        _contentTypeProvider = new FileExtensionContentTypeProvider();
         if (!Directory.Exists(BasePath))
         {
             Directory.CreateDirectory(BasePath);
@@ -33,7 +37,7 @@ public class FileStorageService
         _uploads = new Dictionary<Guid, UploadHandle>();
     }
 
-    public async Task<string> StartUpload(IFormFile file)
+    public async Task<string> Upload(IFormFile file)
     {
         var fileExtension = Path.GetExtension(file.FileName);
 
@@ -56,7 +60,7 @@ public class FileStorageService
                 await output.WriteAsync(buffer, 0, readBytes);
             }
         }
-        var id = new Guid();
+        var id = Guid.NewGuid();
         _uploads[id] = handle;
         return id.ToString();
     }
@@ -68,17 +72,25 @@ public class FileStorageService
     }
 
 
-    public string GetFileDirectory(AppFile file)
+    public string GetFileAbsolutePath(AppFile file)
     {
+        
         return Path.Join(
             BasePath,
-            file.Subdirectory);
+            file.RelativeFilePath);
     }
-
-
-    public string GetFilePath(AppFile file)
+    
+    
+    public string GetFileContentType(AppFile file)
     {
-        return Path.Join(GetFileDirectory(file), $"{file.Id}{file.Extension}");
+        _contentTypeProvider.TryGetContentType(file.FileName, out var result);
+
+        if (result == null)
+        {
+            throw new ApiException($"Could not determine the content type for the file {file.Id}");    
+        }
+
+        return result;
     }
 
     public Stream ReadStream(AppFile file)
@@ -87,7 +99,7 @@ public class FileStorageService
         {
             throw new Exception("The given file does not have an id");
         }
-        var path = GetFilePath(file);
+        var path = GetFileAbsolutePath(file);
         return new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
     }
     
@@ -105,14 +117,15 @@ public class FileStorageService
         }
 
         var appFile = AppFile.Create(subdirectory, upload.Extension, user);
-        
-        var dir = GetFileDirectory(appFile);
-        if (!Directory.Exists(dir))
+
+        var filePath = GetFileAbsolutePath(appFile);
+        var directory = Path.GetDirectoryName(filePath)!;
+        if (!Directory.Exists(directory))
         {
-            Directory.CreateDirectory(dir);
+            Directory.CreateDirectory(directory);
         }
 
-        File.Move(upload.TempFileName, GetFilePath(appFile));
+        File.Move(upload.TempFileName, filePath);
         
         return appFile;
     }

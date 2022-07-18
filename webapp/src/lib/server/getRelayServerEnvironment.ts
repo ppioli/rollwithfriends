@@ -3,8 +3,6 @@ import { Environment, Network, RecordSource, Store } from "relay-runtime";
 
 // your-app-name/src/fetchGraphQL.js
 const createFetchRelay = (token: string) => async (params, variables) => {
-  // Fetch data from GitHub's GraphQL API:
-  console.log("Requesting with ", token, params, variables);
   const response = await fetch("http://localhost:5289/graphql", {
     method: "POST",
     headers: {

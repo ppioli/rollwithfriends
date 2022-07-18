@@ -1,0 +1,11 @@
+extend type Scene {
+    selected: [MapEntity!]
+}
+
+extend type Campaign {
+    localSelectedScene: ID
+}
+
+extend type Message {
+    isNew: Boolean
+}

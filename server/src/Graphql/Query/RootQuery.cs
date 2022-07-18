@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
 using HotChocolate.AspNetCore.Authorization;
+using HotChocolate.Data.MongoDb;
 using MongoDB.Driver;
 using RollWithFriends.Models.Characters;
 using Server.EFModels;
@@ -20,49 +21,48 @@ public class RootQuery
         _mapper = mapper;
         _configuration = configuration;
     }
-    
+
     [UseFiltering()]
     [Authorize()]
     public IExecutable<Campaign> Campaigns(
-        [Service()]RwfDbContext db,
+        [Service()] RwfDbContext db,
         ClaimsPrincipal user
     )
     {
-        return db.Campaigns.Find( x => x.Participants.Any( c => c.UserId == user.GetId()) )
+        return db.Campaigns.Find(x => x.Participants.Any(c => c.UserId == user.GetId()))
             .AsExecutable();
     }
-    
+
     [UsePaging(IncludeTotalCount = true)]
     [UseFiltering()]
     [Authorize()]
-    public IQueryable<IEntry> Entries(
-        [Service()]RwfDbContext db,
+    public MongoDbExecutable<IEntry> Entries(
+        [Service()] RwfDbContext db,
         ClaimsPrincipal user
     )
     {
-        // return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId());
-        return null;
+        return db.Entries.Find(c => c.OwnerId == user.GetId()).AsExecutable();
     }
-    
+
     [Authorize()]
     [UseFirstOrDefault()]
     public IQueryable<Npc5E> Entry(
-        [Service()]RwfDbContext db,
+        [Service()] RwfDbContext db,
         ClaimsPrincipal user,
-        [ID]int? id
+        [ID] int? id
     )
     {
         // return db.NonPlayerCharacters5E.Where( c => c.Source.OwnerId == user.GetId() && c.Id == id);
         return null;
     }
-    
-    
+
+
     [UseFirstOrDefault()]
     [UseProjection()]
     [UseFiltering()]
     [Authorize()]
     public IQueryable<Campaign> Enrollment(
-        [Service()]RwfDbContext db,
+        [Service()] RwfDbContext db,
         ClaimsPrincipal user,
         [ID] int code
     )

@@ -21,7 +21,7 @@ public class MapEntityNpc5EMutation
         RwfDbContext db,
         [Service] ITopicEventSender sender,
         [Service()] EnrollmentService enrollmentService,
-        MapEntitiesNpcAdd input)
+        MapEntitiesNpc5EAdd input)
     {
         // if ( enrollmentService.GetRollInScene( user, input.SceneId) != CampaignRoll.DungeonMaster )
         // {

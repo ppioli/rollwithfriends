@@ -3,7 +3,7 @@ using Server.EFModels.Entries;
 
 namespace Server.EFModels.Map;
 
-public class Npc5EContent : MapEntityContent {
+public class Npc5EContent : IMapEntityContent {
     
     [ID(nameof(Npc5E))]
     public Guid NpcId { get; set; }
@@ -15,6 +15,13 @@ public class Npc5EContent : MapEntityContent {
 
     public float Width => GetEditorSize();
     public float Height => GetEditorSize();
+    
+    public bool Resizable => false;
+    
+    public void Resize(float width, float height)
+    {
+        throw new NotSupportedException();
+    }
 
     public float GetEditorSize()
     {

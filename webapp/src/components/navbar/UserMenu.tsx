@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import classNames from "classnames";
 import { useToggle } from "utils/hooks/useToggle";
-import { useSessionContext } from "components/LoginContext";
+import { signIn, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 interface UserInfo {
   picture: string;
@@ -10,7 +11,7 @@ interface UserInfo {
 }
 
 export function UserMenu() {
-  const { logout } = useSessionContext();
+  const session = useSession();
   const [show, toggle] = useToggle(false);
 
   const userProfile = useMemo((): UserInfo => {
@@ -25,6 +26,14 @@ export function UserMenu() {
       name: "user",
     };
   }, []);
+  // console.log("session", session);
+  if (!session || session.status === "unauthenticated") {
+    return (
+      <>
+        <button onClick={() => signIn()}>Sign in</button>
+      </>
+    );
+  }
 
   return (
     <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
@@ -102,7 +111,7 @@ export function UserMenu() {
             className="block px-4 py-2 text-sm"
             role="menuitem"
             tabIndex={-1}
-            onClick={logout}
+            onClick={() => signOut()}
             id="user-menu-item-2"
           >
             Sign out

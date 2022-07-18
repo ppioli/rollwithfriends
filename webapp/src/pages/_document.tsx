@@ -17,6 +17,8 @@ class MyDocument extends Document<DocumentProps> {
 
     const initialProps = await Document.getInitialProps(ctx);
 
+    console.log("Document Initial props", ctx);
+
     return {
       ...initialProps,
       relayDocument,

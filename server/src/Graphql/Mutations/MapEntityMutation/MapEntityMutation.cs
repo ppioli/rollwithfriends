@@ -72,7 +72,7 @@ public class MapEntityMutation
     /// Delete a group of map entities
     /// </summary>
     [Authorize]
-    public async Task<ICollection<Guid>> MapEntityDelete(
+    public async Task<IEnumerable<MapEntityDeletePayload>> MapEntityDelete(
         ClaimsPrincipal user,
         [Service] RwfDbContext db,
         [Service] ITopicEventSender sender,
@@ -85,7 +85,7 @@ public class MapEntityMutation
             throw new EntityNotFound(sceneId);
         }
         
-        // TODO Should check payload size
+        // TODO Actually delete ???
         // var deletedList = db.MapEntities.Where(e => deleted.Contains(e.Id) && e.SceneId == sceneId)
         //     .ToList();
         
@@ -93,8 +93,14 @@ public class MapEntityMutation
         //     MapEntityChangeSubscription.GetTopic(sceneId),
         //     new MapEntityChangeMessage(ChangeMessageType.Delete, user.GetId(), deleted));
         
-        return deleted;
+        return deleted.Select( id => new MapEntityDeletePayload(){ Id = id});
 
+    }
+
+    public class MapEntityDeletePayload
+    {
+        [ID]
+        public Guid Id { get; set; }
     }
 }
 

@@ -22,9 +22,15 @@ public class Scene : IDocument
 
     protected Scene() {}
 
-    public Scene(string name, Guid campaignId)
+    public static Scene Create(string name, Guid campaignId)
     {
-        Name = name;
-        CampaignId = campaignId;
+        return new Scene()
+        {
+            Name = name,
+            CampaignId = campaignId,
+            Stored = false,
+            Entities = new List<MapEntity>(),
+        };
+
     }
 }

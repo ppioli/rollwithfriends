@@ -1,6 +1,7 @@
 schema {
   query: RootQuery
   mutation: Mutation
+  subscription: Subscription
 }
 
 """
@@ -79,11 +80,13 @@ enum Alignment5E {
 }
 
 type AppFile {
-  id: UUID!
-  ownerId: UUID!
-  subdirectory: String!
-  extension: String!
-  created: DateTime!
+  id: ID!
+  ownerId: ID!
+}
+
+input AppFileInput {
+  id: ID!
+  ownerId: ID!
 }
 
 enum ApplyPolicy {
@@ -172,6 +175,12 @@ input CampaignRollOperationFilterInput {
   neq: CampaignRoll
   in: [CampaignRoll!]
   nin: [CampaignRoll!]
+}
+
+enum ChangeMessageType {
+  ADD
+  UPDATE
+  DELETE
 }
 
 input ComparableDateTimeOperationFilterInput {
@@ -281,12 +290,15 @@ input IEntryFilterInput {
   and: [IEntryFilterInput!]
   or: [IEntryFilterInput!]
   id: ComparableGuidOperationFilterInput
+  sourceId: ComparableGuidOperationFilterInput
+  ownerId: ComparableGuidOperationFilterInput
 }
 
 type ImageContent {
   file: AppFile
   width: Float!
   height: Float!
+  resizable: Boolean!
 }
 
 type KeyValuePairOfAbility5EAndInt32 {
@@ -329,6 +341,11 @@ input MapEntitiesImageAddInput {
   entities: [MapEntityImageAddInput!]!
 }
 
+input MapEntitiesNpc5EAddInput {
+  sceneId: ID!
+  entities: [MapEntityNpc5EAddInput!]!
+}
+
 input MapEntitiesPositionUpdateInput {
   sceneId: ID!
   entities: [MapEntityPositionUpdateInput!]!
@@ -339,7 +356,16 @@ type MapEntity implements Node {
   name: String!
   x: Float!
   y: Float!
+  width: Float!
+  height: Float!
+  resizable: Boolean!
   content: MapEntityContent!
+}
+
+type MapEntityChangeMessage {
+  type: ChangeMessageType!
+  userId: UUID!
+  payload: [MapEntity!]!
 }
 
 union MapEntityContent = ImageContent | Npc5EContent
@@ -350,7 +376,7 @@ input MapEntityDeleteInput {
 }
 
 type MapEntityDeletePayload {
-  uUID: [UUID!]
+  id: ID!
 }
 
 input MapEntityImageAddInput {
@@ -358,12 +384,25 @@ input MapEntityImageAddInput {
   x: Int!
   y: Int!
   uploadId: UUID!
-  fileName: String!
   width: Int!
   height: Int!
 }
 
 type MapEntityImageAddPayload {
+  mapEntity: [MapEntity!]
+}
+
+input MapEntityNpc5EAddInput {
+  npcId: ID!
+  name: String!
+  x: Int!
+  y: Int!
+  ac: Int!
+  maxHp: Int!
+  size: Size5E!
+}
+
+type MapEntityNpc5EAddPayload {
   mapEntity: [MapEntity!]
 }
 
@@ -440,8 +479,9 @@ type Mutation {
   textMessageAdd(input: TextMessagesAddInput!): TextMessageAddPayload!
   rollMessageAdd(input: RollMessagesAddInput!): RollMessageAddPayload!
   mapEntityPositionUpdate(input: MapEntitiesPositionUpdateInput!): MapEntityPositionUpdatePayload!
-  mapEntityDelete(input: MapEntityDeleteInput!): MapEntityDeletePayload!
+  mapEntityDelete(input: MapEntityDeleteInput!): [MapEntityDeletePayload!]!
   npcs5EAdd(input: Npcs5EAddInput!): Npcs5EAddPayload!
+  mapEntityNpc5EAdd(input: MapEntitiesNpc5EAddInput!): MapEntityNpc5EAddPayload!
   mapEntityImageAdd(input: MapEntitiesImageAddInput!): MapEntityImageAddPayload!
 }
 
@@ -454,6 +494,9 @@ interface Node {
 
 type Npc5E {
   id: ID!
+  sourceId: UUID!
+  ownerId: UUID!
+  avatar: AppFile!
   page: Int!
   type: NpcType5E!
   hitPointsFormula: String!
@@ -488,10 +531,14 @@ type Npc5EContent {
   ac: Int!
   width: Float!
   height: Float!
+  resizable: Boolean!
 }
 
 input Npc5EInput {
   id: ID!
+  sourceId: UUID!
+  ownerId: UUID!
+  avatar: AppFileInput!
   page: Int!
   type: NpcType5EInput!
   hitPointsFormula: String!
@@ -730,6 +777,10 @@ input StringOperationFilterInput {
   nstartsWith: String
   endsWith: String
   nendsWith: String
+}
+
+type Subscription {
+  mapEntityChanged(sceneId: ID!): MapEntityChangeMessage!
 }
 
 input TextMessageAddInput {

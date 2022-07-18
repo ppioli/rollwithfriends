@@ -1,31 +1,36 @@
 // pages/_app.tsx
-import getRelayClientEnvironment from "lib/getRelayClientEnvironment";
 import { AppProps } from "next/app";
 import { RelayEnvironmentProvider } from "react-relay/hooks";
 import { getInitialPreloadedQuery, getRelayProps } from "relay-nextjs/app";
 import { SessionProvider } from "next-auth/react";
 
 import "styles/globals.css";
+import { Layout } from "features/Layout";
+import { setToken } from "lib/appFetch";
+import getRelayClientEnvironment from "lib/getRelayClientEnvironment";
 
 const initialPreloadedQuery = getInitialPreloadedQuery({
-  createClientEnvironment: (token?: string) =>
-    getRelayClientEnvironment(token ?? "asdfff")!,
+  createClientEnvironment: () => getRelayClientEnvironment()!,
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const { session, ...props } = pageProps;
+  const props = pageProps;
 
   const relayProps = getRelayProps(props, initialPreloadedQuery);
-  console.log("relayProps", relayProps);
-  const env = relayProps.preloadedQuery?.environment;
-  console.log("env", env);
-  const ee = getRelayClientEnvironment(props.token)!;
-  console.log("ee", ee);
+  const env =
+    relayProps.preloadedQuery?.environment ?? getRelayClientEnvironment()!;
+
+  console.log(" ------ Props -------", props);
+  if (props.session) {
+    setToken(props.session.accessToken);
+  }
 
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={props.session}>
       <RelayEnvironmentProvider environment={env}>
-        <Component {...pageProps} {...relayProps} />
+        <Layout>
+          <Component {...pageProps} {...relayProps} />
+        </Layout>
       </RelayEnvironmentProvider>
     </SessionProvider>
   );

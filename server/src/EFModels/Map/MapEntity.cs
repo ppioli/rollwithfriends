@@ -14,17 +14,22 @@ public class MapEntity
     
     public float X { get; set; } 
     public float Y { get; set; }
-    
-    public MapEntityContent Content { get; set; }
 
-    public static MapEntity Create( string name, float x, float y, MapEntityContent content )
+    public float Width => Content.Width;
+    public float Height => Content.Height;
+    public bool Resizable => Content.Resizable;
+    
+    public IMapEntityContent Content { get; set; }
+
+    public static MapEntity Create( string name, float x, float y, IMapEntityContent content )
     {
         return new MapEntity()
         {
+            Id = Guid.NewGuid(),
             Name = name,
             X = x,
             Y = y,
-            Content = content
+            Content = content,
         };
     }
     

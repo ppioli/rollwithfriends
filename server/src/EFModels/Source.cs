@@ -13,18 +13,15 @@ public class Source
 
     public string ShortName { get; set; } = null!;
 
-    public Guid OwnerId { get; set; }
-    
 
     protected Source()
     {
         
     }
     
-    public Source(Guid ownerId, string name, string description, string? shortName)
+    public Source(string name, string description, string? shortName)
     {
         Name = name;
-        OwnerId = ownerId;
         Description = description;
         ShortName = shortName ?? CreateShortName();
     }
@@ -34,9 +31,9 @@ public class Source
         throw new NotImplementedException();
     }
 
-    public string GetSubdirectory()
+    public string GetSubdirectory( Guid owner)
     {
-        return Path.Join(OwnerId.ToString(), Id.ToString());
+        return Path.Join(owner.ToString(), Id.ToString());
     }
     
     private string CreateShortName()

@@ -12,9 +12,11 @@ using Server.Graphql;
 using Server.Graphql.Mutations;
 using Server.Graphql.Mutations.MapEntityMutation;
 using Server.Graphql.Mutations.MapEntityMutation.Image;
+using Server.Graphql.Mutations.MapEntityMutation.Npc5E;
 using Server.Graphql.Mutations.MessageMutation;
 using Server.Graphql.Query;
 using Server.Graphql.Resolvers;
+using Server.Graphql.Subscriptions;
 using Server.Graphql.Types;
 using server.Infraestructure;
 using Server.Infraestructure;
@@ -49,8 +51,8 @@ builder.Services.AddOidcServer(dbContext);
 
 builder.Services
     .AddGraphQLServer()
-    // .AddSubscriptionType(e => e.Name("Subscription"))
-    // .AddTypeExtension<MapEntityChangeSubscription>()
+    .AddSubscriptionType(e => e.Name("Subscription"))
+    .AddTypeExtension<MapEntityChangeSubscription>()
     // .AddTypeExtension<FileLoadingSubscription>()
     // .AddTypeExtension<MessageSubscription>()
     .AddQueryType<RootQuery>()
@@ -63,6 +65,7 @@ builder.Services
     .AddTypeExtension<MessageMutation>()
     .AddTypeExtension<MapEntityMutation>()
     .AddTypeExtension<NonPlayerCharacterMutation>()
+    .AddTypeExtension<MapEntityNpc5EMutation>()
     .AddTypeExtension<MapEntityImageMutation>()
     // .AddTypeExtension<SourceMutation>()
     // Types

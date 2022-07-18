@@ -7,27 +7,38 @@ namespace Server.EFModels;
 
 public class AppFile
 {
+    [ID]
     public Guid Id { get; set; }
 
+    [ID]
     public Guid OwnerId { get; set; }
     
-    public string Subdirectory { get; set; }
+    [GraphQLIgnore]
+    public string Subdirectory { private get; set; }
 
+    [GraphQLIgnore]
     public string Extension { get; private set; }
 
+    [GraphQLIgnore]
     public DateTime Created { get; set; }
+
+    [GraphQLIgnore]
+    public string RelativeFilePath => Path.Join(OwnerId.ToString(), Subdirectory, FileName);
+    
+    public string FileName => $"{Id}{Extension}";
 
     protected AppFile()
     {
         OwnerId = Guid.Empty;
-        Subdirectory = "subdirectory";
+        Subdirectory = string.Empty;
     }
 
     public static AppFile Create( string subdirectory, string extension,  ClaimsPrincipal user )
     {
         return new AppFile()
         {
-            Subdirectory = $"{user.GetId()}/{subdirectory}",
+            Id = Guid.NewGuid(),
+            Subdirectory = subdirectory,
             OwnerId = user.GetId(),
             Extension = extension,
             Created = DateTime.UtcNow,

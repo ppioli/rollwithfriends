@@ -1,5 +1,6 @@
 import classNames from "classnames";
-import { Link } from "components/Link";
+import Link from "next/link";
+import { NavLink } from "components/navbar/NavLink";
 
 export interface NavbarItemProps {
   label: string;
@@ -9,32 +10,30 @@ export interface NavbarItemProps {
 export function NavbarItem({ label, href }: NavbarItemProps) {
   return (
     // eslint-disable-next-line react/jsx-no-undef
-    <Link
+    <NavLink
       to={href}
-      className={(active: boolean) =>
+      label={label}
+      className={({ active }) =>
         classNames("px-3 py-2 rounded-md text-sm font-medium", {
           "hover:bg-darkest": !active,
           "bg-darkest": active,
         })
       }
-    >
-      {label}
-    </Link>
+    />
   );
 }
 
 export function NavbarItemMini({ href, label }: NavbarItemProps) {
   return (
-    <Link
+    <NavLink
       to={href}
-      className={(active: boolean) =>
+      label={label}
+      className={({ active }) =>
         classNames("block px-3 py-2 rounded-md text-base font-medium", {
           "hover:bg-darkest": !active,
           "bg-darkest": active,
         })
       }
-    >
-      {label}
-    </Link>
+    />
   );
 }

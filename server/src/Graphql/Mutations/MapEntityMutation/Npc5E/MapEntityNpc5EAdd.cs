@@ -5,7 +5,7 @@ namespace Server.Graphql.Mutations.MapEntityMutation.Npc5E;
 /// <summary>
 /// Add many 5 edition NPCs
 /// </summary>
-public class MapEntitiesNpcAdd
+public class MapEntitiesNpc5EAdd
 {
     [ID]
     public int SceneId { get; set; }

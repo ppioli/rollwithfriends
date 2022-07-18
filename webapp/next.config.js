@@ -19,6 +19,7 @@ const nextConfig = {
       src: "./src",
       language: "typescript",
       artifactDirectory: "src/__generated__",
+      schemaExtensions: ["./graphql"],
     },
   },
 };
